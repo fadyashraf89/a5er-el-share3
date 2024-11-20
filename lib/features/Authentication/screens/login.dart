@@ -110,7 +110,7 @@ class _SignInPageState extends State<SignInPage> {
                         child: TextButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ForgotPassword()));
+                                builder: (context) => const ForgotPassword()));
                           },
                           child: Text(
                             "Forgot Password",

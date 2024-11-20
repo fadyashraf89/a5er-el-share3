@@ -51,7 +51,8 @@ class _SplashScreenState extends State<SplashScreen>
             child: Image.asset(
               "assets/images/default.png",
               width: MediaQuery.of(context).size.width * 0.6, // Constrain width
-              height: MediaQuery.of(context).size.height * 0.4, // Constrain height
+              height:
+                  MediaQuery.of(context).size.height * 0.4, // Constrain height
               fit: BoxFit.contain,
             ),
           ),
@@ -59,5 +60,4 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-
 }

@@ -18,8 +18,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffFDFDFF),
-      appBar: RoundedAppBar(title: "Forgot Password"),
+      backgroundColor: const Color(0xffFDFDFF),
+      appBar: const RoundedAppBar(title: "Forgot Password"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -28,7 +28,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset("assets/images/forgotPassword.png"),
-              Text(
+              const Text(
                 "Write your email to reset your password",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     fontSize: 16,
                     color: kDarkBlueColor),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Form(
@@ -57,12 +57,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         borderSide: const BorderSide(color: kDarkBlueColor)),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(
-                            color: kDarkBlueColor, width: 2)),
+                        borderSide:
+                            const BorderSide(color: kDarkBlueColor, width: 2)),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SizedBox(
@@ -71,29 +71,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all(kDarkBlueColor),
+                          MaterialStateProperty.all(kDarkBlueColor),
                     ),
                     onPressed: () async {
-                      if (formKey.currentState!.validate()){
+                      if (formKey.currentState!.validate()) {
                         Authentication auth = Authentication();
-                        String message = await auth.forgotPassword(emailController.text);
+                        String message =
+                            await auth.forgotPassword(emailController.text);
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(message),
-                            backgroundColor: message.contains('sent') ? Colors.green : Colors.red,
+                            backgroundColor: message.contains('sent')
+                                ? Colors.green
+                                : Colors.red,
                           ),
                         );
                         Navigator.pop(context);
                       }
                     },
-                    child: Text ("Reset Password", style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Archivo",
-                    fontSize: 16,
-                    color: Colors.white))),
+                    child: const Text("Reset Password",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Archivo",
+                            fontSize: 16,
+                            color: Colors.white))),
               )
-
             ],
           ),
         ),

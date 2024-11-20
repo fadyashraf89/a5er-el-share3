@@ -21,7 +21,7 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Padding(
                   padding: EdgeInsets.only(
                       bottom: width / 2 - preferredSize.height / 2),
-                  child: DecoratedBox(
+                  child: const DecoratedBox(
                     decoration: BoxDecoration(
                       color: Color(0xff1d198b),
                       shape: BoxShape.circle,
@@ -35,12 +35,11 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
         Center(
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                fontFamily: "Archivo"
-            ),
+                fontFamily: "Archivo"),
           ),
         ),
       ]),

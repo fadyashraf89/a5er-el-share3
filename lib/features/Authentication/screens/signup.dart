@@ -1,7 +1,9 @@
+import 'package:a5er_elshare3/shared/data/models/Passenger.dart';
+import 'package:a5er_elshare3/shared/data/models/driver.dart';
+import 'package:a5er_elshare3/shared/data/Database/FirebaseAuthentication.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/utils/constants.dart';
-import '../../../shared/data/Database/FirebaseAuthentication.dart';
+import '../../../shared/data/Database/FirebaseStorage.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -14,14 +16,13 @@ class _SignUpPageState extends State<SignUpPage> {
   bool showPassword = false;
   bool showConfirmPassword = false;
   IconData icon = Icons.visibility_off;
-  String? selectedRole = 'Passenger'; // Set default value as 'Passenger'
+  String? selectedRole = 'Passenger';
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   TextEditingController carPlateController = TextEditingController();
-  TextEditingController driverLicenseController =
-      TextEditingController();
+  TextEditingController driverLicenseController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -43,18 +44,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   "Sign Up",
                   style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Form(
                   key: formKey,
                   child: Column(
                     children: [
+                      // Email input field
                       TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter an email';
-                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                              .hasMatch(value)) {
                             return 'Enter a valid email';
                           }
                           return null;
@@ -64,18 +65,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           hintText: 'Email',
                           prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                  color: Colors.black.withOpacity(0.5))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: kDarkBlueColor, width: 2)),
+                              borderRadius: BorderRadius.circular(20)),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
+
+                      // Password input field
                       TextFormField(
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -92,26 +87,20 @@ class _SignUpPageState extends State<SignUpPage> {
                             onPressed: () {
                               setState(() {
                                 showPassword = !showPassword;
-                                if (showPassword) {
-                                  icon = Icons.visibility;
-                                } else {
-                                  icon = Icons.visibility_off;
-                                }
+                                icon = showPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off;
                               });
                             },
                             icon: Icon(icon),
                           ),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                  color: Colors.black.withOpacity(0.5))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: kDarkBlueColor, width: 2)),
+                              borderRadius: BorderRadius.circular(20)),
                         ),
                       ),
                       const SizedBox(height: 20),
+
+                      // Confirm password input field
                       TextFormField(
                         validator: (value) {
                           if (value != passwordController.text) {
@@ -135,21 +124,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 : Icons.visibility_off),
                           ),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                  color: Colors.black.withOpacity(0.5))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: kDarkBlueColor, width: 2)),
+                              borderRadius: BorderRadius.circular(20)),
                         ),
                       ),
                       const SizedBox(height: 20),
 
-                      // Dropdown to select role (Driver or Passenger)
+                      // Dropdown to select role
                       DropdownButtonFormField<String>(
                         value: selectedRole,
-                        // Default value set here
                         hint: const Text('Select Role'),
                         onChanged: (value) {
                           setState(() {
@@ -170,19 +152,14 @@ class _SignUpPageState extends State<SignUpPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: kDarkBlueColor),
-                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
 
-                      // Show fields based on selected role
+                      // Additional fields for Driver
                       if (selectedRole == 'Driver')
                         Column(
                           children: [
-                            // Field for driver's license number
                             TextFormField(
                               controller: driverLicenseController,
                               decoration: InputDecoration(
@@ -190,13 +167,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                 prefixIcon: const Icon(Icons.card_travel),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                    color: kDarkBlueColor,
-                                    width: 2,
-                                  ),
                                 ),
                               ),
                             ),
@@ -209,18 +179,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                    color: kDarkBlueColor,
-                                    width: 2,
-                                  ),
-                                ),
                               ),
                             ),
-                            const SizedBox(height: 20),
                           ],
                         ),
+                      const SizedBox(height: 20),
 
                       // Mobile number input field
                       TextFormField(
@@ -235,17 +198,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           hintText: 'Mobile Number',
                           prefixIcon: const Icon(Icons.phone),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                  color: Colors.black.withOpacity(0.5))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: kDarkBlueColor, width: 2)),
+                              borderRadius: BorderRadius.circular(20)),
                         ),
                       ),
                       const SizedBox(height: 20),
 
+                      // Sign Up button
                       SizedBox(
                         height: 45,
                         width: double.infinity,
@@ -257,43 +215,56 @@ class _SignUpPageState extends State<SignUpPage> {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               Authentication auth = Authentication();
-                              String message = await auth.registerWithEmailAndPassword(
+                              String message =
+                                  await auth.registerWithEmailAndPassword(
                                 emailController.text,
                                 passwordController.text,
                               );
 
+                              if (message.contains('successful')) {
+                                String? uid = await auth.getCurrentUserUid();
+                                if (uid != null) {
+                                  if (selectedRole == 'Passenger') {
+                                    Passenger passenger = Passenger(
+                                        email: emailController.text,
+                                        mobileNumber: mobileController.text,
+                                        uid: uid,
+                                        role: "Passenger");
+
+                                    Storage storage = Storage();
+                                    await storage.addPassenger(passenger);
+                                  } else if (selectedRole == 'Driver') {
+                                    Driver driver = Driver(
+                                        email: emailController.text,
+                                        mobileNumber: mobileController.text,
+                                        uid: uid,
+                                        carPlateNumber: carPlateController.text,
+                                        licenseNumber:
+                                            driverLicenseController.text,
+                                        role: "Driver");
+
+                                    Storage storage = Storage();
+                                    await storage.addDriver(driver);
+                                  }
+                                }
+                              }
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(message),
-                                  backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
+                                  backgroundColor:
+                                      message.contains('successful')
+                                          ? Colors.green
+                                          : Colors.red,
                                 ),
                               );
                             }
                           },
-
                           child: const Text(
                             "Sign Up",
-                            style: TextStyle(color: Color(0xffFFFFFF)),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Already have an account?"),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Sign In",
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          )
-                        ],
                       ),
                     ],
                   ),
