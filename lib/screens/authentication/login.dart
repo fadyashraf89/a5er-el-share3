@@ -1,4 +1,6 @@
 
+import 'package:a5er_elshare3/Database/FirebaseAuthentication.dart';
+import 'package:a5er_elshare3/screens/authentication/ForgotPassword.dart';
 import 'package:flutter/material.dart';
 
 
@@ -15,8 +17,8 @@ class _SignInPageState extends State<SignInPage> {
   bool showPassword = false;
   IconData icon = Icons.visibility_off;
 
-  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -56,7 +58,7 @@ class _SignInPageState extends State<SignInPage> {
                           prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Color(0xff1d198b))),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -94,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: Color(0xff1d198b))),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -105,7 +107,9 @@ class _SignInPageState extends State<SignInPage> {
                       Padding(
                         padding: const EdgeInsets.only(right: 220.0),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ForgotPassword()));
+                          },
                           child: Text(
                             "Forgot Password",
                             style: TextStyle(
@@ -119,10 +123,28 @@ class _SignInPageState extends State<SignInPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Color(0xff1d198b)),
+                            backgroundColor: MaterialStateProperty.all(const Color(0xff1d198b)),
                           ),
                           onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              Authentication auth = Authentication();
+                              String message = await auth
+                                  .SignInWithEmailAndPassword(
+                                emailController.text,
+                                passwordController.text,
+                              );
+
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message),
+                                  backgroundColor: message.contains(
+                                      'successful') ? Colors.green : Colors.red,
+                                ),
+                              );
+                            }
                           },
+
                           child: const Text("Sign In", style: TextStyle(
                             color: Color(0xffFFFFFF)
                           )),

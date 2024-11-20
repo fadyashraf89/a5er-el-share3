@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1036222261989",
+    "project_id": "a5er-el-share3",
+    "storage_bucket": "a5er-el-share3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036222261989:android:834331fbc4cea1897b820c",
+        "android_client_info": {
+          "package_name": "com.example.a5er_elshare3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0h1GcERJdSOa7M_RCUfNHOdp66iJvpPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

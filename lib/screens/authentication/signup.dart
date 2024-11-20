@@ -1,5 +1,5 @@
-import 'dart:io'; // Required for File (if you were using File elsewhere)
-import 'package:a5er_elshare3/screens/authentication/login.dart';
+// Required for File (if you were using File elsewhere)
+import 'package:a5er_elshare3/Database/FirebaseAuthentication.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -19,7 +19,8 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   TextEditingController carPlateController = TextEditingController();
-  TextEditingController driverLicenseController = TextEditingController(); // Driver's license number
+  TextEditingController driverLicenseController =
+      TextEditingController(); // Driver's license number
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -34,7 +35,9 @@ class _SignUpPageState extends State<SignUpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Center(child: Image.asset("assets/images/default.png", height: 140)),
+                Center(
+                    child:
+                        Image.asset("assets/images/default.png", height: 140)),
                 const Text(
                   "Sign Up",
                   style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
@@ -48,8 +51,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     children: [
                       TextFormField(
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Enter Your Email';
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter an email';
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Enter a valid email';
                           }
                           return null;
                         },
@@ -142,14 +147,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
                       // Dropdown to select role (Driver or Passenger)
                       DropdownButtonFormField<String>(
-                        value: selectedRole, // Default value set here
-                        hint: Text('Select Role'),
+                        value: selectedRole,
+                        // Default value set here
+                        hint: const Text('Select Role'),
                         onChanged: (value) {
                           setState(() {
                             selectedRole = value;
                           });
                         },
-                        items: [
+                        items: const [
                           DropdownMenuItem(
                             value: 'Driver',
                             child: Text('Driver'),
@@ -245,13 +251,25 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                            MaterialStateProperty.all(Color(0xff1d198b)),
+                                MaterialStateProperty.all(const Color(0xff1d198b)),
                           ),
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              // Perform Sign Up
+                              Authentication auth = Authentication();
+                              String message = await auth.registerWithEmailAndPassword(
+                                emailController.text,
+                                passwordController.text,
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message),
+                                  backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
+                                ),
+                              );
                             }
                           },
+
                           child: const Text(
                             "Sign Up",
                             style: TextStyle(color: Color(0xffFFFFFF)),
@@ -264,19 +282,14 @@ class _SignUpPageState extends State<SignUpPage> {
                           const Text("Already have an account?"),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                  const SignInPage(), // Pass the email to home screen
-                                ),
-                              );
+                              Navigator.pop(context);
                             },
                             child: Text(
                               "Sign In",
                               style: TextStyle(
                                   color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.bold
+                              ),
                             ),
                           )
                         ],
