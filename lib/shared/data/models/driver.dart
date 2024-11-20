@@ -1,4 +1,5 @@
-import 'package:a5er_elshare3/models/Passenger.dart';
+
+import 'Passenger.dart';
 
 class Driver extends Passenger {
   final String? carPlateNumber, LicenseNumber;

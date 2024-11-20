@@ -1,4 +1,4 @@
-import 'package:a5er_elshare3/screens/authentication/welcome.dart';
+import 'package:a5er_elshare3/shared/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';

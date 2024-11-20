@@ -1,5 +1,5 @@
-import 'package:a5er_elshare3/models/Passenger.dart';
-import 'package:a5er_elshare3/models/driver.dart';
+import 'Passenger.dart';
+import 'driver.dart';
 
 class Trip{
   String? date, time, FromLocation, ToDestination;

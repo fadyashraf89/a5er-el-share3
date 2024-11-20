@@ -1,7 +1,8 @@
-import 'package:a5er_elshare3/widgets/RoundedAppBar.dart';
 import 'package:flutter/material.dart';
 
-import '../../Database/FirebaseAuthentication.dart';
+import '../../../core/utils/constants.dart';
+import '../../../shared/data/Database/FirebaseAuthentication.dart';
+import '../../../shared/widgets/RoundedAppBar.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -17,6 +18,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffFDFDFF),
       appBar: RoundedAppBar(title: "Forgot Password"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -32,7 +34,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     fontWeight: FontWeight.bold,
                     fontFamily: "Archivo",
                     fontSize: 16,
-                    color: Color(0xff1d198b)),
+                    color: kDarkBlueColor),
               ),
               SizedBox(
                 height: 20,
@@ -52,11 +54,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: Color(0xff1d198b))),
+                        borderSide: const BorderSide(color: kDarkBlueColor)),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: const BorderSide(
-                            color: Color(0xff1d198b), width: 2)),
+                            color: kDarkBlueColor, width: 2)),
                   ),
                 ),
               ),
@@ -69,7 +71,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all(const Color(0xff1d198b)),
+                      MaterialStateProperty.all(kDarkBlueColor),
                     ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()){

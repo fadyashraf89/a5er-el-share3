@@ -1,6 +1,7 @@
-import 'package:a5er_elshare3/screens/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../features/Authentication/screens/login.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

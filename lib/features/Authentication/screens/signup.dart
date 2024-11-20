@@ -1,6 +1,7 @@
-// Required for File (if you were using File elsewhere)
-import 'package:a5er_elshare3/Database/FirebaseAuthentication.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/utils/constants.dart';
+import '../../../shared/data/Database/FirebaseAuthentication.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -20,7 +21,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController mobileController = TextEditingController();
   TextEditingController carPlateController = TextEditingController();
   TextEditingController driverLicenseController =
-      TextEditingController(); // Driver's license number
+      TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -69,7 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                               borderSide: const BorderSide(
-                                  color: Colors.black, width: 2)),
+                                  color: kDarkBlueColor, width: 2)),
                         ),
                       ),
                       const SizedBox(
@@ -107,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                               borderSide: const BorderSide(
-                                  color: Colors.black, width: 2)),
+                                  color: kDarkBlueColor, width: 2)),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -140,7 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                               borderSide: const BorderSide(
-                                  color: Colors.black, width: 2)),
+                                  color: kDarkBlueColor, width: 2)),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -171,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: kDarkBlueColor),
                           ),
                         ),
                       ),
@@ -193,7 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                   borderSide: const BorderSide(
-                                    color: Colors.black,
+                                    color: kDarkBlueColor,
                                     width: 2,
                                   ),
                                 ),
@@ -211,7 +212,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                   borderSide: const BorderSide(
-                                    color: Colors.black,
+                                    color: kDarkBlueColor,
                                     width: 2,
                                   ),
                                 ),
@@ -240,7 +241,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                               borderSide: const BorderSide(
-                                  color: Colors.black, width: 2)),
+                                  color: kDarkBlueColor, width: 2)),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -251,7 +252,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(const Color(0xff1d198b)),
+                                MaterialStateProperty.all(kDarkBlueColor),
                           ),
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
