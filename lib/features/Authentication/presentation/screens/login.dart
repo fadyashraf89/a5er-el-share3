@@ -1,8 +1,8 @@
-import 'package:a5er_elshare3/features/Authentication/screens/signup.dart';
+import 'package:a5er_elshare3/core/validators/validators.dart';
+import 'package:a5er_elshare3/features/Authentication/presentation/screens/signup.dart';
 import 'package:flutter/material.dart';
-
-import '../../../core/utils/constants.dart';
-import '../../../shared/data/Database/FirebaseAuthentication.dart';
+import '../../data/Database/FirebaseAuthentication.dart';
+import '../../../../core/utils/constants.dart';
 import 'ForgotPassword.dart';
 
 class SignInPage extends StatefulWidget {
@@ -19,6 +19,34 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  Validators validators = Validators();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      Authentication auth = Authentication();
+      String message = await auth.SignInWithEmailAndPassword(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
+        ),
+      );
+
+      if (message.contains('successful')) {
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,50 +60,41 @@ class _SignInPageState extends State<SignInPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(
-                    child:
-                        Image.asset("assets/images/default.png", width: 300)),
+                Center(child: Image.asset("assets/images/default.png", width: 300)),
                 const Text(
                   "Sign In",
                   style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Form(
                   key: formKey,
                   child: Column(
                     children: [
+                      // Email Input Field
                       TextFormField(
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Enter Your Email';
-                          }
-                          return null;
+                          return validators.ValidateEmail(value);
                         },
                         controller: emailController,
                         decoration: InputDecoration(
                           hintText: 'Email',
                           prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide:
-                                  const BorderSide(color: kDarkBlueColor)),
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: kDarkBlueColor),
+                          ),
                           focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: kDarkBlueColor, width: 2)),
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: kDarkBlueColor, width: 2),
+                          ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
+                      const SizedBox(height: 30),
+
+                      // Password Input Field
                       TextFormField(
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Enter Your Password';
-                          }
-                          return null;
+                          return validators.ValidatePassword(value);
                         },
                         controller: passwordController,
                         obscureText: !showPassword,
@@ -86,70 +105,57 @@ class _SignInPageState extends State<SignInPage> {
                             onPressed: () {
                               setState(() {
                                 showPassword = !showPassword;
-                                if (showPassword) {
-                                  icon = Icons.visibility;
-                                } else {
-                                  icon = Icons.visibility_off;
-                                }
+                                icon = showPassword ? Icons.visibility : Icons.visibility_off;
                               });
                             },
                             icon: Icon(icon),
                           ),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide:
-                                  const BorderSide(color: kDarkBlueColor)),
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: kDarkBlueColor),
+                          ),
                           focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: kDarkBlueColor, width: 2)),
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(color: kDarkBlueColor, width: 2),
+                          ),
                         ),
                       ),
+
+                      // Forgot Password
                       Padding(
                         padding: const EdgeInsets.only(right: 220.0),
                         child: TextButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ForgotPassword()));
+                              builder: (context) => const ForgotPassword(),
+                            ));
                           },
                           child: Text(
                             "Forgot Password",
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.8)),
+                            style: TextStyle(color: Colors.black.withOpacity(0.8)),
                           ),
                         ),
                       ),
+
+                      // Sign In Button
                       SizedBox(
                         height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xff1d198b)),
+                            backgroundColor: MaterialStateProperty.all(const Color(0xff1d198b)),
                           ),
                           onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              Authentication auth = Authentication();
-                              String message =
-                                  await auth.SignInWithEmailAndPassword(
-                                emailController.text,
-                                passwordController.text,
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(message),
-                                  backgroundColor:
-                                      message.contains('successful')
-                                          ? Colors.green
-                                          : Colors.red,
-                                ),
-                              );
-                            }
+                            await _signIn(context);
                           },
-                          child: const Text("Sign In",
-                              style: TextStyle(color: Color(0xffFFFFFF))),
+                          child: const Text(
+                            "Sign In",
+                            style: TextStyle(color: Color(0xffFFFFFF)),
+                          ),
                         ),
                       ),
+
+                      // Redirect to Sign Up
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -159,23 +165,23 @@ class _SignInPageState extends State<SignInPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SignUpPage(), // Pass the email to home screen
+                                  builder: (context) => const SignUpPage(),
                                 ),
                               );
                             },
                             child: Text(
                               "Register Now",
                               style: TextStyle(
-                                  color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold),
+                                color: Colors.black.withOpacity(0.8),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

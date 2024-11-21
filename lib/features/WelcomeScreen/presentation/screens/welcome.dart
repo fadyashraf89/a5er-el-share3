@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../features/Authentication/screens/login.dart';
+import 'Opening.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward().then((_) {
       // Navigate after animation completes
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const SignInPage()),
+        MaterialPageRoute(builder: (_) => const Opening()),
       );
     });
   }

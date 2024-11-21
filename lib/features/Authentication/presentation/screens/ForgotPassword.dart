@@ -1,8 +1,10 @@
+import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/utils/constants.dart';
-import '../../../shared/data/Database/FirebaseAuthentication.dart';
-import '../../../shared/widgets/RoundedAppBar.dart';
+import '../../data/Database/FirebaseAuthentication.dart';
+import '../../../../core/utils/constants.dart';
+import '../../../../core/widgets/RoundedAppBar.dart';
+
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -14,12 +16,13 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  Validators validators = Validators();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffFDFDFF),
-      appBar: const RoundedAppBar(title: "Forgot Password"),
+      appBar: const RoundedAppBar(height: 130, title: "Forgot Password"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -43,10 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 key: formKey,
                 child: TextFormField(
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Your Email';
-                    }
-                    return null;
+                    return validators.ValidateEmail(value);
                   },
                   controller: emailController,
                   decoration: InputDecoration(

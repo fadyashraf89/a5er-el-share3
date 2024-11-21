@@ -1,4 +1,5 @@
-import 'Passenger.dart';
+
+import '../../../Passenger/data/models/Passenger.dart';
 
 class Driver extends Passenger {
   final String? carPlateNumber, licenseNumber;

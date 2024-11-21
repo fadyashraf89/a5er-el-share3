@@ -1,9 +1,12 @@
-import 'package:a5er_elshare3/shared/data/models/Passenger.dart';
-import 'package:a5er_elshare3/shared/data/models/driver.dart';
-import 'package:a5er_elshare3/shared/data/Database/FirebaseAuthentication.dart';
+import 'package:a5er_elshare3/core/validators/validators.dart';
+import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
 import 'package:flutter/material.dart';
-import '../../../core/utils/constants.dart';
-import '../../../shared/data/Database/FirebaseStorage.dart';
+
+import '../../../Passenger/data/Database/PassengerStorage.dart';
+import '../../../Passenger/data/models/Passenger.dart';
+import '../../data/Database/FirebaseAuthentication.dart';
+import '../../../Driver/data/models/driver.dart';
+import '../../../../core/utils/constants.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -24,6 +27,17 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController carPlateController = TextEditingController();
   TextEditingController driverLicenseController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  Validators validators = Validators();
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    mobileController.dispose();
+    carPlateController.dispose();
+    driverLicenseController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       // Email input field
                       TextFormField(
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter an email';
-                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                              .hasMatch(value)) {
-                            return 'Enter a valid email';
-                          }
-                          return null;
+                          return validators.ValidateEmail(value);
                         },
                         controller: emailController,
                         decoration: InputDecoration(
@@ -73,10 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       // Password input field
                       TextFormField(
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Enter Your Password';
-                          }
-                          return null;
+                          return validators.ValidatePassword(value);
                         },
                         controller: passwordController,
                         obscureText: !showPassword,
@@ -103,10 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       // Confirm password input field
                       TextFormField(
                         validator: (value) {
-                          if (value != passwordController.text) {
-                            return 'Passwords do not match';
-                          }
-                          return null;
+                          return validators.ValidateMatchingPasswords(value, passwordController);
                         },
                         controller: confirmPasswordController,
                         obscureText: !showConfirmPassword,
@@ -161,6 +163,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         Column(
                           children: [
                             TextFormField(
+                              validator: (value) {
+                                return validators.ValidateLicenseNumber(value);
+                              },
                               controller: driverLicenseController,
                               decoration: InputDecoration(
                                 hintText: 'Driver License Number',
@@ -172,6 +177,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              validator: (value) {
+                                return validators.ValidatePlateNumber(value);
+                              },
                               controller: carPlateController,
                               decoration: InputDecoration(
                                 hintText: 'Car Plate Number',
@@ -188,10 +196,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       // Mobile number input field
                       TextFormField(
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Enter Your Mobile Number';
-                          }
-                          return null;
+                          return validators.ValidateMobileNumber(value);
                         },
                         controller: mobileController,
                         decoration: InputDecoration(
@@ -202,7 +207,24 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(" Already have an account ?"),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.8),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                       // Sign Up button
                       SizedBox(
                         height: 45,
@@ -213,52 +235,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 MaterialStateProperty.all(kDarkBlueColor),
                           ),
                           onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              Authentication auth = Authentication();
-                              String message =
-                                  await auth.registerWithEmailAndPassword(
-                                emailController.text,
-                                passwordController.text,
-                              );
-
-                              if (message.contains('successful')) {
-                                String? uid = await auth.getCurrentUserUid();
-                                if (uid != null) {
-                                  if (selectedRole == 'Passenger') {
-                                    Passenger passenger = Passenger(
-                                        email: emailController.text,
-                                        mobileNumber: mobileController.text,
-                                        uid: uid,
-                                        role: "Passenger");
-
-                                    Storage storage = Storage();
-                                    await storage.addPassenger(passenger);
-                                  } else if (selectedRole == 'Driver') {
-                                    Driver driver = Driver(
-                                        email: emailController.text,
-                                        mobileNumber: mobileController.text,
-                                        uid: uid,
-                                        carPlateNumber: carPlateController.text,
-                                        licenseNumber:
-                                            driverLicenseController.text,
-                                        role: "Driver");
-
-                                    Storage storage = Storage();
-                                    await storage.addDriver(driver);
-                                  }
-                                }
-                              }
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(message),
-                                  backgroundColor:
-                                      message.contains('successful')
-                                          ? Colors.green
-                                          : Colors.red,
-                                ),
-                              );
-                            }
+                            await SignUp(context);
                           },
                           child: const Text(
                             "Sign Up",
@@ -276,4 +253,49 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
+  Future<void> SignUp(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      Authentication auth = Authentication();
+      String message = await auth.registerWithEmailAndPassword(
+        emailController.text,
+        passwordController.text,
+      );
+
+      if (message.contains('successful')) {
+        String? uid = await auth.getCurrentUserUid();
+        if (uid != null) {
+          DriverStorage Dstorage = DriverStorage();
+          PassengerStorage Pstorage = PassengerStorage();
+          if (selectedRole == 'Passenger') {
+            Passenger passenger = Passenger(
+              email: emailController.text,
+              mobileNumber: mobileController.text,
+              uid: uid,
+              role: "Passenger",
+            );
+            await Pstorage.addPassenger(passenger);
+          } else if (selectedRole == 'Driver') {
+            Driver driver = Driver(
+              email: emailController.text,
+              mobileNumber: mobileController.text,
+              uid: uid,
+              carPlateNumber: carPlateController.text,
+              licenseNumber: driverLicenseController.text,
+              role: "Driver",
+            );
+            await Dstorage.addDriver(driver);
+          }
+        }
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
+        ),
+      );
+    }
+  }
 }
+
