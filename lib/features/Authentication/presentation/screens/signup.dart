@@ -70,6 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         controller: emailController,
                         decoration: InputDecoration(
+                          hintStyle: const TextStyle(fontFamily: "Archivo"),
                           hintText: 'Email',
                           prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
@@ -86,6 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: passwordController,
                         obscureText: !showPassword,
                         decoration: InputDecoration(
+                          hintStyle: const TextStyle(fontFamily: "Archivo"),
                           hintText: 'Password',
                           prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
@@ -108,12 +110,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       // Confirm password input field
                       TextFormField(
                         validator: (value) {
-                          return validators.ValidateMatchingPasswords(value, passwordController);
+                          return validators.ValidateMatchingPasswords(
+                              value, passwordController);
                         },
                         controller: confirmPasswordController,
                         obscureText: !showConfirmPassword,
                         decoration: InputDecoration(
                           hintText: 'Confirm Password',
+                          hintStyle: const TextStyle(fontFamily: "Archivo"),
                           prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -143,11 +147,17 @@ class _SignUpPageState extends State<SignUpPage> {
                         items: const [
                           DropdownMenuItem(
                             value: 'Driver',
-                            child: Text('Driver'),
+                            child: Text(
+                              'Driver',
+                              style: TextStyle(fontFamily: "Archivo"),
+                            ),
                           ),
                           DropdownMenuItem(
                             value: 'Passenger',
-                            child: Text('Passenger'),
+                            child: Text(
+                              'Passenger',
+                              style: TextStyle(fontFamily: "Archivo"),
+                            ),
                           ),
                         ],
                         decoration: InputDecoration(
@@ -157,7 +167,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       // Additional fields for Driver
                       if (selectedRole == 'Driver')
                         Column(
@@ -168,6 +177,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               },
                               controller: driverLicenseController,
                               decoration: InputDecoration(
+                                hintStyle: const TextStyle(fontFamily: "Archivo"),
                                 hintText: 'Driver License Number',
                                 prefixIcon: const Icon(Icons.card_travel),
                                 border: OutlineInputBorder(
@@ -183,6 +193,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               controller: carPlateController,
                               decoration: InputDecoration(
                                 hintText: 'Car Plate Number',
+                                hintStyle: const TextStyle(fontFamily: "Archivo"),
                                 prefixIcon: const Icon(Icons.car_repair),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -200,6 +211,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         controller: mobileController,
                         decoration: InputDecoration(
+                          hintStyle: const TextStyle(fontFamily: "Archivo"),
                           hintText: 'Mobile Number',
                           prefixIcon: const Icon(Icons.phone),
                           border: OutlineInputBorder(
@@ -210,7 +222,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(" Already have an account ?"),
+                          const Text(
+                            " Already have an account ?",
+                            style: TextStyle(fontFamily: "Archivo"),
+                          ),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -219,7 +234,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               "Login",
                               style: TextStyle(
                                   color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Archivo"),
                             ),
                           )
                         ],
@@ -239,7 +255,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           },
                           child: const Text(
                             "Sign Up",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white, fontFamily: "Archivo"),
                           ),
                         ),
                       ),
@@ -292,10 +309,10 @@ class _SignUpPageState extends State<SignUpPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
+          backgroundColor:
+              message.contains('successful') ? Colors.green : Colors.red,
         ),
       );
     }
   }
 }
-

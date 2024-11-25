@@ -59,7 +59,7 @@ class _OpeningState extends State<Opening> {
                     },
                     child: const Text(
                       "Sign In",
-                      style: TextStyle(color: kDarkBlueColor, fontSize: 18),
+                      style: TextStyle(color: kDarkBlueColor, fontSize: 18, fontFamily: "Archivo", fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -84,7 +84,7 @@ class _OpeningState extends State<Opening> {
                     },
                     child: const Text(
                       "Sign Up",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: "Archivo", fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

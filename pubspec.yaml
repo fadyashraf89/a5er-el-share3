@@ -42,6 +42,14 @@ dependencies:
   pin_code_fields: ^8.0.1
   firebase_storage: ^11.6.9
   cloud_firestore: ^4.15.8
+  google_maps_flutter: ^2.5.3
+  google_places_flutter_api:
+  flutter_google_maps_webservices:
+  intl:
+  geolocator:
+  geocoding:
+  location:
+  permission_handler: ^10.4.0
 
 dev_dependencies:
   flutter_test:

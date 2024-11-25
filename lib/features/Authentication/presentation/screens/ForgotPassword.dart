@@ -22,7 +22,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffFDFDFF),
-      appBar: const RoundedAppBar(height: 130, title: "Forgot Password"),
+      appBar: const RoundedAppBar(height: 150, title: "Forgot Password", color: kDarkBlueColor,),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(

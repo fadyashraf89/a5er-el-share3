@@ -39,12 +39,12 @@ class _SignInPageState extends State<SignInPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
+          backgroundColor:
+              message.contains('successful') ? Colors.green : Colors.red,
         ),
       );
 
-      if (message.contains('successful')) {
-      }
+      if (message.contains('successful')) {}
     }
   }
 
@@ -60,7 +60,9 @@ class _SignInPageState extends State<SignInPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Image.asset("assets/images/default.png", width: 300)),
+                Center(
+                    child: Image.asset("assets/images/default.png",
+                        width: 350, height: 350)),
                 const Text(
                   "Sign In",
                   style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
@@ -78,6 +80,7 @@ class _SignInPageState extends State<SignInPage> {
                         controller: emailController,
                         decoration: InputDecoration(
                           hintText: 'Email',
+                          hintStyle: const TextStyle(fontFamily: "Archivo"),
                           prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -85,7 +88,8 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: kDarkBlueColor, width: 2),
+                            borderSide: const BorderSide(
+                                color: kDarkBlueColor, width: 2),
                           ),
                         ),
                       ),
@@ -100,12 +104,15 @@ class _SignInPageState extends State<SignInPage> {
                         obscureText: !showPassword,
                         decoration: InputDecoration(
                           hintText: 'Password',
+                          hintStyle: const TextStyle(fontFamily: "Archivo"),
                           prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
                                 showPassword = !showPassword;
-                                icon = showPassword ? Icons.visibility : Icons.visibility_off;
+                                icon = showPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off;
                               });
                             },
                             icon: Icon(icon),
@@ -116,7 +123,8 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(color: kDarkBlueColor, width: 2),
+                            borderSide: const BorderSide(
+                                color: kDarkBlueColor, width: 2),
                           ),
                         ),
                       ),
@@ -132,7 +140,9 @@ class _SignInPageState extends State<SignInPage> {
                           },
                           child: Text(
                             "Forgot Password",
-                            style: TextStyle(color: Colors.black.withOpacity(0.8)),
+                            style: TextStyle(
+                                color: Colors.black.withOpacity(0.8),
+                                fontFamily: "Archivo"),
                           ),
                         ),
                       ),
@@ -143,14 +153,15 @@ class _SignInPageState extends State<SignInPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(const Color(0xff1d198b)),
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color(0xff1d198b)),
                           ),
                           onPressed: () async {
                             await _signIn(context);
                           },
                           child: const Text(
                             "Sign In",
-                            style: TextStyle(color: Color(0xffFFFFFF)),
+                            style: TextStyle(color: Color(0xffFFFFFF), fontFamily: "Archivo"),
                           ),
                         ),
                       ),
@@ -159,7 +170,9 @@ class _SignInPageState extends State<SignInPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Don't have an account ?"),
+                          const Text("Don't have an account ?", style: TextStyle(
+                          fontFamily: "Archivo"
+                      ),),
                           TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -174,6 +187,8 @@ class _SignInPageState extends State<SignInPage> {
                               style: TextStyle(
                                 color: Colors.black.withOpacity(0.8),
                                 fontWeight: FontWeight.bold,
+                                  fontFamily: "Archivo"
+
                               ),
                             ),
                           ),
