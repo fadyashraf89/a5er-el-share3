@@ -11,7 +11,8 @@ class PassengerStorage {
         'email': passenger.email,
         'mobileNumber': passenger.mobileNumber,
         'uid': passenger.uid,
-        'role': passenger.role
+        'role': passenger.role,
+        "name": passenger.name
       });
       print("Passenger Added");
     } catch (error) {

@@ -17,9 +17,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Archivo', // The font family declared in pubspec.yaml
+      ),
       debugShowCheckedModeBanner: false,
-      home: PassengerHome(),
+      home: const PassengerHome(),
     );
   }
 }

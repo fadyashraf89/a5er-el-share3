@@ -45,4 +45,11 @@ class Validators {
     }
     return null;
   }
+
+  String? ValidateName(String? value) {
+    if (value!.isEmpty) {
+      return 'Please Enter Your Name';
+    }
+    return null;
+  }
 }

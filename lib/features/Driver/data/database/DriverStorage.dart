@@ -12,7 +12,9 @@ class DriverStorage {
         'uid': driver.uid,
         'carPlateNumber': driver.carPlateNumber,
         'licenseNumber': driver.licenseNumber,
-        'role': driver.role
+        'role': driver.role,
+        "name": driver.name
+
       });
       print("Driver Added");
     } catch (error) {

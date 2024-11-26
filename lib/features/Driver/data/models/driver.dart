@@ -10,6 +10,7 @@ class Driver extends Passenger {
     String? mobileNumber,
     String? role,
     String? uid,
+    String? name,
     this.carPlateNumber,
     this.licenseNumber,
   }) : super(

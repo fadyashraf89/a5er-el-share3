@@ -7,6 +7,7 @@ import '../../../Passenger/data/models/Passenger.dart';
 import '../../data/Database/FirebaseAuthentication.dart';
 import '../../../Driver/data/models/driver.dart';
 import '../../../../core/utils/constants.dart';
+import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -26,6 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController mobileController = TextEditingController();
   TextEditingController carPlateController = TextEditingController();
   TextEditingController driverLicenseController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   Validators validators = Validators();
   @override
@@ -136,37 +138,59 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(height: 20),
 
                       // Dropdown to select role
-                      DropdownButtonFormField<String>(
-                        value: selectedRole,
-                        hint: const Text('Select Role'),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRole = value;
-                          });
-                        },
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Driver',
-                            child: Text(
-                              'Driver',
-                              style: TextStyle(fontFamily: "Archivo"),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2, // Adjust flex for width distribution
+                            child: DropdownButtonFormField<String>(
+                              value: selectedRole,
+                              hint: const Text('Select Role'),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedRole = value;
+                                });
+                              },
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'Driver',
+                                  child: Text(
+                                    'Driver',
+                                    style: TextStyle(fontFamily: "Archivo"),
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Passenger',
+                                  child: Text(
+                                    'Passenger',
+                                    style: TextStyle(fontFamily: "Archivo"),
+                                  ),
+                                ),
+                              ],
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
                             ),
                           ),
-                          DropdownMenuItem(
-                            value: 'Passenger',
-                            child: Text(
-                              'Passenger',
-                              style: TextStyle(fontFamily: "Archivo"),
+                          const SizedBox(width: 10), // Add some spacing between fields
+                          Expanded(
+                            flex: 3, // Adjust flex for width distribution
+                            child: TextFormField(
+                              validator: (value) => validators.ValidateName(value),
+                              controller: nameController,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.person),
+                                hintText: "Name",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
                             ),
                           ),
                         ],
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       // Additional fields for Driver
                       if (selectedRole == 'Driver')
                         Column(
@@ -185,7 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             TextFormField(
                               validator: (value) {
                                 return validators.ValidatePlateNumber(value);
@@ -218,7 +242,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               borderRadius: BorderRadius.circular(20)),
                         ),
                       ),
-                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -228,7 +251,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => SignInPage()),
+                              );
                             },
                             child: Text(
                               "Login",
@@ -240,7 +266,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           )
                         ],
                       ),
-                      const SizedBox(height: 20),
                       // Sign Up button
                       SizedBox(
                         height: 45,
@@ -289,6 +314,7 @@ class _SignUpPageState extends State<SignUpPage> {
               email: emailController.text,
               mobileNumber: mobileController.text,
               uid: uid,
+              name: nameController.text,
               role: "Passenger",
             );
             await Pstorage.addPassenger(passenger);
@@ -299,6 +325,7 @@ class _SignUpPageState extends State<SignUpPage> {
               uid: uid,
               carPlateNumber: carPlateController.text,
               licenseNumber: driverLicenseController.text,
+              name: nameController.text,
               role: "Driver",
             );
             await Dstorage.addDriver(driver);

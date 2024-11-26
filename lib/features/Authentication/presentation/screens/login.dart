@@ -175,11 +175,9 @@ class _SignInPageState extends State<SignInPage> {
                       ),),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SignUpPage(),
-                                ),
+                                MaterialPageRoute(builder: (context) => SignUpPage()),
                               );
                             },
                             child: Text(

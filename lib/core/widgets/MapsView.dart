@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/places.dart' as p;
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -70,9 +69,9 @@ class _MapsViewState extends State<MapsView> {
         _currentLocation = LatLng(position.latitude, position.longitude);
         _markers.clear(); // Clear old markers
         _markers.add(Marker(
-          markerId: MarkerId('current_location'),
+          markerId: const MarkerId('current_location'),
           position: _currentLocation!,
-          infoWindow: InfoWindow(title: 'Your Location'),
+          infoWindow: const InfoWindow(title: 'Your Location'),
         ));
         // Move camera to the user's current location
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentLocation!));
