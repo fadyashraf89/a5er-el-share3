@@ -6,10 +6,12 @@ import 'package:a5er_elshare3/features/Passenger/data/models/Passenger.dart';
 import 'package:a5er_elshare3/features/Welcome/presentation/screens/Opening.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
-
+import 'package:geocoding/geocoding.dart' as geocoding; // Alias for geocoding package
+import 'package:google_places_flutter_api/google_places_flutter_api.dart';
 import "../../../../core/utils/constants.dart";
 
 class PassengerHome extends StatefulWidget {
@@ -124,8 +126,7 @@ class _PassengerHomeState extends State<PassengerHome> {
       ),
       builder: (context) {
         return Padding(
-          padding:
-              MediaQuery.of(context).viewInsets, // Adjust padding for keyboard
+          padding: MediaQuery.of(context).viewInsets,
           child: DraggableScrollableSheet(
             initialChildSize: 0.5,
             minChildSize: 0.2,
@@ -162,154 +163,18 @@ class _PassengerHomeState extends State<PassengerHome> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFormField(
-                                  controller: pickUpController,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Enter Pick-Up Point',
-                                    hintStyle: TextStyle(fontFamily: "Archivo"),
-                                    prefixIcon: Icon(Icons.pin_drop),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20),
-                                      ),
-                                      borderSide:
-                                          BorderSide(color: kDarkBlueColor),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20),
-                                      ),
-                                      borderSide: BorderSide(
-                                          color: kDarkBlueColor, width: 2),
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Pick-Up Point is required';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 45),
-                              ],
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: kDarkBlueColor,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(20),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () =>
-                                    _getCurrentLocation(isPickup: true),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.gps_fixed_sharp,
-                                          color: Colors.white),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "From Your Current Location",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "Archivo",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        // Pickup Location
+                        _buildPlaceSearchField(
+                          "Enter Pick-Up Point",
+                          Icons.pin_drop,
+                          isPickup: true,
                         ),
                         const SizedBox(height: 15),
-                        Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFormField(
-                                  controller: destinationController,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Enter Destination',
-                                    hintStyle: TextStyle(fontFamily: "Archivo"),
-                                    prefixIcon: Icon(Icons.map_outlined),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20),
-                                      ),
-                                      borderSide:
-                                          BorderSide(color: kDarkBlueColor),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20),
-                                      ),
-                                      borderSide: BorderSide(
-                                          color: kDarkBlueColor, width: 2),
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Destination is required';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 45),
-                              ],
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: kDarkBlueColor,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(20),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () =>
-                                    _getCurrentLocation(isPickup: false),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.gps_fixed_sharp,
-                                          color: Colors.white),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "To Your Current Location",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "Archivo",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        // Destination
+                        _buildPlaceSearchField(
+                          "Enter Destination",
+                          Icons.map_outlined,
+                          isPickup: false,
                         ),
                         const SizedBox(height: 20),
                         SizedBox(
@@ -317,10 +182,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
-                                validators.ValidatePickUpAndDestination(
-                                    pickUpController,
-                                    destinationController,
-                                    context);
+                                // Perform validation or trip confirmation logic here
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -354,6 +216,104 @@ class _PassengerHomeState extends State<PassengerHome> {
     );
   }
 
+  Widget _buildPlaceSearchField(String hint, IconData icon, {required bool isPickup}) {
+    return GestureDetector(
+      onTap: () async {
+        Prediction? prediction = await PlacesAutocomplete.show(
+          context: context,
+          apiKey: "AIzaSyDoBHEaV4zb2EsvqDqiIfaFq9h5nTw3Qk8", // The Places API key is still required for the autocomplete
+          mode: Mode.overlay,
+          language: "en",
+        );
+
+        if (prediction != null) {
+          try {
+            // Use geocoding to get the latitude and longitude based on the address
+            List<geocoding.Location> locations = await locationFromAddress(prediction.description ?? "");
+
+            if (locations.isNotEmpty) {
+              geocoding.Location location = locations.first;
+              LatLng latLng = LatLng(location.latitude, location.longitude);
+
+              // Add marker on map
+              _addMarker(latLng, prediction.description ?? "");
+
+              // Update the appropriate controller (pickup or destination)
+              if (isPickup) {
+                pickUpController.text = prediction.description ?? "";
+              } else {
+                destinationController.text = prediction.description ?? "";
+              }
+            }
+          } catch (e) {
+            // Handle error if geocoding fails
+            print("Geocoding error: $e");
+          }
+        }
+      },
+      child: Column(
+        children: [
+          AbsorbPointer(
+            child: TextFormField(
+            controller: isPickup ? pickUpController : destinationController,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: const TextStyle(fontFamily: "Archivo"),
+              prefixIcon: Icon(icon),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '$hint is required';
+              }
+              return null;
+            },
+                          ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kDarkBlueColor,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20),
+                  ),
+                ),
+              ),
+              onPressed: () =>
+                  _getCurrentLocation(isPickup: isPickup),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.gps_fixed_sharp,
+                        color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      "Your Current Location",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Archivo",
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
