@@ -1,3 +1,4 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 
 class Authentication {
@@ -75,4 +76,49 @@ class Authentication {
       return null;
     }
   }
+
+  Future<String?> fetchUserRole(String userId) async {
+    try {
+      // Fetch from Passengers collection
+      final passengerDoc = await FirebaseFirestore.instance
+          .collection('Passengers')
+          .doc(userId)
+          .get();
+
+      if (passengerDoc.exists) {
+        print("Passenger document exists: ${passengerDoc.exists}");
+        print("Passenger document data: ${passengerDoc.data()}");
+        return passengerDoc.data()?['role']; // Return 'Passenger' role
+      }
+
+      // Fetch from Drivers collection if not found in Passengers
+      final driverDoc = await FirebaseFirestore.instance
+          .collection('Drivers')
+          .doc(userId)
+          .get();
+
+      if (driverDoc.exists) {
+        print("Driver document exists: ${driverDoc.exists}");
+        print("Driver document data: ${driverDoc.data()}");
+        return driverDoc.data()?['role']; // Return 'Driver' role
+      }
+
+      // Log if neither document is found
+      print("No document found for user ID: $userId");
+      return null; // User not found in both collections
+    } catch (e) {
+      print("Error fetching user role: $e");
+      return null;
+    }
+  }
+
+  Future<User?> getCurrentUser() async {
+    try {
+      return _auth.currentUser;
+    } catch (e) {
+      print("Error retrieving current user: $e");
+      return null;
+    }
+  }
+
 }

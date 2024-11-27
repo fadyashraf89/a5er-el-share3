@@ -1,6 +1,9 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/features/Authentication/presentation/screens/signup.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../../Driver/presentation/screens/DriverHome.dart';
+import '../../../Passenger/presentation/screens/PassengerHome.dart';
 import '../../data/Database/FirebaseAuthentication.dart';
 import '../../../../core/utils/constants.dart';
 import 'ForgotPassword.dart';
@@ -40,13 +43,53 @@ class _SignInPageState extends State<SignInPage> {
         SnackBar(
           content: Text(message),
           backgroundColor:
-              message.contains('successful') ? Colors.green : Colors.red,
+          message.contains('successful') ? Colors.green : Colors.red,
         ),
       );
 
-      if (message.contains('successful')) {}
+      if (message.contains('successful')) {
+        String? userId = await auth.getCurrentUserUid(); // Get the signed-in user's UID
+
+        if (userId != null) {
+          String? role = await auth.fetchUserRole(userId);
+
+          if (role != null) {
+            // Navigate based on role
+            if (role == 'Passenger') {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const PassengerHome()),
+              );
+            } else if (role == 'Driver') {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const DriverHome()),
+              );
+            } else {
+              // Handle unknown role
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Unknown role: $role"),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            }
+          } else {
+            // User not found in either collection
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("User not found in Passengers or Drivers collection"),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        } else {
+          print("Error: User ID is null");
+        }
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +214,8 @@ class _SignInPageState extends State<SignInPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text("Don't have an account ?", style: TextStyle(
-                          fontFamily: "Archivo"
-                      ),),
+                              fontFamily: "Archivo"
+                          ),),
                           TextButton(
                             onPressed: () {
                               Navigator.pushReplacement(
@@ -183,8 +226,8 @@ class _SignInPageState extends State<SignInPage> {
                             child: Text(
                               "Register Now",
                               style: TextStyle(
-                                color: Colors.black.withOpacity(0.8),
-                                fontWeight: FontWeight.bold,
+                                  color: Colors.black.withOpacity(0.8),
+                                  fontWeight: FontWeight.bold,
                                   fontFamily: "Archivo"
 
                               ),

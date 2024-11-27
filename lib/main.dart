@@ -1,4 +1,6 @@
+import 'package:a5er_elshare3/features/Driver/presentation/screens/DriverHome.dart';
 import 'package:a5er_elshare3/features/Passenger/presentation/screens/PassengerHome.dart';
+import 'package:a5er_elshare3/features/Welcome/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Archivo', // The font family declared in pubspec.yaml
       ),
       debugShowCheckedModeBanner: false,
-      home: const PassengerHome(),
+      home: const SplashScreen(),
     );
   }
 }

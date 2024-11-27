@@ -1,8 +1,12 @@
+import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
+import 'package:a5er_elshare3/features/Driver/presentation/screens/DriverHome.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'Opening.dart';
-
+import '../../../Passenger/presentation/screens/PassengerHome.dart';
+import 'Opening.dart'; // Fallback if no user is signed in
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  Authentication authentication = Authentication();
 
   @override
   void initState() {
@@ -29,16 +34,51 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Create an Animation
     _animation = CurvedAnimation(
-      parent: _controller, curve: Curves.easeInOut, // Animation curve
+      parent: _controller,
+      curve: Curves.easeInOut, // Animation curve
     );
 
-    // Start the animation
-    _controller.forward().then((_) {
-      // Navigate after animation completes
+    // Start the animation and check user role
+    _controller.forward().then((_) => _navigateToHome());
+  }
+
+  Future<void> _navigateToHome() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        // Fetch user role from Firestore (Passengers or Drivers collections)
+        String? role = await authentication.fetchUserRole(user.uid);
+
+        if (role == 'Passenger') {
+          // Navigate to Passenger Home
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => PassengerHome()),
+          );
+        } else if (role == 'Driver') {
+          // Navigate to Driver Home
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => DriverHome()),
+          );
+        } else {
+          // Navigate to Opening if the role is not defined
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const Opening()),
+          );
+        }
+      } catch (e) {
+        // Handle Firestore or other errors
+        print("Error navigating to home: $e");
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const Opening()),
+        );
+      }
+    } else {
+      // Navigate to Opening if no user is signed in
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const Opening()),
       );
-    });
+    }
   }
 
   @override
@@ -53,12 +93,18 @@ class _SplashScreenState extends State<SplashScreen>
               "assets/images/default.png",
               width: MediaQuery.of(context).size.width * 0.6, // Constrain width
               height:
-                  MediaQuery.of(context).size.height * 0.4, // Constrain height
+              MediaQuery.of(context).size.height * 0.4, // Constrain height
               fit: BoxFit.contain,
             ),
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

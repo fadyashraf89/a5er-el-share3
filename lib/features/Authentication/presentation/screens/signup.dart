@@ -1,7 +1,9 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
+import 'package:a5er_elshare3/features/Passenger/presentation/screens/PassengerHome.dart';
 import 'package:flutter/material.dart';
 
+import '../../../Driver/presentation/screens/DriverHome.dart';
 import '../../../Passenger/data/Database/PassengerStorage.dart';
 import '../../../Passenger/data/models/Passenger.dart';
 import '../../data/Database/FirebaseAuthentication.dart';
@@ -55,7 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 Center(
                     child:
-                        Image.asset("assets/images/default.png", height: 140)),
+                    Image.asset("assets/images/default.png", height: 140)),
                 const Text(
                   "Sign Up",
                   style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
@@ -273,7 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(kDarkBlueColor),
+                            MaterialStateProperty.all(kDarkBlueColor),
                           ),
                           onPressed: () async {
                             await SignUp(context);
@@ -309,6 +311,7 @@ class _SignUpPageState extends State<SignUpPage> {
         if (uid != null) {
           DriverStorage Dstorage = DriverStorage();
           PassengerStorage Pstorage = PassengerStorage();
+
           if (selectedRole == 'Passenger') {
             Passenger passenger = Passenger(
               email: emailController.text,
@@ -318,6 +321,12 @@ class _SignUpPageState extends State<SignUpPage> {
               role: "Passenger",
             );
             await Pstorage.addPassenger(passenger);
+
+            // Navigate to Passenger Home Page
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PassengerHome()),
+            );
           } else if (selectedRole == 'Driver') {
             Driver driver = Driver(
               email: emailController.text,
@@ -329,15 +338,21 @@ class _SignUpPageState extends State<SignUpPage> {
               role: "Driver",
             );
             await Dstorage.addDriver(driver);
-          }
+
+            // Navigate to Driver Home Page
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => DriverHome()),
+            );          }
         }
       }
 
+      // Show a success or failure message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
           backgroundColor:
-              message.contains('successful') ? Colors.green : Colors.red,
+          message.contains('successful') ? Colors.green : Colors.red,
         ),
       );
     }

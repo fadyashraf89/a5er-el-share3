@@ -50,6 +50,8 @@ dependencies:
   geocoding:
   location:
   permission_handler: ^10.4.0
+  http:
+  dio:
 
 dev_dependencies:
   flutter_test:

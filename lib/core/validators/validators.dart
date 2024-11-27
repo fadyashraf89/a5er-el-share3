@@ -52,4 +52,44 @@ class Validators {
     }
     return null;
   }
+
+  Future<void> ShowMessageDialog(BuildContext context, String message) async {
+    return showDialog<void>(
+      context: context, barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: const Icon(
+            Icons.error_outlined,
+            color: Colors.red,
+            size: 30,
+          ),
+          title: const Text('Error'),
+          content: SingleChildScrollView(
+            child: Center(
+                child:
+                Text(message)),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void ValidatePickUpAndDestination(TextEditingController pickupController,
+      TextEditingController destinationController, BuildContext context) {
+    if (pickupController.text == destinationController.text) {
+      ShowMessageDialog(context, "Pick up location and destination can't the same");
+    }
+    else if (pickupController.text.isEmpty || destinationController.text.isEmpty){
+      ShowMessageDialog(context, "Pick up location or destination can't be empty");
+    }
+  }
+
 }

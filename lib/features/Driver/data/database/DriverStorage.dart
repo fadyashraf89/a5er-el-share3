@@ -6,15 +6,14 @@ class DriverStorage {
     CollectionReference drivers =
     FirebaseFirestore.instance.collection('Drivers');
     try {
-      await drivers.add({
+      // Use `set` with the UID as the document ID
+      await drivers.doc(driver.uid).set({
         'email': driver.email,
         'mobileNumber': driver.mobileNumber,
-        'uid': driver.uid,
         'carPlateNumber': driver.carPlateNumber,
         'licenseNumber': driver.licenseNumber,
         'role': driver.role,
-        "name": driver.name
-
+        'name': driver.name,
       });
       print("Driver Added");
     } catch (error) {

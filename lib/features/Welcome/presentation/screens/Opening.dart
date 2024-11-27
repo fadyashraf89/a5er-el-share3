@@ -22,9 +22,7 @@ class _OpeningState extends State<Opening> {
           const RoundedAppBar(
             height: 750,
             color: Colors.white,
-            title: "Welcome",
           ),
-
           // Buttons
           Positioned(
             top: 150, // Adjust position relative to the AppBar height
