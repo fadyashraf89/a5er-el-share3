@@ -29,4 +29,15 @@ class Driver extends Passenger {
           role: role,
           uid: uid,
         );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'mobileNumber': mobileNumber,
+      'role': role,
+      'carPlateNumber': carPlateNumber,
+      'licenseNumber': licenseNumber,
+    };
+  }
 }

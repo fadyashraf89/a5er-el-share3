@@ -121,4 +121,21 @@ class Authentication {
     }
   }
 
+  Future<String?> getCurrentUserEmail() async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      // Check if the user is signed in
+      if (user != null) {
+        return user.email; // Return the user's email address
+      } else {
+        print("No user is currently signed in.");
+        return null; // Handle case where no user is signed in
+      }
+    } catch (e) {
+      print("Error getting current user email: $e");
+      return null; // Handle any error gracefully
+    }
+  }
 }

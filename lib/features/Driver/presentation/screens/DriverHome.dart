@@ -2,7 +2,6 @@ import "package:a5er_elshare3/features/Driver/data/models/driver.dart";
 import "package:flutter/material.dart";
 
 import "../../../../core/utils/constants.dart";
-import "../../../../core/widgets/MapsView.dart";
 
 class DriverHome extends StatefulWidget {
   const DriverHome({super.key});
@@ -49,7 +48,7 @@ class _DriverHomeState extends State<DriverHome> {
                     ),
                     Text(
                       "Welcome, ${driver.name ?? "Driver"}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         fontFamily: "Archivo",

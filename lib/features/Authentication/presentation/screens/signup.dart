@@ -255,7 +255,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignInPage()),
+                                MaterialPageRoute(builder: (context) => const SignInPage()),
                               );
                             },
                             child: Text(
@@ -325,7 +325,7 @@ class _SignUpPageState extends State<SignUpPage> {
             // Navigate to Passenger Home Page
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => PassengerHome()),
+              MaterialPageRoute(builder: (context) => const PassengerHome()),
             );
           } else if (selectedRole == 'Driver') {
             Driver driver = Driver(
@@ -342,7 +342,7 @@ class _SignUpPageState extends State<SignUpPage> {
             // Navigate to Driver Home Page
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => DriverHome()),
+              MaterialPageRoute(builder: (context) => const DriverHome()),
             );          }
         }
       }

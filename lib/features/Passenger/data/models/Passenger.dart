@@ -12,4 +12,12 @@ class Passenger {
       role: data['role'] as String?
     );
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'mobileNumber': mobileNumber,
+      'role': role,
+    };
+  }
 }

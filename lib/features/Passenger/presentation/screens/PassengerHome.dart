@@ -1,8 +1,11 @@
+import 'dart:math';
 import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/core/widgets/MapsView.dart';
 import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
 import 'package:a5er_elshare3/features/Passenger/data/Database/PassengerStorage.dart';
 import 'package:a5er_elshare3/features/Passenger/data/models/Passenger.dart';
+import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
+import 'package:a5er_elshare3/features/Trip/presentation/screens/TripList.dart';
 import 'package:a5er_elshare3/features/Welcome/presentation/screens/Opening.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +13,11 @@ import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geocoding/geocoding.dart' as geocoding; // Alias for geocoding package
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:google_places_flutter_api/google_places_flutter_api.dart';
+import 'package:intl/intl.dart';
 import "../../../../core/utils/constants.dart";
+import '../../../Trip/data/models/trip.dart';
 
 class PassengerHome extends StatefulWidget {
   const PassengerHome({Key? key}) : super(key: key);
@@ -28,17 +33,20 @@ class _PassengerHomeState extends State<PassengerHome> {
   Authentication authentication = Authentication();
   final formKey = GlobalKey<FormState>();
   GoogleMapController? _mapController;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   LatLng? _currentLocation;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  PassengerStorage _storage = PassengerStorage();
+  final PassengerStorage _storage = PassengerStorage();
+  final TripStorage TStorage = TripStorage();
 
-
-  void _addMarker(LatLng position, String title) {
+  void _addMarker(LatLng position, String title, MarkerId markerId) {
     setState(() {
+      // Remove any existing marker with the same ID (optional)
+      _markers.removeWhere((marker) => marker.markerId == markerId);
+
       _markers.add(
         Marker(
-          markerId: MarkerId(position.toString()),
+          markerId: markerId,
           position: position,
           infoWindow: InfoWindow(title: title),
         ),
@@ -91,10 +99,17 @@ class _PassengerHomeState extends State<PassengerHome> {
           : "Unknown Location";
 
       setState(() {
+        // Remove any existing marker for pickup or destination based on isPickup
+        _markers.removeWhere((marker) =>
+            (marker.markerId == MarkerId('pickup') && isPickup) ||
+            (marker.markerId == MarkerId('destination') && !isPickup));
+
         _currentLocation = newLocation;
 
-        // Add a marker using _addMarker
-        _addMarker(newLocation, locationName);
+        // Add a marker using _addMarker with the appropriate MarkerId
+        MarkerId markerId =
+            isPickup ? MarkerId('pickup') : MarkerId('destination');
+        _addMarker(newLocation, locationName, markerId);
 
         // Update the map camera
         _mapController?.animateCamera(
@@ -177,33 +192,90 @@ class _PassengerHomeState extends State<PassengerHome> {
                           isPickup: false,
                         ),
                         const SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                // Perform validation or trip confirmation logic here
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: kDarkBlueColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                        Stack(children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_markers.length != 2) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Please set both Pickup and Destination')),
+                                  );
+                                  return;
+                                }
+
+                                LatLng pickupLocation = _markers
+                                    .firstWhere((marker) =>
+                                        marker.markerId == MarkerId('pickup'))
+                                    .position;
+                                LatLng destinationLocation = _markers
+                                    .firstWhere((marker) =>
+                                        marker.markerId ==
+                                        MarkerId('destination'))
+                                    .position;
+
+                                double distance = calculateDistance(
+                                    pickupLocation, destinationLocation);
+
+                                try {
+                                  // Fetch the current passenger data
+                                  Passenger passenger =
+                                      await _storage.fetchPassengerData();
+                                  List<Trip> trips = [];
+                                  final now = TimeOfDay.now();
+                                  final formatter = DateFormat.jm(); // 12-hour format with AM/PM
+                                  final formattedTime = formatter.format(DateTime(2000, 1, 1, now.hour, now.minute));
+
+                                  trips.add(
+                                    Trip(
+                                        date: DateTime.now().toIso8601String(),
+                                        time: formattedTime, // Use formatted time string
+                                        FromLocation: pickUpController.text,
+                                        ToDestination:
+                                        destinationController.text,
+                                        Status: 'Requested ⌛',
+                                        driver: null,
+                                        passenger: passenger,
+                                        distance: distance),
+                                  );
+                                  await TStorage.addTrip(trips);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'Trip request sent for a distance of ${distance.toStringAsFixed(2)} kilometers.'),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'Error sending trip request: $e'),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: kDarkBlueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Text(
-                                "Confirm Trip Request",
-                                style: TextStyle(
-                                    fontFamily: "Archivo",
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Text(
+                                  "Confirm Trip Request",
+                                  style: TextStyle(
+                                      fontFamily: "Archivo",
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ]),
                       ],
                     ),
                   ),
@@ -216,34 +288,69 @@ class _PassengerHomeState extends State<PassengerHome> {
     );
   }
 
-  Widget _buildPlaceSearchField(String hint, IconData icon, {required bool isPickup}) {
+  Widget _buildPlaceSearchField(String hint, IconData icon,
+      {required bool isPickup}) {
+    bool locationSelected = false;
     return GestureDetector(
       onTap: () async {
         Prediction? prediction = await PlacesAutocomplete.show(
           context: context,
-          apiKey: "AIzaSyDoBHEaV4zb2EsvqDqiIfaFq9h5nTw3Qk8", // The Places API key is still required for the autocomplete
-          mode: Mode.overlay,
+          apiKey: "AIzaSyDoBHEaV4zb2EsvqDqiIfaFq9h5nTw3Qk8",
+          mode: Mode.fullscreen,
           language: "en",
         );
 
         if (prediction != null) {
           try {
             // Use geocoding to get the latitude and longitude based on the address
-            List<geocoding.Location> locations = await locationFromAddress(prediction.description ?? "");
+            List<geocoding.Location> locations =
+                await locationFromAddress(prediction.description ?? "");
+            String? locationName = prediction.description;
 
             if (locations.isNotEmpty) {
               geocoding.Location location = locations.first;
               LatLng latLng = LatLng(location.latitude, location.longitude);
 
-              // Add marker on map
-              _addMarker(latLng, prediction.description ?? "");
+              setState(() {
+                if (locationSelected) {
+                  _markers.removeWhere((marker) =>
+                      (marker.markerId == MarkerId('pickup') && isPickup) ||
+                      (marker.markerId == MarkerId('destination') &&
+                          !isPickup));
+                }
 
-              // Update the appropriate controller (pickup or destination)
-              if (isPickup) {
-                pickUpController.text = prediction.description ?? "";
-              } else {
-                destinationController.text = prediction.description ?? "";
-              }
+                // Add a marker for the selected location
+                MarkerId markerId =
+                    isPickup ? MarkerId('pickup') : MarkerId('destination');
+                _addMarker(latLng, locationName!, markerId);
+
+                // Update the map camera to include both markers
+                LatLngBounds bounds = LatLngBounds(
+                  southwest: LatLng(
+                    min(_currentLocation?.latitude ?? latLng.latitude,
+                        latLng.latitude),
+                    min(_currentLocation?.longitude ?? latLng.longitude,
+                        latLng.longitude),
+                  ),
+                  northeast: LatLng(
+                    max(_currentLocation?.latitude ?? latLng.latitude,
+                        latLng.latitude),
+                    max(_currentLocation?.longitude ?? latLng.longitude,
+                        latLng.longitude),
+                  ),
+                );
+                _mapController
+                    ?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 10.0));
+
+                // Update the appropriate controller (pickup or destination)
+                if (isPickup) {
+                  pickUpController.text = prediction.description ?? "";
+                } else {
+                  destinationController.text = prediction.description ?? "";
+                }
+
+                locationSelected = true;
+              });
             }
           } catch (e) {
             // Handle error if geocoding fails
@@ -251,34 +358,31 @@ class _PassengerHomeState extends State<PassengerHome> {
           }
         }
       },
-      child: Column(
-        children: [
-          AbsorbPointer(
-            child: TextFormField(
-            controller: isPickup ? pickUpController : destinationController,
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: const TextStyle(fontFamily: "Archivo"),
-              prefixIcon: Icon(icon),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(20),
+      child: Stack(children: [
+        Column(
+          children: [
+            AbsorbPointer(
+              child: TextFormField(
+                controller: isPickup ? pickUpController : destinationController,
+                decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle: const TextStyle(fontFamily: "Archivo"),
+                  prefixIcon: Icon(icon),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '$hint is required';
+                  }
+                  return null;
+                },
               ),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '$hint is required';
-              }
-              return null;
-            },
-                          ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: ElevatedButton(
+            ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: kDarkBlueColor,
                 shape: const RoundedRectangleBorder(
@@ -287,15 +391,13 @@ class _PassengerHomeState extends State<PassengerHome> {
                   ),
                 ),
               ),
-              onPressed: () =>
-                  _getCurrentLocation(isPickup: isPickup),
+              onPressed: () => _getCurrentLocation(isPickup: isPickup),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.gps_fixed_sharp,
-                        color: Colors.white),
+                    Icon(Icons.gps_fixed_sharp, color: Colors.white),
                     SizedBox(width: 8),
                     Text(
                       "Your Current Location",
@@ -309,10 +411,23 @@ class _PassengerHomeState extends State<PassengerHome> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      ]),
     );
+  }
+
+  double calculateDistance(LatLng point1, LatLng point2) {
+    double distanceInMeters = Geolocator.distanceBetween(
+      point1.latitude,
+      point1.longitude,
+      point2.latitude,
+      point2.longitude,
+    );
+
+    double distanceInKilometers = distanceInMeters / 1000;
+
+    return distanceInKilometers;
   }
 
   @override
@@ -325,7 +440,8 @@ class _PassengerHomeState extends State<PassengerHome> {
           future: _storage.fetchPassengerData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(
+              return const Center(
+                  child: CircularProgressIndicator(
                 color: Colors.white,
               ));
             }
@@ -357,23 +473,23 @@ class _PassengerHomeState extends State<PassengerHome> {
                           ),
                           Text(
                             "Welcome, ${passenger.name ?? "Passenger"}",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 18,
                                 overflow: TextOverflow.visible,
                                 color: kDarkBlueColor,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            "${passenger.email ?? "passenger@email.com"}",
-                            style: TextStyle(
+                            passenger.email ?? "passenger@email.com",
+                            style: const TextStyle(
                               fontSize: 14,
                               overflow: TextOverflow.visible,
                               color: kDarkBlueColor,
                             ),
                           ),
                           Text(
-                            "${passenger.mobileNumber ?? "01234567890"}",
-                            style: TextStyle(
+                            passenger.mobileNumber ?? "01234567890",
+                            style: const TextStyle(
                               fontSize: 14,
                               overflow: TextOverflow.visible,
                               color: kDarkBlueColor,
@@ -401,10 +517,10 @@ class _PassengerHomeState extends State<PassengerHome> {
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(
                       Icons.history,
@@ -414,16 +530,16 @@ class _PassengerHomeState extends State<PassengerHome> {
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TripList()));
                       // Navigate to Trip History
                     },
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(
                       Icons.person,
@@ -439,10 +555,10 @@ class _PassengerHomeState extends State<PassengerHome> {
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(Icons.settings, color: Colors.white),
                     title: const Text("Settings",
@@ -455,27 +571,30 @@ class _PassengerHomeState extends State<PassengerHome> {
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.white),
                     title: const Text("Log Out",
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
-                    onTap: () async{
+                    onTap: () async {
                       await authentication.SignOut();
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Opening()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Opening()));
                       // Navigate to Settings
                     },
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                 ],
               ),
             );

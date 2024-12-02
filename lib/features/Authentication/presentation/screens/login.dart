@@ -1,6 +1,5 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/features/Authentication/presentation/screens/signup.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../Driver/presentation/screens/DriverHome.dart';
 import '../../../Passenger/presentation/screens/PassengerHome.dart';
@@ -220,7 +219,7 @@ class _SignInPageState extends State<SignInPage> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignUpPage()),
+                                MaterialPageRoute(builder: (context) => const SignUpPage()),
                               );
                             },
                             child: Text(

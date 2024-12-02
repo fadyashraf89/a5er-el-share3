@@ -1,6 +1,5 @@
 import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
 import 'package:a5er_elshare3/features/Driver/presentation/screens/DriverHome.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,12 +52,12 @@ class _SplashScreenState extends State<SplashScreen>
         if (role == 'Passenger') {
           // Navigate to Passenger Home
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => PassengerHome()),
+            MaterialPageRoute(builder: (_) => const PassengerHome()),
           );
         } else if (role == 'Driver') {
           // Navigate to Driver Home
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => DriverHome()),
+            MaterialPageRoute(builder: (_) => const DriverHome()),
           );
         } else {
           // Navigate to Opening if the role is not defined
