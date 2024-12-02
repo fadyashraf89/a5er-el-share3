@@ -30,6 +30,7 @@ class Driver extends Passenger {
           uid: uid,
         );
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'name': name,

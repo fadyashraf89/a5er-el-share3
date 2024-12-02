@@ -101,14 +101,14 @@ class _PassengerHomeState extends State<PassengerHome> {
       setState(() {
         // Remove any existing marker for pickup or destination based on isPickup
         _markers.removeWhere((marker) =>
-            (marker.markerId == MarkerId('pickup') && isPickup) ||
-            (marker.markerId == MarkerId('destination') && !isPickup));
+            (marker.markerId == const MarkerId('pickup') && isPickup) ||
+            (marker.markerId == const MarkerId('destination') && !isPickup));
 
         _currentLocation = newLocation;
 
         // Add a marker using _addMarker with the appropriate MarkerId
         MarkerId markerId =
-            isPickup ? MarkerId('pickup') : MarkerId('destination');
+            isPickup ? const MarkerId('pickup') : const MarkerId('destination');
         _addMarker(newLocation, locationName, markerId);
 
         // Update the map camera
@@ -208,12 +208,12 @@ class _PassengerHomeState extends State<PassengerHome> {
 
                                 LatLng pickupLocation = _markers
                                     .firstWhere((marker) =>
-                                        marker.markerId == MarkerId('pickup'))
+                                        marker.markerId == const MarkerId('pickup'))
                                     .position;
                                 LatLng destinationLocation = _markers
                                     .firstWhere((marker) =>
                                         marker.markerId ==
-                                        MarkerId('destination'))
+                                        const MarkerId('destination'))
                                     .position;
 
                                 double distance = calculateDistance(
@@ -314,14 +314,14 @@ class _PassengerHomeState extends State<PassengerHome> {
               setState(() {
                 if (locationSelected) {
                   _markers.removeWhere((marker) =>
-                      (marker.markerId == MarkerId('pickup') && isPickup) ||
-                      (marker.markerId == MarkerId('destination') &&
+                      (marker.markerId == const MarkerId('pickup') && isPickup) ||
+                      (marker.markerId == const MarkerId('destination') &&
                           !isPickup));
                 }
 
                 // Add a marker for the selected location
                 MarkerId markerId =
-                    isPickup ? MarkerId('pickup') : MarkerId('destination');
+                    isPickup ? const MarkerId('pickup') : const MarkerId('destination');
                 _addMarker(latLng, locationName!, markerId);
 
                 // Update the map camera to include both markers
@@ -530,7 +530,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TripList()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const TripList()));
                       // Navigate to Trip History
                     },
                   ),

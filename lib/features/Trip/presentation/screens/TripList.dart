@@ -8,6 +8,8 @@ import '../../data/models/trip.dart';
 import '../widgets/TripCard.dart';
 
 class TripList extends StatefulWidget {
+  const TripList({super.key});
+
   @override
   State<TripList> createState() => _TripListState();
 }
@@ -43,7 +45,7 @@ class _TripListState extends State<TripList> {
     } catch (e) {
       // Catch other general exceptions and provide generic error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content:
               Text('An unexpected error occurred. Please try again later.'),
         ),
@@ -54,15 +56,15 @@ class _TripListState extends State<TripList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: RoundedAppBar(
+      appBar: const RoundedAppBar(
         title: "Trips List",
         height: 140,
         color: kDarkBlueColor,
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _trips.isEmpty
-              ? Center(
+              ? const Center(
                   child:
                       Text('No trips found.')) // Display message for no trips
               : ListView.builder(

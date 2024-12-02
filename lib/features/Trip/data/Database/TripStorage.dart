@@ -24,10 +24,10 @@ class TripStorage {
   }
 
   Future<List<Trip>> fetchTripsForLoggedInUser() async {
-    Authentication _auth = Authentication();
+    Authentication auth = Authentication();
     try {
       // Get the current user's email
-      String? currentEmail = await _auth.getCurrentUserEmail();
+      String? currentEmail = await auth.getCurrentUserEmail();
 
       if (currentEmail == null) {
         print("No user currently signed in.");
