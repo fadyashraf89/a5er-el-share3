@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 
 import '../../data/Database/TripStorage.dart';
 import '../../data/models/trip.dart';
-import '../widgets/TripCard.dart';
+import '../widgets/PassengerTripCard.dart';
 
-class TripList extends StatefulWidget {
-  const TripList({super.key});
+class PassengerTripList extends StatefulWidget {
+  const PassengerTripList({super.key});
 
   @override
-  State<TripList> createState() => _TripListState();
+  State<PassengerTripList> createState() => _PassengerTripListState();
 }
 
-class _TripListState extends State<TripList> {
+class _PassengerTripListState extends State<PassengerTripList> {
   List<Trip> _trips = [];
   bool _isLoading = false;
 
@@ -26,7 +26,7 @@ class _TripListState extends State<TripList> {
 
   Future<void> _fetchTrips() async {
     setState(() {
-      _isLoading = true; // Set loading state to true
+      _isLoading = true;
     });
 
     try {
@@ -75,7 +75,7 @@ class _TripListState extends State<TripList> {
                       final trip = _trips[index];
                       return Padding(
                         padding: const EdgeInsets.only(top: 10.0),
-                        child: TripCard(trip: trip),
+                        child: PassengerTripCard(trip: trip),
                       );
                     },
                   ),

@@ -7,7 +7,6 @@ class PassengerStorage {
     CollectionReference passengers =
     FirebaseFirestore.instance.collection('Passengers');
     try {
-      // Use `set` with the UID as the document ID
       await passengers.doc(passenger.uid).set({
         'email': passenger.email,
         'mobileNumber': passenger.mobileNumber,
@@ -30,7 +29,7 @@ class PassengerStorage {
     await firestore.collection('Passengers').doc(user.uid).get(); // Fetch user data from Firestore.
 
     if (doc.exists) {
-      return Passenger.fromMap(doc.data()!); // Convert Firestore data to Passenger model.
+      return Passenger.fromMap(doc.data()!);
     } else {
       throw Exception("User data not found");
     }

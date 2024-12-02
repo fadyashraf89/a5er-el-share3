@@ -64,4 +64,31 @@ class TripStorage {
       return [];
     }
   }
+
+  Future<List<Trip>> fetchAllTrips() async {
+    try {
+      // Get all documents in the 'Trips' collection
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Trips')
+          .get();
+
+      List<Trip> allTrips = [];
+
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final List<dynamic> tripDataList = data['trips'] ?? [];
+
+        // Map each trip data to a Trip object and add it to the list
+        allTrips.addAll(
+          tripDataList.map((tripData) => Trip.fromMap(tripData as Map<String, dynamic>)),
+        );
+      }
+
+      return allTrips;
+    } catch (e) {
+      print("Error fetching trips for all users: $e");
+      return [];
+    }
+  }
+
 }

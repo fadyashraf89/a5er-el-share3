@@ -5,7 +5,7 @@ import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuth
 import 'package:a5er_elshare3/features/Passenger/data/Database/PassengerStorage.dart';
 import 'package:a5er_elshare3/features/Passenger/data/models/Passenger.dart';
 import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
-import 'package:a5er_elshare3/features/Trip/presentation/screens/TripList.dart';
+import 'package:a5er_elshare3/features/Trip/presentation/screens/PassengerTripList.dart';
 import 'package:a5er_elshare3/features/Welcome/presentation/screens/Opening.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -552,7 +552,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const TripList()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PassengerTripList()));
                       // Navigate to Trip History
                     },
                   ),

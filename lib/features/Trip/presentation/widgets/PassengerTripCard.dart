@@ -3,10 +3,10 @@ import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
 import "../../data/models/trip.dart";
 
-class TripCard extends StatelessWidget {
+class PassengerTripCard extends StatelessWidget {
   final Trip trip;
 
-  const TripCard({Key? key, required this.trip}) : super(key: key);
+  const PassengerTripCard({Key? key, required this.trip}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
