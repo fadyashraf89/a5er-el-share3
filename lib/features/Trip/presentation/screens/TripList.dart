@@ -67,16 +67,19 @@ class _TripListState extends State<TripList> {
               ? const Center(
                   child:
                       Text('No trips found.')) // Display message for no trips
-              : ListView.builder(
-                  itemCount: _trips.length,
-                  itemBuilder: (context, index) {
-                    final trip = _trips[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: TripCard(trip: trip),
-                    );
-                  },
-                ),
+              : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                    itemCount: _trips.length,
+                    itemBuilder: (context, index) {
+                      final trip = _trips[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: TripCard(trip: trip),
+                      );
+                    },
+                  ),
+              ),
     );
   }
 }

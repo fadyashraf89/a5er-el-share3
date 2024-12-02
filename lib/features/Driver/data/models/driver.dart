@@ -1,8 +1,20 @@
 
-import '../../../Passenger/data/models/Passenger.dart';
+import '../../../../core/data/Models/User.dart';
 
-class Driver extends Passenger {
+class Driver extends MyUser {
   final String? carPlateNumber, licenseNumber;
+  Driver({
+    email, password, mobileNumber, role, uid, name,
+    this.carPlateNumber,
+    this.licenseNumber,
+  }) : super(
+    email: email,
+    password: password,
+    mobileNumber: mobileNumber,
+    role: role,
+    uid: uid,
+  );
+
   factory Driver.fromMap(Map<String, dynamic> data) {
     return Driver(
         name: data['name'] as String?,
@@ -13,24 +25,7 @@ class Driver extends Passenger {
         licenseNumber: ['licenseNumber'] as String?,
     );
   }
-  Driver({
-    String? email,
-    String? password,
-    String? mobileNumber,
-    String? role,
-    String? uid,
-    String? name,
-    this.carPlateNumber,
-    this.licenseNumber,
-  }) : super(
-          email: email,
-          password: password,
-          mobileNumber: mobileNumber,
-          role: role,
-          uid: uid,
-        );
 
-  @override
   Map<String, dynamic> toMap() {
     return {
       'name': name,

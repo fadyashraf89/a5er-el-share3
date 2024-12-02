@@ -15,7 +15,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:google_places_flutter_api/google_places_flutter_api.dart';
-import 'package:intl/intl.dart';
 import "../../../../core/utils/constants.dart";
 import '../../../Trip/data/models/trip.dart';
 
@@ -192,90 +191,97 @@ class _PassengerHomeState extends State<PassengerHome> {
                           isPickup: false,
                         ),
                         const SizedBox(height: 20),
-                        Stack(children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                if (_markers.length != 2) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Please set both Pickup and Destination')),
-                                  );
-                                  return;
-                                }
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              // Form validation
+                              if (pickUpController.text.isEmpty ||
+                                  destinationController.text.isEmpty) {
+                                _showDialog(
+                                  context,
+                                  title: "Error ❌",
+                                  content: "Both fields are required.",
+                                );
+                                return;
+                              }
 
+                              if (pickUpController.text == destinationController.text) {
+                                _showDialog(
+                                  context,
+                                  title: "Error ❌",
+                                  content: "Pickup and Destination cannot be the same.",
+                                );
+                                return;
+                              }
+
+                              if (!formKey.currentState!.validate()) {
+                                _showDialog(
+                                  context,
+                                  title: "Error ❌",
+                                  content: "Please correct the errors.",
+                                );
+                                return;
+                              }
+
+                              // Firebase logic
+                              try {
                                 LatLng pickupLocation = _markers
-                                    .firstWhere((marker) =>
-                                        marker.markerId == const MarkerId('pickup'))
+                                    .firstWhere((marker) => marker.markerId == const MarkerId('pickup'))
                                     .position;
                                 LatLng destinationLocation = _markers
-                                    .firstWhere((marker) =>
-                                        marker.markerId ==
-                                        const MarkerId('destination'))
+                                    .firstWhere((marker) => marker.markerId == const MarkerId('destination'))
                                     .position;
 
-                                double distance = calculateDistance(
-                                    pickupLocation, destinationLocation);
+                                double distance = calculateDistance(pickupLocation, destinationLocation);
+                                Passenger passenger = await _storage.fetchPassengerData();
 
-                                try {
-                                  // Fetch the current passenger data
-                                  Passenger passenger =
-                                      await _storage.fetchPassengerData();
-                                  List<Trip> trips = [];
-                                  final now = TimeOfDay.now();
-                                  final formatter = DateFormat.jm(); // 12-hour format with AM/PM
-                                  final formattedTime = formatter.format(DateTime(2000, 1, 1, now.hour, now.minute));
+                                Trip trip = Trip(
+                                  date: DateTime.now().toIso8601String(),
+                                  time: TimeOfDay.now().format(context),
+                                  FromLocation: pickUpController.text,
+                                  ToDestination: destinationController.text,
+                                  Status: "Requested ⌛",
+                                  driver: null,
+                                  passenger: passenger,
+                                  distance: distance,
+                                );
 
-                                  trips.add(
-                                    Trip(
-                                        date: DateTime.now().toIso8601String(),
-                                        time: formattedTime, // Use formatted time string
-                                        FromLocation: pickUpController.text,
-                                        ToDestination:
-                                        destinationController.text,
-                                        Status: 'Requested ⌛',
-                                        driver: null,
-                                        passenger: passenger,
-                                        distance: distance),
-                                  );
-                                  await TStorage.addTrip(trips);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          'Trip request sent for a distance of ${distance.toStringAsFixed(2)} kilometers.'),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          'Error sending trip request: $e'),
-                                    ),
-                                  );
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kDarkBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
+                                await TStorage.addTrip([trip]);
+
+                                _showDialog(
+                                  context,
+                                  title: "Success ✅",
+                                  content: "Request has been sent successfully.",
+                                );
+                              } catch (e) {
+                                _showDialog(
+                                  context,
+                                  title: "Error ❌",
+                                  content: "Error sending request.",
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kDarkBlueColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Text(
-                                  "Confirm Trip Request",
-                                  style: TextStyle(
-                                      fontFamily: "Archivo",
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                "Confirm Trip Request",
+                                style: TextStyle(
+                                  fontFamily: "Archivo",
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ),
-                        ]),
+                        ),
                       ],
                     ),
                   ),
@@ -285,6 +291,22 @@ class _PassengerHomeState extends State<PassengerHome> {
           ),
         );
       },
+    );
+  }
+
+  void _showDialog(BuildContext context, {required String title, required String content}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(child: Text(title)),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK", style: TextStyle(color: Colors.black)),
+          ),
+        ],
+      ),
     );
   }
 

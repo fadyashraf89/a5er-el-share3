@@ -1,8 +1,15 @@
-class Passenger {
-  final String? email, password, mobileNumber, role, uid, name;
+import '../../../../core/data/Models/User.dart';
 
-  Passenger(
-      {this.name,this.email, this.password, this.mobileNumber, this.role, this.uid});
+class Passenger extends MyUser {
+
+  Passenger({email, password, mobileNumber, role, uid, name}) : super(
+    name: name,
+    email: email,
+    password: password,
+    mobileNumber: mobileNumber,
+    role: role,
+    uid: uid,
+  );
 
   factory Passenger.fromMap(Map<String, dynamic> data) {
     return Passenger(
