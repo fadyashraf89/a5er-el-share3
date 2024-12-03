@@ -159,7 +159,7 @@ class DriverTripCard extends StatelessWidget {
                                 currentDriver, // Driver data passed here
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Trip accepted successfully!")),
+                                const SnackBar(content: Text("Trip accepted successfully!")),
                               );
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -195,7 +195,7 @@ class DriverTripCard extends StatelessWidget {
                                 currentDriver, // Driver data passed here
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Trip rejected successfully!")),
+                                const SnackBar(content: Text("Trip rejected successfully!")),
                               );
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
