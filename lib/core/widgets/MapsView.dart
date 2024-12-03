@@ -24,6 +24,7 @@ class MapsView extends StatelessWidget {
       body: Stack(
         children: [
           GoogleMap(
+            
             initialCameraPosition: CameraPosition(target: _center, zoom: 13.0),
             myLocationEnabled: false,
             markers: markers,

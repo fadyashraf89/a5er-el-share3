@@ -29,7 +29,8 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController mobileController = TextEditingController();
   TextEditingController carPlateController = TextEditingController();
   TextEditingController driverLicenseController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController CarModelController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   Validators validators = Validators();
   @override
@@ -57,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 Center(
                     child:
-                    Image.asset("assets/images/default.png", height: 140)),
+                    Image.asset("assets/images/default.png", height: 120)),
                 const Text(
                   "Sign Up",
                   style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
@@ -214,13 +215,29 @@ class _SignUpPageState extends State<SignUpPage> {
                             const SizedBox(height: 10),
                             TextFormField(
                               validator: (value) {
+                                return validators.ValidateCarModel(value);
+                              },
+                              controller: CarModelController,
+                              decoration: InputDecoration(
+                                hintText: 'Car Model',
+                                hintStyle: const TextStyle(fontFamily: "Archivo"),
+                                prefixIcon: const Icon(Icons.car_repair),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+
+                            TextFormField(
+                              validator: (value) {
                                 return validators.ValidatePlateNumber(value);
                               },
                               controller: carPlateController,
                               decoration: InputDecoration(
                                 hintText: 'Car Plate Number',
                                 hintStyle: const TextStyle(fontFamily: "Archivo"),
-                                prefixIcon: const Icon(Icons.car_repair),
+                                prefixIcon: const Icon(Icons.numbers),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -335,6 +352,7 @@ class _SignUpPageState extends State<SignUpPage> {
               carPlateNumber: carPlateController.text,
               licenseNumber: driverLicenseController.text,
               name: nameController.text,
+              carModel: CarModelController.text,
               role: "Driver",
             );
             await Dstorage.addDriver(driver);
@@ -343,7 +361,8 @@ class _SignUpPageState extends State<SignUpPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const DriverHome()),
-            );          }
+            );
+          }
         }
       }
 

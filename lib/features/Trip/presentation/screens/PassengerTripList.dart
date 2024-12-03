@@ -57,7 +57,7 @@ class _PassengerTripListState extends State<PassengerTripList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const RoundedAppBar(
-        title: "Trips List",
+        title: "Trips History",
         height: 140,
         color: kDarkBlueColor,
       ),

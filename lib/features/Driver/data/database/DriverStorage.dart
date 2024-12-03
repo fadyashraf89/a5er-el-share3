@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
 import '../models/driver.dart';
 
@@ -15,6 +16,7 @@ class DriverStorage {
         'licenseNumber': driver.licenseNumber,
         'role': driver.role,
         'name': driver.name,
+        'carModel': driver.carModel
       });
       print("Driver Added");
     } catch (error) {
@@ -37,4 +39,5 @@ class DriverStorage {
       throw Exception("User data not found");
     }
   }
+
 }

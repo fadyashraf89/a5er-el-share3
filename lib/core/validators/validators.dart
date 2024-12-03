@@ -7,6 +7,13 @@ class Validators {
     return null;
   }
 
+  String? ValidateCarModel(String? value) {
+    if (value!.isEmpty) {
+      return 'Please Enter Your Car Model';
+    }
+    return null;
+  }
+
   String? ValidateMatchingPasswords(String? value, TextEditingController passwordController) {
     if (value != passwordController.text) {
       return 'Passwords do not match';
@@ -82,8 +89,7 @@ class Validators {
     );
   }
 
-  void ValidatePickUpAndDestination(TextEditingController pickupController,
-      TextEditingController destinationController, BuildContext context) {
+  void ValidatePickUpAndDestination(TextEditingController pickupController, TextEditingController destinationController, BuildContext context) {
     if (pickupController.text == destinationController.text) {
       ShowMessageDialog(context, "Pick up location and destination can't the same");
     }

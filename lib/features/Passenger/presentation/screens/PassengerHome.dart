@@ -35,7 +35,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   final Set<Marker> _markers = {};
   LatLng? _currentLocation;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final PassengerStorage _storage = PassengerStorage();
+  final PassengerStorage PStorage = PassengerStorage();
   final TripStorage TStorage = TripStorage();
 
   void _addMarker(LatLng position, String title, MarkerId markerId) {
@@ -234,17 +234,18 @@ class _PassengerHomeState extends State<PassengerHome> {
                                     .position;
 
                                 double distance = calculateDistance(pickupLocation, destinationLocation);
-                                Passenger passenger = await _storage.fetchPassengerData();
+                                Passenger passenger = await PStorage.fetchPassengerData();
 
                                 Trip trip = Trip(
                                   date: DateTime.now().toIso8601String(),
                                   time: TimeOfDay.now().format(context),
                                   FromLocation: pickUpController.text,
                                   ToDestination: destinationController.text,
-                                  Status: "Requested ⌛",
+                                  Status: "Requested",
                                   driver: null,
                                   passenger: passenger,
                                   distance: distance,
+                                  price: 0.0
                                 );
 
                                 await TStorage.addTrip([trip]);
@@ -459,7 +460,7 @@ class _PassengerHomeState extends State<PassengerHome> {
         backgroundColor: kDarkBlueColor,
         width: 250,
         child: FutureBuilder<Passenger>(
-          future: _storage.fetchPassengerData(),
+          future: PStorage.fetchPassengerData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

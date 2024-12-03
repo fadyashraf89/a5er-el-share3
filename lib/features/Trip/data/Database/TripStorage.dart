@@ -2,6 +2,7 @@ import 'package:a5er_elshare3/features/Trip/data/models/trip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
+import '../../../Driver/data/models/driver.dart';
 
 final User? currentUser = FirebaseAuth.instance.currentUser;
 final String? currentEmail = currentUser?.email;
@@ -65,30 +66,123 @@ class TripStorage {
     }
   }
 
-  Future<List<Trip>> fetchAllTrips() async {
+  Future<List<Trip>> fetchAllRequestedTrips() async {
     try {
       // Get all documents in the 'Trips' collection
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('Trips')
           .get();
 
-      List<Trip> allTrips = [];
+      List<Trip> requestedTrips = [];
 
       for (var doc in querySnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final List<dynamic> tripDataList = data['trips'] ?? [];
 
-        // Map each trip data to a Trip object and add it to the list
-        allTrips.addAll(
-          tripDataList.map((tripData) => Trip.fromMap(tripData as Map<String, dynamic>)),
-        );
+        // Filter trips by status 'requested'
+        for (var tripData in tripDataList) {
+          if (tripData['Status'] == 'Requested') {
+            requestedTrips.add(Trip.fromMap(tripData as Map<dynamic, dynamic>));
+          }
+        }
       }
 
-      return allTrips;
+      return requestedTrips;
     } catch (e) {
-      print("Error fetching trips for all users: $e");
+      print("Error fetching requested trips: $e");
       return [];
     }
   }
+
+  Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
+    try {
+      // Reference to the user's document in the Trips collection
+      DocumentReference userTripsDoc =
+      FirebaseFirestore.instance.collection('Trips').doc(userEmail);
+
+      // Fetch the document to get the current trips
+      DocumentSnapshot userDocSnapshot = await userTripsDoc.get();
+
+      if (!userDocSnapshot.exists) {
+        throw Exception("User document not found");
+      }
+
+      List<dynamic> tripsList = userDocSnapshot['trips'];
+
+      // Find the trip in the array
+      final tripIndex = tripsList.indexWhere((trip) => trip['Distance'] == tripData['Distance']);
+      if (tripIndex == -1) {
+        throw Exception("Trip not found");
+      }
+
+      // Extract the trip and remove it from the array
+      Map<String, dynamic> selectedTrip = tripsList[tripIndex];
+      tripsList.removeAt(tripIndex);
+
+      // Update the user's document to remove the trip
+      await userTripsDoc.update({'trips': tripsList});
+
+      // Modify trip data with status and driver details
+      selectedTrip['Status'] = "accepted";
+      selectedTrip['driver'] = driver.toMap();
+
+
+      // Add the updated trip to the AcceptedTrips collection
+      CollectionReference acceptedTripsCollection =
+      FirebaseFirestore.instance.collection('AcceptedTrips');
+      await acceptedTripsCollection.add(selectedTrip);
+
+      print("Trip accepted and moved to AcceptedTrips collection.");
+    } catch (e) {
+      print("Error accepting trip: $e");
+      throw Exception("Failed to accept trip: $e");
+    }
+  }
+
+  Future<void> RejectTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
+    try {
+      // Reference to the user's document in the Trips collection
+      DocumentReference userTripsDoc =
+      FirebaseFirestore.instance.collection('Trips').doc(userEmail);
+
+      // Fetch the document to get the current trips
+      DocumentSnapshot userDocSnapshot = await userTripsDoc.get();
+
+      if (!userDocSnapshot.exists) {
+        throw Exception("User document not found");
+      }
+
+      List<dynamic> tripsList = userDocSnapshot['trips'];
+
+      // Find the trip in the array
+      final tripIndex = tripsList.indexWhere((trip) => trip['Distance'] == tripData['Distance']);
+      if (tripIndex == -1) {
+        throw Exception("Trip not found");
+      }
+
+      // Extract the trip and remove it from the array
+      Map<String, dynamic> selectedTrip = tripsList[tripIndex];
+      tripsList.removeAt(tripIndex);
+
+      // Update the user's document to remove the trip
+      await userTripsDoc.update({'trips': tripsList});
+
+      // Modify trip data with status and driver details
+      selectedTrip['Status'] = "rejected";
+      selectedTrip['driver'] = driver.toMap();
+
+
+      // Add the updated trip to the AcceptedTrips collection
+      CollectionReference acceptedTripsCollection =
+      FirebaseFirestore.instance.collection('Rejected Trips');
+      await acceptedTripsCollection.add(selectedTrip);
+
+      print("Trip rejected and moved to Rejected Trips collection.");
+    } catch (e) {
+      print("Error rejecting trip: $e");
+      throw Exception("Failed to reject trip: $e");
+    }
+  }
+
 
 }

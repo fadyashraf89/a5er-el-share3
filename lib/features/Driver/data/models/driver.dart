@@ -2,12 +2,14 @@
 import '../../../../core/data/Models/User.dart';
 
 class Driver extends MyUser {
-  final String? carPlateNumber, licenseNumber;
+  final String? carPlateNumber, licenseNumber, carModel;
   Driver({
     email, password, mobileNumber, role, uid, name,
     this.carPlateNumber,
     this.licenseNumber,
+    this.carModel
   }) : super(
+    name: name,
     email: email,
     password: password,
     mobileNumber: mobileNumber,
@@ -21,10 +23,12 @@ class Driver extends MyUser {
         email: data['email'] as String?,
         mobileNumber: data['mobileNumber'] as String?,
         role: data['role'] as String?,
-        carPlateNumber: ['carPlateNumber'] as String? ,
-        licenseNumber: ['licenseNumber'] as String?,
+        carPlateNumber: data['carPlateNumber'] as String?,
+        licenseNumber: data['licenseNumber'] as String?,
+        carModel: data['carModel'] as String?
     );
   }
+
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,6 +38,7 @@ class Driver extends MyUser {
       'role': role,
       'carPlateNumber': carPlateNumber,
       'licenseNumber': licenseNumber,
+      'carModel': carModel
     };
   }
 }

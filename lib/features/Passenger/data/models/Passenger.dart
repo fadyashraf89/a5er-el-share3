@@ -19,6 +19,7 @@ class Passenger extends MyUser {
       role: data['role'] as String?
     );
   }
+
   Map<String, dynamic> toMap() {
     return {
       'name': name,
