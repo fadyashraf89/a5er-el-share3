@@ -1,9 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 class Validators {
-  String? ValidateMobileNumber(String? value) {
-    if (value!.isEmpty) {
+  Future<String?> ValidateMobileNumber(String? value) async {
+    if (value == null || value.isEmpty) {
       return 'Please Enter Your Mobile Number';
     }
+
+    String? result = await checkMobileNumberInCollections(value);
+
+    if (result != null) {
+      return result;
+    }
+
     return null;
   }
 
@@ -96,6 +104,36 @@ class Validators {
     else if (pickupController.text.isEmpty || destinationController.text.isEmpty){
       ShowMessageDialog(context, "Pick up location or destination can't be empty");
     }
+  }
+
+  Future<bool> isMobileNumberExists(String mobileNumber, String CollectionName) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection(CollectionName)
+          .where('mobileNumber', isEqualTo: mobileNumber)
+          .get();
+
+      // Check if any documents match the query
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking mobile number: $e');
+      return false;
+    }
+  }
+
+  Future<String?> checkMobileNumberInCollections(String mobileNumber) async {
+    try {
+      bool inPassengers = await isMobileNumberExists(mobileNumber, 'Passengers');
+      bool inDrivers = await isMobileNumberExists(mobileNumber, 'Drivers');
+
+      if (inPassengers || inDrivers) {
+        return 'Mobile number Already exists';
+      }
+    } catch (e) {
+      print('Error checking collections: $e');
+      return 'Error occurred while checking';
+    }
+    return null;
   }
 
 }

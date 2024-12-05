@@ -249,8 +249,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
                       // Mobile number input field
                       TextFormField(
+                        keyboardType: TextInputType.number,
                         validator: (value) {
-                          return validators.ValidateMobileNumber(value);
+                          if (value == null || value.isEmpty) {
+                            return 'Please Enter Your Mobile Number';
+                          }
+                          return null; // No synchronous errors
                         },
                         controller: mobileController,
                         decoration: InputDecoration(
@@ -317,6 +321,16 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> SignUp(BuildContext context) async {
     if (formKey.currentState!.validate()) {
+      // Asynchronous mobile number validation
+      String? mobileError = await validators.ValidateMobileNumber(mobileController.text);
+      if (mobileError != null) {
+        // Show error message if mobile number validation fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(mobileError), backgroundColor: Colors.red),
+        );
+        return; // Stop further execution if mobile number validation fails
+      }
+
       Authentication auth = Authentication();
       String message = await auth.registerWithEmailAndPassword(
         emailController.text,
@@ -370,10 +384,10 @@ class _SignUpPageState extends State<SignUpPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor:
-          message.contains('successful') ? Colors.green : Colors.red,
+          backgroundColor: message.contains('successful') ? Colors.green : Colors.red,
         ),
       );
     }
   }
+
 }
