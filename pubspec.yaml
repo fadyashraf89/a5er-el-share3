@@ -52,6 +52,7 @@ dependencies:
   permission_handler: ^10.4.0
   http:
   dio:
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   flutter_test:
