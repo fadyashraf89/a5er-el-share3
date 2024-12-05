@@ -1,4 +1,5 @@
-import '../../../../core/data/Models/User.dart';
+
+import '../../../../core/domain/Models/User.dart';
 
 class Passenger extends MyUser {
 

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
 import '../../../Driver/data/database/DriverStorage.dart';
-import '../../../Driver/data/models/driver.dart';
-import '../../data/models/trip.dart';
+import '../../../Driver/domain/models/driver.dart';
+import '../../domain/models/trip.dart';
 
 class DriverTripCard extends StatelessWidget {
   final Trip trip;

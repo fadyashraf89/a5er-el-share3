@@ -1,8 +1,8 @@
-import 'package:a5er_elshare3/features/Trip/data/models/trip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
-import '../../../Driver/data/models/driver.dart';
+import '../../../Driver/domain/models/driver.dart';
+import '../../domain/models/trip.dart';
 
 final User? currentUser = FirebaseAuth.instance.currentUser;
 final String? currentEmail = currentUser?.email;

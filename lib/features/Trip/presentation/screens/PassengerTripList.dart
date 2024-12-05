@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/Database/TripStorage.dart';
-import '../../data/models/trip.dart';
+import '../../domain/models/trip.dart';
 import '../widgets/PassengerTripCard.dart';
 
 class PassengerTripList extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
-import "../../data/models/trip.dart";
+import '../../domain/models/trip.dart';
 
 class PassengerTripCard extends StatelessWidget {
   final Trip trip;

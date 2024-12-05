@@ -3,11 +3,11 @@ import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
 import 'package:a5er_elshare3/features/Passenger/presentation/screens/PassengerHome.dart';
 import 'package:flutter/material.dart';
 
+import '../../../Driver/domain/models/driver.dart';
 import '../../../Driver/presentation/screens/DriverHome.dart';
 import '../../../Passenger/data/Database/PassengerStorage.dart';
-import '../../../Passenger/data/models/Passenger.dart';
+import '../../../Passenger/domain/models/Passenger.dart';
 import '../../data/Database/FirebaseAuthentication.dart';
-import '../../../Driver/data/models/driver.dart';
 import '../../../../core/utils/constants.dart';
 import 'login.dart';
 
@@ -19,18 +19,18 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  bool showPassword = false;
-  bool showConfirmPassword = false;
+  bool showPassword = false,
+       showConfirmPassword = false;
   IconData icon = Icons.visibility_off;
   String? selectedRole = 'Passenger';
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController carPlateController = TextEditingController();
-  TextEditingController driverLicenseController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController CarModelController = TextEditingController();
+  TextEditingController emailController = TextEditingController(),
+                        passwordController = TextEditingController(),
+                        confirmPasswordController = TextEditingController(),
+                        mobileController = TextEditingController(),
+                        carPlateController = TextEditingController(),
+                        driverLicenseController = TextEditingController(),
+                        nameController = TextEditingController(),
+                        CarModelController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   Validators validators = Validators();
   @override
@@ -41,6 +41,8 @@ class _SignUpPageState extends State<SignUpPage> {
     mobileController.dispose();
     carPlateController.dispose();
     driverLicenseController.dispose();
+    nameController.dispose();
+    CarModelController.dispose();
     super.dispose();
   }
 
@@ -57,9 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Center(
-                      child:
-                      Image.asset("assets/images/default.png", height: 70)),
+
                   const Text(
                     "Sign Up",
                     style: TextStyle(fontSize: 22, fontFamily: "Archivo"),

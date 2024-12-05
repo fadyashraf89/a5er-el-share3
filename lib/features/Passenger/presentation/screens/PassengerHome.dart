@@ -3,7 +3,6 @@ import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/core/widgets/MapsView.dart';
 import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
 import 'package:a5er_elshare3/features/Passenger/data/Database/PassengerStorage.dart';
-import 'package:a5er_elshare3/features/Passenger/data/models/Passenger.dart';
 import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
 import 'package:a5er_elshare3/features/Trip/presentation/screens/PassengerTripList.dart';
 import 'package:a5er_elshare3/features/Welcome/presentation/screens/Opening.dart';
@@ -16,7 +15,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:google_places_flutter_api/google_places_flutter_api.dart';
 import "../../../../core/utils/constants.dart";
-import '../../../Trip/data/models/trip.dart';
+import '../../../Trip/domain/models/trip.dart';
+import '../../domain/models/Passenger.dart';
 
 class PassengerHome extends StatefulWidget {
   const PassengerHome({Key? key}) : super(key: key);

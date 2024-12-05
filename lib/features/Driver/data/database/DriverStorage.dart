@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
-import '../models/driver.dart';
+import '../../domain/models/driver.dart';
 
 class DriverStorage {
   Future<void> addDriver(Driver driver) async {

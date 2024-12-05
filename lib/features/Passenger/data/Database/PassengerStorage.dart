@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
-import '../models/Passenger.dart';
+import '../../domain/models/Passenger.dart';
 
 class PassengerStorage {
   Future<void> addPassenger(Passenger passenger) async {

@@ -1,5 +1,5 @@
-import '../../../Driver/data/models/driver.dart';
-import '../../../Passenger/data/models/Passenger.dart';
+import '../../../Driver/domain/models/driver.dart';
+import '../../../Passenger/domain/models/Passenger.dart';
 
 class Trip {
   final String? date, time, FromLocation, ToDestination;

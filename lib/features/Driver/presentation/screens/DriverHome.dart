@@ -1,5 +1,4 @@
 import "package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart";
-import "package:a5er_elshare3/features/Driver/data/models/driver.dart";
 import "package:a5er_elshare3/features/Trip/presentation/screens/DriverTripList.dart";
 import "package:flutter/material.dart";
 
@@ -7,6 +6,7 @@ import "../../../../core/utils/constants.dart";
 import "../../../Authentication/data/Database/FirebaseAuthentication.dart";
 import "../../../Trip/data/Database/TripStorage.dart";
 import "../../../Welcome/presentation/screens/Opening.dart";
+import "../../domain/models/driver.dart";
 
 class DriverHome extends StatefulWidget {
   const DriverHome({super.key});

@@ -1,5 +1,6 @@
 
-import '../../../../core/data/Models/User.dart';
+
+import '../../../../core/domain/Models/User.dart';
 
 class Driver extends MyUser {
   final String? carPlateNumber, licenseNumber, carModel;

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
-import '../../../Driver/data/models/driver.dart';
-import '../../data/models/trip.dart';
+import '../../../Driver/domain/models/driver.dart';
+import '../../domain/models/trip.dart';
 import '../widgets/DriverTripCard.dart';
 
 class DriverTripList extends StatefulWidget {
