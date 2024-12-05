@@ -49,269 +49,275 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Center(
-                    child:
-                    Image.asset("assets/images/default.png", height: 120)),
-                const Text(
-                  "Sign Up",
-                  style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
-                ),
-                const SizedBox(height: 10),
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      // Email input field
-                      TextFormField(
-                        validator: (value) {
-                          return validators.ValidateEmail(value);
-                        },
-                        controller: emailController,
-                        decoration: InputDecoration(
-                          hintStyle: const TextStyle(fontFamily: "Archivo"),
-                          hintText: 'Email',
-                          prefixIcon: const Icon(Icons.email),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Password input field
-                      TextFormField(
-                        validator: (value) {
-                          return validators.ValidatePassword(value);
-                        },
-                        controller: passwordController,
-                        obscureText: !showPassword,
-                        decoration: InputDecoration(
-                          hintStyle: const TextStyle(fontFamily: "Archivo"),
-                          hintText: 'Password',
-                          prefixIcon: const Icon(Icons.password),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                showPassword = !showPassword;
-                                icon = showPassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off;
-                              });
-                            },
-                            icon: Icon(icon),
+        child: Container(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Center(
+                      child:
+                      Image.asset("assets/images/default.png", height: 70)),
+                  const Text(
+                    "Sign Up",
+                    style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
+                  ),
+                  const SizedBox(height: 10),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        // Email input field
+                        TextFormField(
+                          validator: (value) {
+                            return validators.ValidateEmail(value);
+                          },
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            hintStyle: const TextStyle(fontFamily: "Archivo"),
+                            hintText: 'Email',
+                            prefixIcon: const Icon(Icons.email),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
                           ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
                         ),
-                      ),
-                      const SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
-                      // Confirm password input field
-                      TextFormField(
-                        validator: (value) {
-                          return validators.ValidateMatchingPasswords(
-                              value, passwordController);
-                        },
-                        controller: confirmPasswordController,
-                        obscureText: !showConfirmPassword,
-                        decoration: InputDecoration(
-                          hintText: 'Confirm Password',
-                          hintStyle: const TextStyle(fontFamily: "Archivo"),
-                          prefixIcon: const Icon(Icons.password),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                showConfirmPassword = !showConfirmPassword;
-                              });
-                            },
-                            icon: Icon(showConfirmPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                          ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Dropdown to select role
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2, // Adjust flex for width distribution
-                            child: DropdownButtonFormField<String>(
-                              value: selectedRole,
-                              hint: const Text('Select Role'),
-                              onChanged: (value) {
+                        // Password input field
+                        TextFormField(
+                          validator: (value) {
+                            return validators.ValidatePassword(value);
+                          },
+                          controller: passwordController,
+                          obscureText: !showPassword,
+                          decoration: InputDecoration(
+                            hintStyle: const TextStyle(fontFamily: "Archivo"),
+                            hintText: 'Password',
+                            prefixIcon: const Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              onPressed: () {
                                 setState(() {
-                                  selectedRole = value;
+                                  showPassword = !showPassword;
+                                  icon = showPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off;
                                 });
                               },
-                              items: const [
-                                DropdownMenuItem(
-                                  value: 'Driver',
-                                  child: Text(
-                                    'Driver',
-                                    style: TextStyle(fontFamily: "Archivo"),
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'Passenger',
-                                  child: Text(
-                                    'Passenger',
-                                    style: TextStyle(fontFamily: "Archivo"),
-                                  ),
-                                ),
-                              ],
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
+                              icon: Icon(icon),
                             ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
                           ),
-                          const SizedBox(width: 10), // Add some spacing between fields
-                          Expanded(
-                            flex: 3, // Adjust flex for width distribution
-                            child: TextFormField(
-                              validator: (value) => validators.ValidateName(value),
-                              controller: nameController,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.person),
-                                hintText: "Name",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      // Additional fields for Driver
-                      if (selectedRole == 'Driver')
-                        Column(
-                          children: [
-                            TextFormField(
-                              validator: (value) {
-                                return validators.ValidateLicenseNumber(value);
-                              },
-                              controller: driverLicenseController,
-                              decoration: InputDecoration(
-                                hintStyle: const TextStyle(fontFamily: "Archivo"),
-                                hintText: 'Driver License Number',
-                                prefixIcon: const Icon(Icons.card_travel),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                              validator: (value) {
-                                return validators.ValidateCarModel(value);
-                              },
-                              controller: CarModelController,
-                              decoration: InputDecoration(
-                                hintText: 'Car Model',
-                                hintStyle: const TextStyle(fontFamily: "Archivo"),
-                                prefixIcon: const Icon(Icons.car_repair),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
+                        ),
+                        const SizedBox(height: 20),
 
-                            TextFormField(
-                              validator: (value) {
-                                return validators.ValidatePlateNumber(value);
+                        // Confirm password input field
+                        TextFormField(
+                          validator: (value) {
+                            return validators.ValidateMatchingPasswords(
+                                value, passwordController);
+                          },
+                          controller: confirmPasswordController,
+                          obscureText: !showConfirmPassword,
+                          decoration: InputDecoration(
+                            hintText: 'Confirm Password',
+                            hintStyle: const TextStyle(fontFamily: "Archivo"),
+                            prefixIcon: const Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  showConfirmPassword = !showConfirmPassword;
+                                });
                               },
-                              controller: carPlateController,
-                              decoration: InputDecoration(
-                                hintText: 'Car Plate Number',
-                                hintStyle: const TextStyle(fontFamily: "Archivo"),
-                                prefixIcon: const Icon(Icons.numbers),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                              icon: Icon(showConfirmPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Dropdown to select role
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2, // Adjust flex for width distribution
+                              child: DropdownButtonFormField<String>(
+                                value: selectedRole,
+                                hint: const Text('Select Role'),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedRole = value;
+                                  });
+                                },
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'Driver',
+                                    child: Text(
+                                      'Driver',
+                                      style: TextStyle(fontFamily: "Archivo"),
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Passenger',
+                                    child: Text(
+                                      'Passenger',
+                                      style: TextStyle(fontFamily: "Archivo"),
+                                    ),
+                                  ),
+                                ],
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10), // Add some spacing between fields
+                            Expanded(
+                              flex: 3, // Adjust flex for width distribution
+                              child: TextFormField(
+                                validator: (value) => validators.ValidateName(value),
+                                controller: nameController,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.person),
+                                  hintText: "Name",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      const SizedBox(height: 20),
+                        const SizedBox(height: 10),
+                        // Additional fields for Driver
+                        if (selectedRole == 'Driver')
+                          Column(
+                            children: [
+                              TextFormField(
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter Your License Number';
+                                  }
+                                  return null; // No synchronous errors
+                                },
+                                controller: driverLicenseController,
+                                decoration: InputDecoration(
+                                  hintStyle: const TextStyle(fontFamily: "Archivo"),
+                                  hintText: 'Driver License Number',
+                                  prefixIcon: const Icon(Icons.card_travel),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                validator: (value) {
+                                  return validators.ValidateCarModel(value);
+                                },
+                                controller: CarModelController,
+                                decoration: InputDecoration(
+                                  hintText: 'Car Model',
+                                  hintStyle: const TextStyle(fontFamily: "Archivo"),
+                                  prefixIcon: const Icon(Icons.car_repair),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
 
-                      // Mobile number input field
-                      TextFormField(
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Enter Your Mobile Number';
-                          }
-                          return null; // No synchronous errors
-                        },
-                        controller: mobileController,
-                        decoration: InputDecoration(
-                          hintStyle: const TextStyle(fontFamily: "Archivo"),
-                          hintText: 'Mobile Number',
-                          prefixIcon: const Icon(Icons.phone),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            " Already have an account ?",
-                            style: TextStyle(fontFamily: "Archivo"),
+                              TextFormField(
+                                validator: (value) {
+                                  return validators.ValidatePlateNumber(value);
+                                },
+                                controller: carPlateController,
+                                decoration: InputDecoration(
+                                  hintText: 'Car Plate Number',
+                                  hintStyle: const TextStyle(fontFamily: "Archivo"),
+                                  prefixIcon: const Icon(Icons.numbers),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const SignInPage()),
-                              );
-                            },
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Archivo"),
-                            ),
-                          )
-                        ],
-                      ),
-                      // Sign Up button
-                      SizedBox(
-                        height: 45,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                            MaterialStateProperty.all(kDarkBlueColor),
-                          ),
-                          onPressed: () async {
-                            await SignUp(context);
+                        const SizedBox(height: 20),
+
+                        // Mobile number input field
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter Your Mobile Number';
+                            }
+                            return null; // No synchronous errors
                           },
-                          child: const Text(
-                            "Sign Up",
-                            style: TextStyle(
-                                color: Colors.white, fontFamily: "Archivo"),
+                          controller: mobileController,
+                          decoration: InputDecoration(
+                            hintStyle: const TextStyle(fontFamily: "Archivo"),
+                            hintText: 'Mobile Number',
+                            prefixIcon: const Icon(Icons.phone),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
                           ),
                         ),
-                      ),
-                    ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              " Already have an account ?",
+                              style: TextStyle(fontFamily: "Archivo"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SignInPage()),
+                                );
+                              },
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    color: Colors.black.withOpacity(0.8),
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Archivo"),
+                              ),
+                            )
+                          ],
+                        ),
+                        // Sign Up button
+                        SizedBox(
+                          height: 45,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                              MaterialStateProperty.all(kDarkBlueColor),
+                            ),
+                            onPressed: () async {
+                              await SignUp(context);
+                            },
+                            child: const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                  color: Colors.white, fontFamily: "Archivo"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -327,6 +333,14 @@ class _SignUpPageState extends State<SignUpPage> {
         // Show error message if mobile number validation fails
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(mobileError), backgroundColor: Colors.red),
+        );
+        return; // Stop further execution if mobile number validation fails
+      }
+      String? LicenseError = await validators.ValidateLicenseNumber(driverLicenseController.text);
+      if (LicenseError != null) {
+        // Show error message if mobile number validation fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(LicenseError), backgroundColor: Colors.red),
         );
         return; // Stop further execution if mobile number validation fails
       }

@@ -47,10 +47,16 @@ class Validators {
     return null;
   }
 
-  String? ValidateLicenseNumber(String? value) {
+  Future<String?> ValidateLicenseNumber(String? value) async {
     if (value!.isEmpty) {
       return 'Please Enter Your License Number';
     }
+    String? result = await checkLicenseNumberInCollections(value);
+
+    if (result != null) {
+      return result;
+    }
+
     return null;
   }
 
@@ -121,6 +127,21 @@ class Validators {
     }
   }
 
+  Future<bool> isLicenseNumberExists(String LicenseNumber) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('Drivers')
+          .where('licenseNumber', isEqualTo: LicenseNumber)
+          .get();
+
+      // Check if any documents match the query
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error checking license number: $e');
+      return false;
+    }
+  }
+
   Future<String?> checkMobileNumberInCollections(String mobileNumber) async {
     try {
       bool inPassengers = await isMobileNumberExists(mobileNumber, 'Passengers');
@@ -128,6 +149,20 @@ class Validators {
 
       if (inPassengers || inDrivers) {
         return 'Mobile number Already exists';
+      }
+    } catch (e) {
+      print('Error checking collections: $e');
+      return 'Error occurred while checking';
+    }
+    return null;
+  }
+
+  Future<String?> checkLicenseNumberInCollections(String licenseNumber) async {
+    try {
+      bool inDrivers = await isLicenseNumberExists(licenseNumber);
+
+      if (inDrivers) {
+        return 'License number Already exists';
       }
     } catch (e) {
       print('Error checking collections: $e');
