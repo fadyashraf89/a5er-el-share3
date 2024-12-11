@@ -184,5 +184,25 @@ class TripStorage {
     }
   }
 
+  Stream<List<Trip>> getRequestedTripsStream() => FirebaseFirestore.instance
+      .collection('Trips')
+      .snapshots()
+      .map((snapshot) {
+    List<Trip> requestedTrips = [];
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
+      final List<dynamic> tripDataList = data['trips'] ?? [];
+
+      // Filter trips by status 'requested'
+      for (var tripData in tripDataList) {
+        if (tripData['Status'] == 'Requested') {
+          requestedTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
+        }
+      }
+
+    }
+    return requestedTrips;
+  });
+
 
 }

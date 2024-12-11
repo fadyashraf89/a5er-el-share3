@@ -138,7 +138,7 @@ class FirebaseTripStorage extends TripStorage {
       FirebaseFirestore.instance.collection('AcceptedTrips');
       await acceptedTripsCollection.add(selectedTrip);
 
-      print("Trip accepted and moved to AcceptedTrips collection.");
+      print("Trip accepted and moved to Accepted Trips collection.");
     } catch (e) {
       print("Error accepting trip: $e");
       throw Exception("Failed to accept trip: $e");

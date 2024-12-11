@@ -1,3 +1,4 @@
+import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -17,30 +18,11 @@ class DriverTripList extends StatefulWidget {
 }
 
 class _DriverTripListState extends State<DriverTripList> {
-
+TripStorage TStorage = TripStorage();
   @override
   void initState() {
     super.initState();
   }
-  Stream<List<Trip>> _getRequestedTripsStream() => FirebaseFirestore.instance
-      .collection('Trips')
-      .snapshots()
-      .map((snapshot) {
-    List<Trip> requestedTrips = [];
-    for (var doc in snapshot.docs) {
-      final data = doc.data();
-      final List<dynamic> tripDataList = data['trips'] ?? [];
-
-      // Filter trips by status 'requested'
-      for (var tripData in tripDataList) {
-        if (tripData['Status'] == 'Requested') {
-          requestedTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
-        }
-      }
-
-    }
-    return requestedTrips;
-  });
 
 
   @override
@@ -52,7 +34,7 @@ class _DriverTripListState extends State<DriverTripList> {
         color: kDarkBlueColor,
       ),
       body: StreamBuilder<List<Trip>>(
-        stream: _getRequestedTripsStream(),  // Listen to the stream of requested trips
+        stream: TStorage.getRequestedTripsStream(),  // Listen to the stream of requested trips
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

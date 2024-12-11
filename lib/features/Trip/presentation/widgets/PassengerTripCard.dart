@@ -82,12 +82,9 @@ class PassengerTripCard extends StatelessWidget {
                         FutureBuilder<Passenger>(
                           future: PStorage.fetchPassengerData(), // Replace with your actual async method to fetch the passenger's name
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const CircularProgressIndicator(); // Show a loading spinner while waiting
-                            } else if (snapshot.hasError) {
+                            if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             } else {
-                              print(snapshot.data?.name);
                               // If the data is fetched successfully, show the name
                               return Text(
                                 'Passenger: ${snapshot.data?.name ?? "N/A"}',

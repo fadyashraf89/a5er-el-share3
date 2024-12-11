@@ -112,7 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               const SizedBox(width: 10),
                               Expanded(
                                 flex: 3,
-                                child: buildTextFormField(controller: nameController, hintText: "Name", icon: Icons.person),
+                                child: buildTextFormField(controller: nameController, hintText: "Name", icon: Icons.person, validator: validators.ValidateName),
                               ),
                             ],
                           ),
