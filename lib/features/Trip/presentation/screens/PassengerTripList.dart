@@ -1,57 +1,14 @@
 import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:a5er_elshare3/core/widgets/RoundedAppBar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:a5er_elshare3/features/Trip/data/Database/FirebaseTripStorage.dart';
+import 'package:a5er_elshare3/features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/Database/TripStorage.dart';
-import '../../domain/models/trip.dart';
 import '../widgets/PassengerTripCard.dart';
 
-class PassengerTripList extends StatefulWidget {
+class PassengerTripList extends StatelessWidget {
   const PassengerTripList({super.key});
-
-  @override
-  State<PassengerTripList> createState() => _PassengerTripListState();
-}
-
-class _PassengerTripListState extends State<PassengerTripList> {
-  List<Trip> _trips = [];
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchTrips();
-  }
-
-  Future<void> _fetchTrips() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final trips = await TripStorage().fetchTripsForLoggedInUser();
-      setState(() {
-        _trips = trips;
-        _isLoading = false;
-      });
-      print('Fetched Trips: $_trips');
-    } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error fetching trips: ${e.message}'),
-        ),
-      );
-    } catch (e) {
-      // Catch other general exceptions and provide generic error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('An unexpected error occurred. Please try again later.'),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,25 +18,46 @@ class _PassengerTripListState extends State<PassengerTripList> {
         height: 140,
         color: kDarkBlueColor,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _trips.isEmpty
-              ? const Center(
-                  child:
-                      Text('No trips found.')) // Display message for no trips
-              : Padding(
+      body: BlocProvider(
+        create: (context) => TripCubit(tripStorage: FirebaseTripStorage())
+          ..fetchTripsForLoggedInUser(), // Initiates fetching of trips
+        child: BlocBuilder<TripCubit, TripState>(
+          builder: (context, state) {
+            if (state is TripLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is TripDataFetched) {
+              final trips = state.trips;
+
+              if (trips.isEmpty) {
+                return const Center(child: Text('No trips found.'));
+              }
+
+              return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListView.builder(
-                    itemCount: _trips.length,
-                    itemBuilder: (context, index) {
-                      final trip = _trips[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: PassengerTripCard(trip: trip),
-                      );
-                    },
-                  ),
-              ),
+                  itemCount: trips.length,
+                  itemBuilder: (context, index) {
+                    final trip = trips[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: PassengerTripCard(trip: trip),
+                    );
+                  },
+                ),
+              );
+            } else if (state is TripError) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              );
+            }
+
+            return const Center(child: Text('Something went wrong.'));
+          },
+        ),
+      ),
     );
   }
 }

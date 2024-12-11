@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../Passenger/presentation/screens/PassengerHome.dart';
-import 'Opening.dart'; // Fallback if no user is signed in
+import 'Opening.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

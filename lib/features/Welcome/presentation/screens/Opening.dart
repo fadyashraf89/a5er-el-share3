@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
-import '../../../Authentication/presentation/screens/login.dart';
-import '../../../Authentication/presentation/screens/signup.dart';
+import '../../../Login/presentation/screens/login.dart';
+import '../../../SignUp/presentation/screens/signup.dart';
 
 class Opening extends StatefulWidget {
   const Opening({super.key});

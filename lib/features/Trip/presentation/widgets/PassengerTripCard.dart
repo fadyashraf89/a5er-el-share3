@@ -1,12 +1,17 @@
+import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
+import '../../../Passenger/data/Database/FirebasePassengerStorage.dart';
+import '../../../Passenger/domain/models/Passenger.dart';
 import '../../domain/models/trip.dart';
 
 class PassengerTripCard extends StatelessWidget {
   final Trip trip;
 
-  const PassengerTripCard({Key? key, required this.trip}) : super(key: key);
+  PassengerTripCard({Key? key, required this.trip}) : super(key: key);
+  Authentication auth = Authentication();
+  final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +79,24 @@ class PassengerTripCard extends StatelessWidget {
                       children: [
                         const Icon(Icons.person, color: Colors.green),
                         const SizedBox(width: 10),
-                        Text(
-                          'Passenger: ${trip.passenger?.name ?? "N/A"}',
-                          style: const TextStyle(fontSize: 16),
+                        FutureBuilder<Passenger>(
+                          future: PStorage.fetchPassengerData(), // Replace with your actual async method to fetch the passenger's name
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator(); // Show a loading spinner while waiting
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              print(snapshot.data?.name);
+                              // If the data is fetched successfully, show the name
+                              return Text(
+                                'Passenger: ${snapshot.data?.name ?? "N/A"}',
+                                style: const TextStyle(fontSize: 16),
+                              );
+                            }
+                          },
                         ),
+
                       ],
                     ),
                     const SizedBox(height: 10),

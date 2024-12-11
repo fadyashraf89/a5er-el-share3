@@ -1,11 +1,11 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
-import 'package:a5er_elshare3/features/Authentication/presentation/screens/signup.dart';
+import 'package:a5er_elshare3/features/Login/presentation/cubit/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import '../../../Driver/presentation/screens/DriverHome.dart';
 import '../../../Passenger/presentation/screens/PassengerHome.dart';
 import '../../../../core/utils/constants.dart';
-import '../cubits/AuthenticationCubit/auth_cubit.dart';
-import 'ForgotPassword.dart';
+import '../../../SignUp/presentation/screens/signup.dart';
+import '../../../Authentication/presentation/screens/ForgotPassword.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
@@ -35,16 +35,16 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-  create: (context) => AuthCubit(),
+  create: (context) => LoginCubit(),
   child: Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: BlocConsumer<AuthCubit, AuthState>(
+            child: BlocConsumer<LoginCubit, LoginState>(
               listener: (context, state) {
-                if (state is AuthLoading) {
+                if (state is LoginLoading) {
                   showDialog(
                     context: context,
                     barrierDismissible: false,
@@ -52,7 +52,7 @@ class _SignInPageState extends State<SignInPage> {
                       color: Colors.white,
                     )),
                   );
-                } else if (state is AuthSuccess) {
+                } else if (state is LoginSuccess) {
                   Navigator.of(context).pop(); // Dismiss loading dialog
 
                   // Navigate based on role
@@ -67,7 +67,7 @@ class _SignInPageState extends State<SignInPage> {
                       MaterialPageRoute(builder: (context) => const DriverHome()),
                     );
                   }
-                } else if (state is AuthFailure) {
+                } else if (state is LoginFailure) {
                   Navigator.of(context).pop(); // Dismiss loading dialog
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -180,7 +180,7 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
-                                  context.read<AuthCubit>().signIn(
+                                  context.read<LoginCubit>().signIn(
                                     email: emailController.text.trim(),
                                     password: passwordController.text.trim(),
                                   );
