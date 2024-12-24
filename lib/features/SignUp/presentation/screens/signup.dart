@@ -46,7 +46,6 @@ class _SignUpPageState extends State<SignUpPage> {
     return BlocProvider(
       create: (context) => SignupCubit(),
       child: Scaffold(
-        backgroundColor: Colors.white,
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
@@ -274,7 +273,11 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: kDarkBlueColor))
+
       ),
     );
   }
@@ -328,7 +331,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget buildDriverFields() {
     return Column(
       children: [
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         buildTextFormField(
           controller: driverLicenseController,
           hintText: 'Driver License Number',

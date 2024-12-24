@@ -41,4 +41,20 @@ class FirebaseDriverStorage extends DriverStorage {
       throw Exception("User data not found");
     }
   }
+  @override
+  Future<void> updateDriverData(Map<String, dynamic> updatedData) async {
+    final user = await authentication.getCurrentUser();
+    if (user == null) throw Exception("User not logged in");
+
+    try {
+      await firestore
+          .collection('Drivers')
+          .doc(user.uid)
+          .update(updatedData); // Use Firestore's `update` method
+      print("Driver Data Updated Successfully");
+    } catch (error) {
+      print("Failed to update driver: $error");
+      throw Exception("Failed to update driver: $error");
+    }
+  }
 }

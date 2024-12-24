@@ -6,14 +6,14 @@ import '../../../../core/utils/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
 
 
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key});
 
   @override
-  State<ForgotPassword> createState() => _ForgotPasswordState();
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ResetPasswordState extends State<ResetPassword> {
   TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   Validators validators = Validators();
@@ -22,7 +22,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffFDFDFF),
-      appBar: const RoundedAppBar(height: 150, title: "Forgot Password", color: kDarkBlueColor,),
+      appBar: const RoundedAppBar(height: 150, title: "Reset Password", color: kDarkBlueColor,),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(

@@ -2,7 +2,7 @@ import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
-import '../../../Driver/data/database/DriverStorage.dart';
+import '../../../Driver/data/database/FirebaseDriverStorage.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 
@@ -149,7 +149,7 @@ class DriverTripCard extends StatelessWidget {
                       children: [
                         ElevatedButton.icon(
                           onPressed: () async {
-                            Driver? currentDriver = await DriverStorage().fetchDriverData();
+                            Driver? currentDriver = await FirebaseDriverStorage().fetchDriverData();
 
                             try {
                               // Pass the driver data here
@@ -185,7 +185,7 @@ class DriverTripCard extends StatelessWidget {
                         ),
                         ElevatedButton.icon(
                           onPressed: () async {
-                            Driver? currentDriver = await DriverStorage().fetchDriverData();
+                            Driver? currentDriver = await FirebaseDriverStorage().fetchDriverData();
 
                             try {
                               // Pass the driver data here

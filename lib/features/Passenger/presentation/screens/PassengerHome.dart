@@ -1,8 +1,6 @@
-import 'dart:math';
 import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
-import 'package:a5er_elshare3/features/Passenger/data/Database/PassengerStorage.dart';
-import 'package:a5er_elshare3/features/Trip/data/Database/FirebaseTripStorage.dart';
+import 'package:a5er_elshare3/features/Passenger/presentation/screens/PassengerProfile.dart';
 import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
 import 'package:a5er_elshare3/features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'package:a5er_elshare3/features/Trip/presentation/screens/PassengerTripList.dart';
@@ -11,15 +9,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_maps_webservices/places.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:google_places_flutter_api/google_places_flutter_api.dart';
 import "../../../../core/utils/constants.dart";
+import '../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 import '../../../GoogleMaps/Presentation/screens/MapsView.dart';
 import '../../../Trip/domain/models/trip.dart';
+import '../../data/Database/FirebasePassengerStorage.dart';
 import '../../domain/models/Passenger.dart';
+import '../cubits/PassengerCubit/passenger_cubit.dart';
 
 class PassengerHome extends StatefulWidget {
   const PassengerHome({Key? key}) : super(key: key);
@@ -34,102 +35,13 @@ class _PassengerHomeState extends State<PassengerHome> {
   Validators validators = Validators();
   Authentication authentication = Authentication();
   final formKey = GlobalKey<FormState>();
-  GoogleMapController? _mapController;
-  final Set<Marker> _markers = {};
-  LatLng? _currentLocation;
+  Set<Marker> _markers = {};
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final PassengerStorage PStorage = PassengerStorage();
+  final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
   final TripStorage TStorage = TripStorage();
-
-  void _addMarker(LatLng position, String title, MarkerId markerId) {
-    setState(() {
-      // Remove any existing marker with the same ID (optional)
-      _markers.removeWhere((marker) => marker.markerId == markerId);
-
-      _markers.add(
-        Marker(
-          markerId: markerId,
-          position: position,
-          infoWindow: InfoWindow(title: title),
-        ),
-      );
-    });
-  }
-
-  Future<void> _getCurrentLocation({bool isPickup = true}) async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location services are disabled.')),
-      );
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permissions are denied.')),
-        );
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Location permissions are permanently denied.')),
-      );
-      return;
-    }
-
-    try {
-      // Get the current position
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      LatLng newLocation = LatLng(position.latitude, position.longitude);
-
-      // Reverse geocode to get the location name
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
-      String locationName = placemarks.isNotEmpty
-          ? "${placemarks.first.street}, ${placemarks.first.locality}"
-          : "Unknown Location";
-
-      setState(() {
-        // Remove any existing marker for pickup or destination based on isPickup
-        _markers.removeWhere((marker) =>
-        (marker.markerId == const MarkerId('pickup') && isPickup) ||
-            (marker.markerId == const MarkerId('destination') && !isPickup));
-
-        _currentLocation = newLocation;
-
-        // Add a marker using _addMarker with the appropriate MarkerId
-        MarkerId markerId =
-        isPickup ? const MarkerId('pickup') : const MarkerId('destination');
-        _addMarker(newLocation, locationName, markerId);
-
-        // Update the map camera
-        _mapController?.animateCamera(
-          CameraUpdate.newLatLngZoom(newLocation, 16.0),
-        );
-
-        // Update the text field based on the parameter
-        if (isPickup) {
-          pickUpController.text = locationName;
-        } else {
-          destinationController.text = locationName;
-        }
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to get location: $e')),
-      );
-    }
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _showTripDetailsSheet(BuildContext context) {
@@ -144,165 +56,188 @@ class _PassengerHomeState extends State<PassengerHome> {
       builder: (context) {
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
-          child: BlocProvider(
-            create: (context) => TripCubit(tripStorage: FirebaseTripStorage()),
-            child: BlocListener<TripCubit, TripState>(
-              listener: (context, state) {
-                if (state is TripRequestSuccess) {
-                  _showDialog(
-                    context,
-                    title: "Success ✅",
-                    content: state.message,
-                  );
-                } else if (state is TripError) {
-                  _showDialog(
-                    context,
-                    title: "Error ❌",
-                    content: state.message,
-                  );
-                }
-              },
-              child: DraggableScrollableSheet(
-                initialChildSize: 0.5,
-                minChildSize: 0.2,
-                maxChildSize: 0.9,
-                expand: false,
-                builder: (context, scrollController) {
-                  return SingleChildScrollView(
-                    controller: scrollController,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Form(
-                        key: formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Container(
-                                height: 5,
-                                width: 50,
-                                margin: const EdgeInsets.only(bottom: 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[400],
-                                  borderRadius: BorderRadius.circular(10),
+          child: BlocConsumer<TripCubit, TripState>(listener: (_, state) {
+            if (state is TripRequestSuccess) {
+              _showDialog(
+                context,
+                title: "Success ✅",
+                content: state.message,
+              );
+            } else if (state is TripError) {
+              _showDialog(
+                context,
+                title: "Error ❌",
+                content: state.message,
+              );
+            }
+          }, builder: (context, state) {
+            return DraggableScrollableSheet(
+              initialChildSize: 0.5,
+              minChildSize: 0.2,
+              maxChildSize: 0.9,
+              expand: false,
+              builder: (context, scrollController) {
+                return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              height: 5,
+                              width: 50,
+                              margin: const EdgeInsets.only(bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            "Trip Details",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: "Archivo",
+                              color: kDarkBlueColor,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          _buildPlaceSearchField(
+                            "Enter Pick-Up Point",
+                            Icons.pin_drop,
+                            pickUpController,
+                            context,
+                            isPickup: true,
+                          ),
+                          const SizedBox(height: 15),
+                          _buildPlaceSearchField(
+                            "Enter Destination",
+                            Icons.map_outlined,
+                            destinationController,
+                            context,
+                            isPickup: false,
+                          ),
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                print(
+                                    "pickup location: ${pickUpController.text} \n "
+                                    "destination location: ${destinationController.text}");
+                                if (pickUpController.text.isEmpty ||
+                                    destinationController.text.isEmpty) {
+                                  _showDialog(
+                                    context,
+                                    title: "Error ❌",
+                                    content: "Both fields are required.",
+                                  );
+                                  return;
+                                }
+
+                                if (pickUpController.text ==
+                                    destinationController.text) {
+                                  _showDialog(
+                                    context,
+                                    title: "Error ❌",
+                                    content:
+                                        "Pickup and Destination cannot be the same.",
+                                  );
+                                  return;
+                                }
+
+                                if (!formKey.currentState!.validate()) {
+                                  _showDialog(
+                                    context,
+                                    title: "Error ❌",
+                                    content: "Please correct the errors.",
+                                  );
+                                  return;
+                                }
+
+                                // Trigger the Cubit to add a trip
+                                try {
+                                  final currentState = context
+                                      .read<MapsCubit>()
+                                      .state as MapsLoaded;
+                                  final pickupMarker = currentState.markers
+                                      .firstWhere(
+                                          (marker) =>
+                                              marker.markerId ==
+                                              const MarkerId('pickup'),
+                                          orElse: () => throw Exception(
+                                              "Pickup location not set!"));
+
+                                  final destinationMarker = currentState.markers
+                                      .firstWhere(
+                                          (marker) =>
+                                              marker.markerId ==
+                                              const MarkerId('destination'),
+                                          orElse: () => throw Exception(
+                                              "Destination location not set!"));
+
+                                  LatLng pickupLocation = pickupMarker.position;
+                                  LatLng destinationLocation =
+                                      destinationMarker.position;
+
+                                  double distance = calculateDistance(
+                                      pickupLocation, destinationLocation);
+                                  Passenger passenger =
+                                      await PStorage.fetchPassengerData();
+
+                                  Trip trip = Trip(
+                                      date: DateTime.now().toIso8601String(),
+                                      time: TimeOfDay.now().format(context),
+                                      FromLocation: pickUpController.text,
+                                      ToDestination: destinationController.text,
+                                      Status: "Requested",
+                                      driver: null,
+                                      passenger: passenger,
+                                      distance: distance,
+                                      price: 0.0);
+
+                                  context.read<TripCubit>().addTrips([trip]);
+                                } catch (e) {
+                                  _showDialog(
+                                    context,
+                                    title: "Error ❌",
+                                    content: "Error sending request.",
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: kDarkBlueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                            ),
-                            const Text(
-                              "Trip Details",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                fontFamily: "Archivo",
-                                color: kDarkBlueColor,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            _buildPlaceSearchField(
-                              "Enter Pick-Up Point",
-                              Icons.pin_drop,
-                              isPickup: true,
-                            ),
-                            const SizedBox(height: 15),
-                            _buildPlaceSearchField(
-                              "Enter Destination",
-                              Icons.map_outlined,
-                              isPickup: false,
-                            ),
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (pickUpController.text.isEmpty ||
-                                      destinationController.text.isEmpty) {
-                                    _showDialog(
-                                      context,
-                                      title: "Error ❌",
-                                      content: "Both fields are required.",
-                                    );
-                                    return;
-                                  }
-
-                                  if (pickUpController.text == destinationController.text) {
-                                    _showDialog(
-                                      context,
-                                      title: "Error ❌",
-                                      content: "Pickup and Destination cannot be the same.",
-                                    );
-                                    return;
-                                  }
-
-                                  if (!formKey.currentState!.validate()) {
-                                    _showDialog(
-                                      context,
-                                      title: "Error ❌",
-                                      content: "Please correct the errors.",
-                                    );
-                                    return;
-                                  }
-
-                                  // Trigger the Cubit to add a trip
-                                  try {
-                                    LatLng pickupLocation = _markers
-                                        .firstWhere((marker) => marker.markerId == const MarkerId('pickup'))
-                                        .position;
-                                    LatLng destinationLocation = _markers
-                                        .firstWhere((marker) => marker.markerId == const MarkerId('destination'))
-                                        .position;
-
-                                    double distance = calculateDistance(pickupLocation, destinationLocation);
-                                    Passenger passenger = await PStorage.fetchPassengerData();
-
-                                    Trip trip = Trip(
-                                        date: DateTime.now().toIso8601String(),
-                                        time: TimeOfDay.now().format(context),
-                                        FromLocation: pickUpController.text,
-                                        ToDestination: destinationController.text,
-                                        Status: "Requested",
-                                        driver: null,
-                                        passenger: passenger,
-                                        distance: distance,
-                                        price: 0.0);
-
-                                    context.read<TripCubit>().addTrips([trip]);
-                                  } catch (e) {
-                                    _showDialog(
-                                      context,
-                                      title: "Error ❌",
-                                      content: "Error sending request.",
-                                    );
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: kDarkBlueColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Text(
+                                  "Confirm Trip Request",
+                                  style: TextStyle(
+                                    fontFamily: "Archivo",
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Text(
-                                    "Confirm Trip Request",
-                                    style: TextStyle(
-                                      fontFamily: "Archivo",
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
+                  ),
+                );
+              },
+            );
+          }),
         );
       },
     );
@@ -325,116 +260,93 @@ class _PassengerHomeState extends State<PassengerHome> {
     );
   }
 
-  Widget _buildPlaceSearchField(String hint, IconData icon,
-      {required bool isPickup}) {
-    bool locationSelected = false;
-    return GestureDetector(
-      onTap: () async {
-        Prediction? prediction = await PlacesAutocomplete.show(
-          context: context,
-          apiKey: "AIzaSyDoBHEaV4zb2EsvqDqiIfaFq9h5nTw3Qk8",
-          mode: Mode.fullscreen,
-          language: "en",
-        );
-
-        if (prediction != null) {
-          try {
-            // Use geocoding to get the latitude and longitude based on the address
-            List<geocoding.Location> locations =
-            await locationFromAddress(prediction.description ?? "");
-            String? locationName = prediction.description;
-
-            if (locations.isNotEmpty) {
-              geocoding.Location location = locations.first;
-              LatLng latLng = LatLng(location.latitude, location.longitude);
-
-              setState(() {
-                if (locationSelected) {
-                  _markers.removeWhere((marker) =>
-                  (marker.markerId == const MarkerId('pickup') && isPickup) ||
-                      (marker.markerId == const MarkerId('destination') &&
-                          !isPickup));
-                }
-
-                // Add a marker for the selected location
-                MarkerId markerId =
-                isPickup ? const MarkerId('pickup') : const MarkerId('destination');
-                _addMarker(latLng, locationName!, markerId);
-
-                // Update the map camera to include both markers
-                LatLngBounds bounds = LatLngBounds(
-                  southwest: LatLng(
-                    min(_currentLocation?.latitude ?? latLng.latitude,
-                        latLng.latitude),
-                    min(_currentLocation?.longitude ?? latLng.longitude,
-                        latLng.longitude),
-                  ),
-                  northeast: LatLng(
-                    max(_currentLocation?.latitude ?? latLng.latitude,
-                        latLng.latitude),
-                    max(_currentLocation?.longitude ?? latLng.longitude,
-                        latLng.longitude),
-                  ),
-                );
-                _mapController
-                    ?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 10.0));
-
-                // Update the appropriate controller (pickup or destination)
-                if (isPickup) {
-                  pickUpController.text = prediction.description ?? "";
-                } else {
-                  destinationController.text = prediction.description ?? "";
-                }
-
-                locationSelected = true;
-              });
-            }
-          } catch (e) {
-            // Handle error if geocoding fails
-            print("Geocoding error: $e");
-          }
+  Widget _buildPlaceSearchField(
+      String hint,
+      IconData icon,
+      TextEditingController controller,
+      BuildContext ctx1, {
+        required bool isPickup,
+      }) {
+    return BlocConsumer<MapsCubit, MapsState>(
+      listener: (context, state) {
+        if (state is MapsLoaded) {
+          controller.text = isPickup
+              ? state.pickupLocation ?? ""
+              : state.destinationLocation ?? "";
+        }
+        if (state is MapsError) {
+          ScaffoldMessenger.of(ctx1).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
-      child: Stack(children: [
-        Column(
-          children: [
-            AbsorbPointer(
-              child: TextFormField(
-                controller: isPickup ? pickUpController : destinationController,
-                decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle: const TextStyle(fontFamily: "Archivo"),
-                  prefixIcon: Icon(icon),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () async {
+            try {
+              if (ApiKey.isEmpty) {
+                throw Exception("Missing Places API Key");
+              }
+
+              Prediction? prediction = await PlacesAutocomplete.show(
+                context: ctx1,
+                apiKey: ApiKey,
+                mode: Mode.fullscreen,
+                language: "en",
+              );
+
+              if (prediction != null) {
+                List<geocoding.Location> locations =
+                await locationFromAddress(prediction.description ?? "");
+                if (locations.isNotEmpty) {
+                  geocoding.Location location = locations.first;
+                  LatLng latLng = LatLng(location.latitude, location.longitude);
+                  String locationName = prediction.description ?? "";
+
+                  // Updating state after fetching the location.
+                  ctx1.read<MapsCubit>().updateCurrentLocation(
+                    latLng,
+                    locationName,
+                    isPickup,
+                  );
+                }
+              }
+            } catch (e) {
+              print("Error fetching place: ${e.toString()}");
+              ScaffoldMessenger.of(ctx1).showSnackBar(
+                SnackBar(content: Text("Error fetching place: ${e.toString()}")),
+              );
+            }
+          },
+          child: Column(
+            children: [
+              AbsorbPointer(
+                child: TextFormField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    prefixIcon: Icon(icon),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '$hint is required';
-                  }
-                  return null;
-                },
               ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kDarkBlueColor,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kDarkBlueColor,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
                   ),
                 ),
-              ),
-              onPressed: () => _getCurrentLocation(isPickup: isPickup),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
+                onPressed: () async {
+                  // Get current location when button is pressed
+                  await ctx1.read<MapsCubit>().getCurrentLocation(isPickup: isPickup);
+                },
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.gps_fixed_sharp, color: Colors.white),
+                    Icon(Icons.gps_fixed, color: Colors.white),
                     SizedBox(width: 8),
                     Text(
                       "Your Current Location",
@@ -447,12 +359,13 @@ class _PassengerHomeState extends State<PassengerHome> {
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ]),
+            ],
+          ),
+        );
+      },
     );
   }
+
 
   double calculateDistance(LatLng point1, LatLng point2) {
     double distanceInMeters = Geolocator.distanceBetween(
@@ -509,10 +422,11 @@ class _PassengerHomeState extends State<PassengerHome> {
                             height: 120,
                           ),
                           Text(
+                            overflow: TextOverflow.visible,
+                            textAlign: TextAlign.center,
                             "Welcome, ${passenger.name ?? "Passenger"}",
                             style: const TextStyle(
                                 fontSize: 18,
-                                overflow: TextOverflow.visible,
                                 color: kDarkBlueColor,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -589,7 +503,16 @@ class _PassengerHomeState extends State<PassengerHome> {
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (context) =>
+                                PassengerCubit(FirebasePassengerStorage()),
+                            child: const PassengerProfile(),
+                          ),
+                        ),
+                      );
                       // Navigate to Profile
                     },
                   ),
@@ -643,12 +566,30 @@ class _PassengerHomeState extends State<PassengerHome> {
       ),
       body: Stack(
         children: [
-          MapsView(
-            onMapCreated: (controller) {
-              _mapController = controller;
+          BlocConsumer<MapsCubit, MapsState>(
+            listener: (context, state) {
+              if (state is MapsError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
             },
-            currentLocation: _currentLocation,
-            markers: _markers,
+            builder: (context, state) {
+              print("Current MapsCubit state: $state");
+              if (state is MapsLoaded) {
+                return MapsView(
+                  onMapCreated: (GoogleMapController controller) {
+                    context.read<MapsCubit>().setMapController(controller);
+                  },
+                  currentLocation: state.currentLocation,
+                  markers: _markers,
+                );
+              }
+              if (state is MapsError) {
+                return Center(child: Text(state.message));
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
           ),
           Positioned(
             top: 40,
@@ -665,7 +606,7 @@ class _PassengerHomeState extends State<PassengerHome> {
             ),
           ),
           Positioned(
-            bottom: 16,
+            top: MediaQuery.of(context).size.height - 120,
             left: 16,
             right: 16,
             child: ElevatedButton(

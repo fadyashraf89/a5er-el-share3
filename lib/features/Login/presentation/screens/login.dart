@@ -37,7 +37,6 @@ class _SignInPageState extends State<SignInPage> {
     return BlocProvider(
   create: (context) => LoginCubit(),
   child: Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -157,7 +156,7 @@ class _SignInPageState extends State<SignInPage> {
                             child: TextButton(
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const ForgotPassword(),
+                                  builder: (context) => const ResetPassword(),
                                 ));
                               },
                               child: Text(

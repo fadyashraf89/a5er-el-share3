@@ -1,11 +1,14 @@
-import "package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart";
+import "package:a5er_elshare3/features/Driver/presentation/cubits/DriverCubit/driver_cubit.dart";
+import "package:a5er_elshare3/features/Driver/presentation/screens/DriverProfile.dart";
 import "package:a5er_elshare3/features/Trip/presentation/screens/DriverTripList.dart";
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 
 import "../../../../core/utils/constants.dart";
 import "../../../Authentication/data/Database/FirebaseAuthentication.dart";
 import "../../../Trip/data/Database/TripStorage.dart";
 import "../../../Welcome/presentation/screens/Opening.dart";
+import "../../data/database/FirebaseDriverStorage.dart";
 import "../../domain/models/driver.dart";
 
 class DriverHome extends StatefulWidget {
@@ -16,7 +19,7 @@ class DriverHome extends StatefulWidget {
 }
 
 class _DriverHomeState extends State<DriverHome> {
-  final DriverStorage DStorage = DriverStorage();
+  final FirebaseDriverStorage DStorage = FirebaseDriverStorage();
   final TripStorage TStorage = TripStorage();
   Driver driver = Driver();
   Authentication authentication = Authentication();
@@ -32,8 +35,8 @@ class _DriverHomeState extends State<DriverHome> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                   child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ));
+                color: Colors.white,
+              ));
             }
             if (snapshot.hasError) {
               return const Center(child: Text("Error loading user data"));
@@ -107,10 +110,10 @@ class _DriverHomeState extends State<DriverHome> {
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(
                       Icons.person,
@@ -120,16 +123,22 @@ class _DriverHomeState extends State<DriverHome> {
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                    create: (context) => DriverCubit(DStorage),
+                                    child: const DriverProfile(),
+                                  )));
                       // Navigate to Profile
                     },
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(Icons.settings, color: Colors.white),
                     title: const Text("Settings",
@@ -142,10 +151,10 @@ class _DriverHomeState extends State<DriverHome> {
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.white),
                     title: const Text("Log Out",
@@ -162,10 +171,10 @@ class _DriverHomeState extends State<DriverHome> {
                   ),
                   const Center(
                       child: Divider(
-                        height: 20,
-                        thickness: 2,
-                        color: Colors.grey,
-                      )),
+                    height: 20,
+                    thickness: 2,
+                    color: Colors.grey,
+                  )),
                 ],
               ),
             );
@@ -174,7 +183,8 @@ class _DriverHomeState extends State<DriverHome> {
       ),
       body: Stack(
         children: [
-          Container(child: DriverTripList(driver: driver)), // Pass driver to DriverTripList
+          Container(child: DriverTripList(driver: driver)),
+          // Pass driver to DriverTripList
           Positioned(
             bottom: 20,
             right: 16,

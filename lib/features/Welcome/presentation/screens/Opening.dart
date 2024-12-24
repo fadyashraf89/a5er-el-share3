@@ -37,7 +37,6 @@ class _OpeningState extends State<Opening> {
                   width: 250,
                   child: TextButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(

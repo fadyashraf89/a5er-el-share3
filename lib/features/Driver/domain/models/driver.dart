@@ -1,5 +1,3 @@
-
-
 import '../../../../core/domain/Models/User.dart';
 
 class Driver extends MyUser {
