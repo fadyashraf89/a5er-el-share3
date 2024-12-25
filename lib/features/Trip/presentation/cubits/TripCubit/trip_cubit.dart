@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import '../../../../Driver/domain/models/driver.dart';
 import '../../../data/Database/FirebaseTripStorage.dart';
@@ -40,6 +42,45 @@ class TripCubit extends Cubit<TripState> {
       emit(TripError("Failed to fetch trips for user $userEmail: $e"));
     }
   }
+
+// Integrated function to calculate distance and price
+  void calculateTripDetails(LatLng pickupLocation, LatLng destinationLocation) async {
+    try {
+      // Calculate the distance first
+      double distanceInKilometers = calculateDistance(pickupLocation, destinationLocation);
+
+      // Calculate the price based on the distance
+      double price = calculatePrice(distanceInKilometers);
+
+      // Emit the result with the distance and price
+      emit(TripRequestSuccess(
+          "Trips successfully added. Distance: ${distanceInKilometers.toStringAsFixed(2)} km, Price: \$${price.toStringAsFixed(2)}"
+      ));
+    } catch (e) {
+      // Handle any errors that might occur during calculation
+      emit(TripRequestFailed("Failed to calculate distance or price. Error: ${e.toString()}"));
+    }
+  }
+
+// Function to calculate the distance between two points (in kilometers)
+  double calculateDistance(LatLng point1, LatLng point2) {
+    double distanceInMeters = Geolocator.distanceBetween(
+      point1.latitude,
+      point1.longitude,
+      point2.latitude,
+      point2.longitude,
+    );
+
+    double distanceInKilometers = distanceInMeters / 1000; // Convert meters to kilometers
+    return distanceInKilometers;
+  }
+
+// Function to calculate the price based on the distance (example: $3 per kilometer)
+  double calculatePrice(double distanceInKilometers) {
+    double price = distanceInKilometers * 3; // Pricing formula ($3 per kilometer)
+    return price;
+  }
+
 
   Future<void> fetchAllRequestedTrips() async {
     emit(TripLoading());

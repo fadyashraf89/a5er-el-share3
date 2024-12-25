@@ -187,6 +187,8 @@ class _PassengerHomeState extends State<PassengerHome> {
 
                                   double distance = calculateDistance(
                                       pickupLocation, destinationLocation);
+
+                                  double price = calculatePrice(distance);
                                   Passenger passenger =
                                       await PStorage.fetchPassengerData();
 
@@ -199,7 +201,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                                       driver: null,
                                       passenger: passenger,
                                       distance: distance,
-                                      price: 0.0);
+                                      price: price);
 
                                   context.read<TripCubit>().addTrips([trip]);
                                 } catch (e) {
@@ -261,12 +263,12 @@ class _PassengerHomeState extends State<PassengerHome> {
   }
 
   Widget _buildPlaceSearchField(
-      String hint,
-      IconData icon,
-      TextEditingController controller,
-      BuildContext ctx1, {
-        required bool isPickup,
-      }) {
+    String hint,
+    IconData icon,
+    TextEditingController controller,
+    BuildContext ctx1, {
+    required bool isPickup,
+  }) {
     return BlocConsumer<MapsCubit, MapsState>(
       listener: (context, state) {
         if (state is MapsLoaded) {
@@ -297,7 +299,7 @@ class _PassengerHomeState extends State<PassengerHome> {
 
               if (prediction != null) {
                 List<geocoding.Location> locations =
-                await locationFromAddress(prediction.description ?? "");
+                    await locationFromAddress(prediction.description ?? "");
                 if (locations.isNotEmpty) {
                   geocoding.Location location = locations.first;
                   LatLng latLng = LatLng(location.latitude, location.longitude);
@@ -305,16 +307,17 @@ class _PassengerHomeState extends State<PassengerHome> {
 
                   // Updating state after fetching the location.
                   ctx1.read<MapsCubit>().updateCurrentLocation(
-                    latLng,
-                    locationName,
-                    isPickup,
-                  );
+                        latLng,
+                        locationName,
+                        isPickup,
+                      );
                 }
               }
             } catch (e) {
               print("Error fetching place: ${e.toString()}");
               ScaffoldMessenger.of(ctx1).showSnackBar(
-                SnackBar(content: Text("Error fetching place: ${e.toString()}")),
+                SnackBar(
+                    content: Text("Error fetching place: ${e.toString()}")),
               );
             }
           },
@@ -327,7 +330,8 @@ class _PassengerHomeState extends State<PassengerHome> {
                     hintText: hint,
                     prefixIcon: Icon(icon),
                     border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                   ),
                 ),
@@ -336,12 +340,15 @@ class _PassengerHomeState extends State<PassengerHome> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kDarkBlueColor,
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20)),
                   ),
                 ),
                 onPressed: () async {
                   // Get current location when button is pressed
-                  await ctx1.read<MapsCubit>().getCurrentLocation(isPickup: isPickup);
+                  await ctx1
+                      .read<MapsCubit>()
+                      .getCurrentLocation(isPickup: isPickup);
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -366,18 +373,16 @@ class _PassengerHomeState extends State<PassengerHome> {
     );
   }
 
-
   double calculateDistance(LatLng point1, LatLng point2) {
-    double distanceInMeters = Geolocator.distanceBetween(
-      point1.latitude,
-      point1.longitude,
-      point2.latitude,
-      point2.longitude,
-    );
-
-    double distanceInKilometers = distanceInMeters / 1000;
+    double distanceInKilometers =
+        context.read<TripCubit>().calculateDistance(point1, point2);
 
     return distanceInKilometers;
+  }
+
+  double calculatePrice(double distanceInKilometers) {
+    double price = context.read<TripCubit>().calculatePrice(distanceInKilometers);
+    return price;
   }
 
   @override

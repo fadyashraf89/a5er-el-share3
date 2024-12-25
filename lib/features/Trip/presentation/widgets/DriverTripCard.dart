@@ -130,7 +130,20 @@ class DriverTripCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-
+                    Row(
+                      children: [
+                        const Icon(Icons.flag, color: Colors.purple),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            'To: ${trip.ToDestination}',
+                            style: const TextStyle(fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
                     // Distance
                     Row(
                       children: [

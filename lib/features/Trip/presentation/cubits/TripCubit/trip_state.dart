@@ -9,7 +9,6 @@ final class TripLoading extends TripState {}
 
 class TripRequestSuccess extends TripState {
   final String message;
-
   TripRequestSuccess(this.message);
 }
 
