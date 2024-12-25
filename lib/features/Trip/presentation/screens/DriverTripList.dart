@@ -1,9 +1,9 @@
-import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
 import '../../../Driver/domain/models/driver.dart';
+import '../../data/Database/FirebaseTripStorage.dart';
 import '../../domain/models/trip.dart';
 import '../widgets/DriverTripCard.dart';
 
@@ -17,7 +17,7 @@ class DriverTripList extends StatefulWidget {
 }
 
 class _DriverTripListState extends State<DriverTripList> {
-TripStorage TStorage = TripStorage();
+  FirebaseTripStorage TStorage = FirebaseTripStorage();
   @override
   void initState() {
     super.initState();

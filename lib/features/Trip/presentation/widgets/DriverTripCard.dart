@@ -1,4 +1,4 @@
-import 'package:a5er_elshare3/features/Trip/data/Database/TripStorage.dart';
+import 'package:a5er_elshare3/features/Trip/data/Database/FirebaseTripStorage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
@@ -9,7 +9,7 @@ import '../../domain/models/trip.dart';
 class DriverTripCard extends StatelessWidget {
   final Trip trip;
   final Driver driver; // Add Driver as a parameter
-  final TripStorage storage = TripStorage();
+  final FirebaseTripStorage storage = FirebaseTripStorage();
   DriverTripCard({Key? key, required this.trip, required this.driver}) : super(key: key);
 
   @override
@@ -166,7 +166,7 @@ class DriverTripCard extends StatelessWidget {
 
                             try {
                               // Pass the driver data here
-                              await TripStorage().acceptTrip(
+                              await FirebaseTripStorage().acceptTrip(
                                 trip.passenger?.email ?? "", // Passenger email
                                 trip.toMap(), // Trip data
                                 currentDriver, // Driver data passed here
@@ -202,7 +202,7 @@ class DriverTripCard extends StatelessWidget {
 
                             try {
                               // Pass the driver data here
-                              await TripStorage().RejectTrip(
+                              await FirebaseTripStorage().RejectTrip(
                                 trip.passenger?.email ?? "", // Passenger email
                                 trip.toMap(), // Trip data
                                 currentDriver, // Driver data passed here

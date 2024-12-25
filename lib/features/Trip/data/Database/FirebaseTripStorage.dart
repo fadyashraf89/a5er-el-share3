@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
+import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 import 'TripStorage.dart';
 
-final User? currentUser = FirebaseAuth.instance.currentUser;
-final String? currentEmail = currentUser?.email;
-
 class FirebaseTripStorage extends TripStorage {
+
   @override
   Future<void> addTrip(List<Trip> tripsList) async {
     CollectionReference trips = FirebaseFirestore.instance.collection('Trips');
@@ -28,7 +25,7 @@ class FirebaseTripStorage extends TripStorage {
 
   @override
   Future<List<Trip>> fetchTripsForLoggedInUser() async {
-    AuthService auth = AuthService();
+    Authentication auth = Authentication();
     try {
       // Get the current user's email
       String? currentEmail = await auth.getCurrentUserEmail();
@@ -138,7 +135,7 @@ class FirebaseTripStorage extends TripStorage {
       FirebaseFirestore.instance.collection('AcceptedTrips');
       await acceptedTripsCollection.add(selectedTrip);
 
-      print("Trip accepted and moved to Accepted Trips collection.");
+      print("Trip accepted and moved to AcceptedTrips collection.");
     } catch (e) {
       print("Error accepting trip: $e");
       throw Exception("Failed to accept trip: $e");
@@ -191,4 +188,24 @@ class FirebaseTripStorage extends TripStorage {
     }
   }
 
+  @override
+  Stream<List<Trip>> getRequestedTripsStream() => FirebaseFirestore.instance
+      .collection('Trips')
+      .snapshots()
+      .map((snapshot) {
+    List<Trip> requestedTrips = [];
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
+      final List<dynamic> tripDataList = data['trips'] ?? [];
+
+      // Filter trips by status 'requested'
+      for (var tripData in tripDataList) {
+        if (tripData['Status'] == 'Requested') {
+          requestedTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
+        }
+      }
+
+    }
+    return requestedTrips;
+  });
 }

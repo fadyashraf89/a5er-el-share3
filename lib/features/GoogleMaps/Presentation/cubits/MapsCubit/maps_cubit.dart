@@ -85,19 +85,7 @@ class MapsCubit extends Cubit<MapsState> {
       if (_mapController != null) {
         if (updatedMarkers.length == 2) {
           // If there are two markers, adjust the camera to fit both markers
-          final latitudes = updatedMarkers.map((m) => m.position.latitude).toList();
-          final longitudes = updatedMarkers.map((m) => m.position.longitude).toList();
-
-          LatLngBounds bounds = LatLngBounds(
-            southwest: LatLng(
-              latitudes.reduce((a, b) => a < b ? a : b),
-              longitudes.reduce((a, b) => a < b ? a : b),
-            ),
-            northeast: LatLng(
-              latitudes.reduce((a, b) => a > b ? a : b),
-              longitudes.reduce((a, b) => a > b ? a : b),
-            ),
-          );
+          LatLngBounds bounds = CalculateBounds(updatedMarkers);
 
           emit(MapsCameraMoving(targetLocation: position));
 
@@ -128,6 +116,23 @@ class MapsCubit extends Cubit<MapsState> {
         markers: updatedMarkers,
       ));
     }
+  }
+
+  LatLngBounds CalculateBounds(Set<Marker> updatedMarkers) {
+    final latitudes = updatedMarkers.map((m) => m.position.latitude).toList();
+    final longitudes = updatedMarkers.map((m) => m.position.longitude).toList();
+
+    LatLngBounds bounds = LatLngBounds(
+      southwest: LatLng(
+        latitudes.reduce((a, b) => a < b ? a : b),
+        longitudes.reduce((a, b) => a < b ? a : b),
+      ),
+      northeast: LatLng(
+        latitudes.reduce((a, b) => a > b ? a : b),
+        longitudes.reduce((a, b) => a > b ? a : b),
+      ),
+    );
+    return bounds;
   }
 
   void updateCurrentLocation(
