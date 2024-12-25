@@ -132,11 +132,11 @@ class DriverTripCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        const Icon(Icons.flag, color: Colors.purple),
+                        const Icon(Icons.money, color: Colors.lightGreen),
                         const SizedBox(width: 10),
                         Flexible(
                           child: Text(
-                            'To: ${trip.ToDestination}',
+                            'Price: ${trip.price}',
                             style: const TextStyle(fontSize: 16),
                             overflow: TextOverflow.ellipsis,
                           ),

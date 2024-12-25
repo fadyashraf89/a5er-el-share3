@@ -32,7 +32,7 @@ class MapsView extends StatelessWidget {
         builder: (context, state) {
           if (state is MapsLoading) {
             // Show loading state, like a loading spinner or something.
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (state is MapsError) {
             // Show error message as fallback
             return Center(child: Text('Error: ${state.message}'));
@@ -58,7 +58,7 @@ class MapsView extends StatelessWidget {
             );
           } else {
             // Handle the initial or empty state
-            return Center(child: Text('Initializing Map...'));
+            return const Center(child: Text('Initializing Map...'));
           }
         },
       ),

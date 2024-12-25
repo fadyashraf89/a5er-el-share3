@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter_api/google_places_flutter_api.dart';
 import "../../../../core/utils/constants.dart";
@@ -35,7 +34,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   Validators validators = Validators();
   Authentication authentication = Authentication();
   final formKey = GlobalKey<FormState>();
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
   final TripStorage TStorage = TripStorage();
@@ -527,22 +526,22 @@ class _PassengerHomeState extends State<PassengerHome> {
                     thickness: 2,
                     color: Colors.grey,
                   )),
-                  ListTile(
-                    leading: const Icon(Icons.settings, color: Colors.white),
-                    title: const Text("Settings",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to Settings
-                    },
-                  ),
-                  const Center(
-                      child: Divider(
-                    height: 20,
-                    thickness: 2,
-                    color: Colors.grey,
-                  )),
+                  // ListTile(
+                  //   leading: const Icon(Icons.settings, color: Colors.white),
+                  //   title: const Text("Settings",
+                  //       style: TextStyle(
+                  //           color: Colors.white, fontWeight: FontWeight.bold)),
+                  //   onTap: () {
+                  //     Navigator.pop(context);
+                  //     // Navigate to Settings
+                  //   },
+                  // ),
+                  // const Center(
+                  //     child: Divider(
+                  //   height: 20,
+                  //   thickness: 2,
+                  //   color: Colors.grey,
+                  // )),
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.white),
                     title: const Text("Log Out",
