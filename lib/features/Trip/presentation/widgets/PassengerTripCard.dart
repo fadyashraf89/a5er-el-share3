@@ -5,7 +5,6 @@ import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 import '../../../Passenger/data/Database/FirebasePassengerStorage.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
 import '../../domain/models/trip.dart';
-@immutable
 
 class PassengerTripCard extends StatelessWidget {
   final Trip trip;
