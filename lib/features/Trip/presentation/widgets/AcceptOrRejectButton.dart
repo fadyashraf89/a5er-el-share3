@@ -20,7 +20,6 @@ class AcceptOrRejectButton extends StatelessWidget {
     ElevatedButton.icon(
       onPressed: () async {
         Driver? currentDriver = await FirebaseDriverStorage().fetchDriverData();
-        Passenger? passenger = trip.passenger;
         try {
           // Pass the driver data here
           await FirebaseTripStorage().acceptTrip(
