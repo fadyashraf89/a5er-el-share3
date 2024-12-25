@@ -144,6 +144,20 @@ class PassengerTripCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     Row(
                       children: [
+                        const Icon(Icons.stars_rounded, color: Colors.yellow),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            'Points: ${trip.points}',
+                            style: const TextStyle(fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
                         const Icon(Icons.money, color: Colors.green),
                         const SizedBox(width: 10),
                         Flexible(

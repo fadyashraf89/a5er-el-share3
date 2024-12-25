@@ -8,8 +8,9 @@ class Trip {
   final double? distance;
   final String? Status;
   final double? price;
+  final int? points;
 
-  Trip({
+  Trip({this.points,
       required this.date,
       required this.price,
       required this.distance,
@@ -18,7 +19,7 @@ class Trip {
       required this.FromLocation,
       required this.ToDestination,
       required this.driver,
-      required this.passenger
+      required this.passenger,
   });
 
   factory Trip.fromMap(Map<dynamic, dynamic> data) {
@@ -40,6 +41,7 @@ class Trip {
       price: (data['Price'] is int)
           ? (data['Price'] as int).toDouble()  // Convert int to double if necessary
           : data['Price'] as double?,  // Already a double or null
+      points: data['points']
     );
   }
 
@@ -53,7 +55,8 @@ class Trip {
       'Distance': distance?.toDouble(),
       'driver': driver?.toMap(), // Convert driver to a Map if not null
       'passenger': passenger?.toMap(),
-      'Price': price?.toDouble()
+      'Price': price?.toDouble(),
+      'points': points?.toInt()
     };
   }
 }

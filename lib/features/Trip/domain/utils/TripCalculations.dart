@@ -10,10 +10,16 @@ class TripCalculations {
     context.read<TripCubit>().calculateDistance(point1, point2);
 
     return distanceInKilometers;
+
   }
 
   double calculatePrice(double distanceInKilometers, BuildContext context) {
     double price = context.read<TripCubit>().calculatePrice(distanceInKilometers);
-    return price;
+    return double.parse(price.toStringAsFixed(2));
+  }
+
+  int calculateTripPoints(double price, BuildContext context){
+    int points = price.round();
+    return points;
   }
 }

@@ -133,6 +133,7 @@ class _PassengerProfileState extends State<PassengerProfile> {
                                     mobileNumber:
                                     _mobileNumberController.text,
                                     role: passenger.role,
+                                    points: passenger.points ?? 0
                                   );
 
                                   // Update data using the PassengerCubit

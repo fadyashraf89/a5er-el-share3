@@ -13,6 +13,7 @@ class FirebasePassengerStorage extends PassengerStorage {
         'mobileNumber': passenger.mobileNumber,
         'role': passenger.role,
         'name': passenger.name,
+        'points': passenger.points
       });
       print("Passenger Added");
     } catch (error) {

@@ -98,5 +98,4 @@ class Authentication {
       return null; // Handle any error gracefully
     }
   }
-
 }

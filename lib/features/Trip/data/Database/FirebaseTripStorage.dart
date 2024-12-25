@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../Authentication/data/Database/FirebaseAuthentication.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 import 'TripStorage.dart';
+
+final User? currentUser = FirebaseAuth.instance.currentUser;
+final String? currentEmail = currentUser?.email;
 
 class FirebaseTripStorage extends TripStorage {
 

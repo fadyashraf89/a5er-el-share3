@@ -36,6 +36,7 @@ class SignupCubit extends Cubit<SignupState> {
             uid: _auth.currentUser!.uid,
             name: name,
             role: "Passenger",
+            points: 0
           );
           FirebasePassengerStorage().addPassenger(passenger);
         } else if (role == 'Driver') {

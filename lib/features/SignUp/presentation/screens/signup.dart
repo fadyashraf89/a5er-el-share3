@@ -1,4 +1,7 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
+import 'package:a5er_elshare3/features/SignUp/presentation/widgets/DriverInputFields.dart';
+import 'package:a5er_elshare3/features/SignUp/presentation/widgets/PasswordField.dart';
+import 'package:a5er_elshare3/features/SignUp/presentation/widgets/RoleDropDownMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/constants.dart';
@@ -6,6 +9,7 @@ import '../../../Driver/presentation/screens/DriverHome.dart';
 import '../../../Login/presentation/screens/login.dart';
 import '../../../Passenger/presentation/screens/PassengerHome.dart';
 import '../cubit/signup/signup_cubit.dart';
+import '../widgets/TextFormFields.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -17,14 +21,14 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   bool showPassword = false, showConfirmPassword = false;
   String? selectedRole = 'Passenger';
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController carPlateController = TextEditingController();
-  TextEditingController driverLicenseController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController carModelController = TextEditingController();
+  TextEditingController emailController = TextEditingController(),
+                        passwordController = TextEditingController(),
+                        confirmPasswordController = TextEditingController(),
+                        mobileController = TextEditingController(),
+                        carPlateController = TextEditingController(),
+                        driverLicenseController = TextEditingController(),
+                        nameController = TextEditingController(),
+                        carModelController = TextEditingController();
   Validators validators = Validators();
   final formKey = GlobalKey<FormState>();
 
@@ -64,7 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Column(
                         children: [
                           // Email input field
-                          buildTextFormField(
+                          TextFormFields().buildTextFormField(
                             controller: emailController,
                             hintText: 'Email',
                             icon: Icons.email,
@@ -73,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(height: 20),
 
                           // Password input field
-                          buildPasswordFormField(
+                          PasswordField().buildPasswordFormField(
                             controller: passwordController,
                             hintText: 'Password',
                             obscureText: !showPassword,
@@ -87,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(height: 20),
 
                           // Confirm password input field
-                          buildPasswordFormField(
+                          PasswordField().buildPasswordFormField(
                             controller: confirmPasswordController,
                             hintText: 'Confirm Password',
                             obscureText: !showConfirmPassword,
@@ -104,25 +108,25 @@ class _SignUpPageState extends State<SignUpPage> {
                           // Dropdown for role selection
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 flex: 2,  // or use a different flex value as necessary
-                                child: buildRoleDropdown(),
+                                child: RoleDropDownMenu(),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
                                 flex: 3,
-                                child: buildTextFormField(controller: nameController, hintText: "Name", icon: Icons.person, validator: validators.ValidateName),
+                                child: TextFormFields().buildTextFormField(controller: nameController, hintText: "Name", icon: Icons.person, validator: validators.ValidateName),
                               ),
                             ],
                           ),
 
 
                           // Additional fields for Driver
-                          if (selectedRole == 'Driver') buildDriverFields(),
+                          if (selectedRole == 'Driver') DriverInputFields().buildDriverFields(),
                           const SizedBox(height: 20),
 
                           // Mobile number input field
-                          buildTextFormField(
+                          TextFormFields().buildTextFormField(
                             controller: mobileController,
                             hintText: 'Mobile Number',
                             icon: Icons.phone,
@@ -261,101 +265,4 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget buildTextFormField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      validator: validator,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: kDarkBlueColor))
-
-      ),
-    );
-  }
-
-  Widget buildPasswordFormField({
-    required TextEditingController controller,
-    required String hintText,
-    required bool obscureText,
-    required VoidCallback toggleVisibility,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: const Icon(Icons.lock),
-        suffixIcon: IconButton(
-          onPressed: toggleVisibility,
-          icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-    );
-  }
-
-  Widget buildRoleDropdown() {
-    return DropdownButtonFormField<String>(
-      value: selectedRole,
-      onChanged: (value) {
-        setState(() {
-          selectedRole = value!;
-        });
-      },
-      items: const [
-        DropdownMenuItem(
-          value: 'Driver',
-          child: Text('Driver'),
-        ),
-        DropdownMenuItem(
-          value: 'Passenger',
-          child: Text('Passenger'),
-        ),
-      ],
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-    );
-  }
-
-  Widget buildDriverFields() {
-    return Column(
-      children: [
-        const SizedBox(height: 10,),
-        buildTextFormField(
-          controller: driverLicenseController,
-          hintText: 'Driver License Number',
-          icon: Icons.card_travel,
-          validator: (value) =>
-          value == null || value.isEmpty ? 'Enter your license number' : null,
-        ),
-        const SizedBox(height: 10),
-        buildTextFormField(
-          controller: carModelController,
-          hintText: 'Car Model',
-          icon: Icons.car_repair,
-          validator: (value) =>
-          value == null || value.isEmpty ? 'Enter your car model' : null,
-        ),
-        const SizedBox(height: 10),
-        buildTextFormField(
-          controller: carPlateController,
-          hintText: 'Car Plate Number',
-          icon: Icons.numbers,
-          validator: (value) =>
-          value == null || value.isEmpty ? 'Enter your car plate number' : null,
-        ),
-      ],
-    );
-  }
 }

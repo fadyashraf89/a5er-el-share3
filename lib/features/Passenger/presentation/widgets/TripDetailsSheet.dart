@@ -1,6 +1,5 @@
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/MessageDialog.dart";
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/PlacesSearchField.dart";
-import "package:a5er_elshare3/features/Trip/domain/calculations/TripCalculations.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
@@ -8,6 +7,7 @@ import "package:google_maps_flutter/google_maps_flutter.dart";
 import "../../../../core/utils/constants.dart";
 import "../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart";
 import "../../../Trip/domain/models/trip.dart";
+import "../../../Trip/domain/utils/TripCalculations.dart";
 import "../../../Trip/presentation/cubits/TripCubit/trip_cubit.dart";
 import "../../data/Database/FirebasePassengerStorage.dart";
 import "../../domain/models/Passenger.dart";
@@ -161,6 +161,7 @@ class TripDetailsSheet {
                                       pickupLocation, destinationLocation, context);
 
                                   double price = TripCalculations().calculatePrice(distance, context);
+                                  int points = TripCalculations().calculateTripPoints(price, context);
                                   Passenger passenger =
                                   await PStorage.fetchPassengerData();
 
@@ -173,7 +174,10 @@ class TripDetailsSheet {
                                       driver: null,
                                       passenger: passenger,
                                       distance: distance,
-                                      price: price);
+                                      price: price,
+                                    points: points
+
+                                  );
 
                                   context.read<TripCubit>().addTrips([trip]);
                                 } catch (e) {

@@ -2,8 +2,8 @@
 import '../../../../core/domain/Models/User.dart';
 
 class Passenger extends MyUser {
-
-  Passenger({email, password, mobileNumber, role, uid, name}) : super(
+  final int? points;
+  Passenger({this.points, email, password, mobileNumber, role, uid, name}) : super(
     name: name,
     email: email,
     password: password,
@@ -14,6 +14,7 @@ class Passenger extends MyUser {
 
   factory Passenger.fromMap(Map<String, dynamic> data) {
     return Passenger(
+      points: data['points'] ,
       name: data['name'] as String?,
       email: data['email'] as String?,
       mobileNumber: data['mobileNumber'] as String?,
@@ -27,6 +28,7 @@ class Passenger extends MyUser {
       'email': email,
       'mobileNumber': mobileNumber,
       'role': role,
+      'points': points
     };
   }
 }
