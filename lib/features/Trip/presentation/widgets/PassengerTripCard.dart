@@ -6,11 +6,18 @@ import '../../../Passenger/data/Database/FirebasePassengerStorage.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
 import '../../domain/models/trip.dart';
 
-class PassengerTripCard extends StatelessWidget {
+class PassengerTripCard extends StatefulWidget {
   final Trip trip;
 
-  PassengerTripCard({Key? key, required this.trip}) : super(key: key);
+  const PassengerTripCard({Key? key, required this.trip}) : super(key: key);
+
+  @override
+  State<PassengerTripCard> createState() => _PassengerTripCardState();
+}
+
+class _PassengerTripCardState extends State<PassengerTripCard> {
   Authentication auth = Authentication();
+
   final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
 
   @override
@@ -49,7 +56,7 @@ class PassengerTripCard extends StatelessWidget {
                         const Icon(Icons.calendar_today, color: Colors.blue),
                         const SizedBox(width: 10),
                         FutureBuilder<String>(
-                          future: _formatDate(trip.date!),
+                          future: _formatDate(widget.trip.date!),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Text(
@@ -104,7 +111,7 @@ class PassengerTripCard extends StatelessWidget {
                         const Icon(Icons.access_time, color: Colors.orange),
                         const SizedBox(width: 10),
                         Text(
-                          'Time: ${trip.time}',
+                          'Time: ${widget.trip.time}',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -118,7 +125,7 @@ class PassengerTripCard extends StatelessWidget {
                         const SizedBox(width: 10),
                         Flexible(
                           child: Text(
-                            'From: ${trip.FromLocation}',
+                            'From: ${widget.trip.FromLocation}',
                             style: const TextStyle(fontSize: 16),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -134,7 +141,7 @@ class PassengerTripCard extends StatelessWidget {
                         const SizedBox(width: 10),
                         Flexible(
                           child: Text(
-                            'To: ${trip.ToDestination}',
+                            'To: ${widget.trip.ToDestination}',
                             style: const TextStyle(fontSize: 16),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -148,7 +155,7 @@ class PassengerTripCard extends StatelessWidget {
                         const SizedBox(width: 10),
                         Flexible(
                           child: Text(
-                            'Points: ${trip.points}',
+                            'Points: ${widget.trip.points}',
                             style: const TextStyle(fontSize: 16),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -162,7 +169,7 @@ class PassengerTripCard extends StatelessWidget {
                         const SizedBox(width: 10),
                         Flexible(
                           child: Text(
-                            'Price: ${trip.price}',
+                            'Price: ${widget.trip.price}',
                             style: const TextStyle(fontSize: 16),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -176,7 +183,7 @@ class PassengerTripCard extends StatelessWidget {
                         const Icon(Icons.info, color: Colors.blueAccent),
                         const SizedBox(width: 10),
                         Text(
-                          'Status: ${trip.Status}',
+                          'Status: ${widget.trip.Status}',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -192,7 +199,7 @@ class PassengerTripCard extends StatelessWidget {
                         const Icon(Icons.straighten, color: Colors.teal),
                         const SizedBox(width: 10),
                         Text(
-                          'Distance: ${trip.distance?.toStringAsFixed(2)} km',
+                          'Distance: ${widget.trip.distance?.toStringAsFixed(2)} km',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
