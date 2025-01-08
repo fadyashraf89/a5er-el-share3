@@ -15,7 +15,7 @@ class TextFormFields{
           hintText: hintText,
           prefixIcon: Icon(icon),
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20)
+              borderRadius: BorderRadius.circular(30)
           ),
           enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: kDarkBlueColor))
 

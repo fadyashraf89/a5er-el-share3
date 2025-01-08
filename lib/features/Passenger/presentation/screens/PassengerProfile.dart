@@ -4,7 +4,6 @@ import "package:a5er_elshare3/features/Authentication/presentation/screens/Forgo
 import "package:a5er_elshare3/features/Trip/presentation/screens/PassengerTripList.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-
 import "../../domain/models/Passenger.dart";
 import "../cubits/PassengerCubit/passenger_cubit.dart";
 

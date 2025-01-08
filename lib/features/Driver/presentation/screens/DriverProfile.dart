@@ -27,7 +27,6 @@ class _DriverProfileState extends State<DriverProfile> {
   @override
   void initState() {
     super.initState();
-    // Fetch data when widget is initialized
     context.read<DriverCubit>().fetchDriverData();
   }
 

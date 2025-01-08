@@ -158,7 +158,7 @@ class _SignInPageState extends State<SignInPage> {
 
                             // Forgot Password
                             Padding(
-                              padding: const EdgeInsets.only(right: 220.0),
+                              padding: const EdgeInsets.only(left: 220.0),
                               child: TextButton(
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -169,7 +169,8 @@ class _SignInPageState extends State<SignInPage> {
                                   "Forgot Password",
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.8),
-                                      fontFamily: "Archivo"),
+                                      fontFamily: "Archivo",
+                                  fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),

@@ -1,7 +1,5 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
-import 'package:a5er_elshare3/features/SignUp/presentation/widgets/DriverInputFields.dart';
 import 'package:a5er_elshare3/features/SignUp/presentation/widgets/PasswordField.dart';
-import 'package:a5er_elshare3/features/SignUp/presentation/widgets/RoleDropDownMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/constants.dart';
@@ -31,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         carModelController = TextEditingController();
   Validators validators = Validators();
   final formKey = GlobalKey<FormState>();
+
 
   @override
   void dispose() {
@@ -108,21 +107,44 @@ class _SignUpPageState extends State<SignUpPage> {
                           // Dropdown for role selection
                           Row(
                             children: [
-                              const Expanded(
-                                flex: 2,  // or use a different flex value as necessary
-                                child: RoleDropDownMenu(),
+                              Expanded(
+                                flex: 2,
+                                child: DropdownButtonFormField<String>(
+                                  value: selectedRole,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedRole = value!;
+                                    });
+                                  },
+                                  items: const [
+                                    DropdownMenuItem(
+                                      value: 'Driver',
+                                      child: Text('Driver'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'Passenger',
+                                      child: Text('Passenger'),
+                                    ),
+                                  ],
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                                  ),
+                                ),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
                                 flex: 3,
-                                child: TextFormFields().buildTextFormField(controller: nameController, hintText: "Name", icon: Icons.person, validator: validators.ValidateName),
+                                child: TextFormFields().buildTextFormField(
+                                  controller: nameController,
+                                  hintText: "Name",
+                                  icon: Icons.person,
+                                  validator: validators.ValidateName,
+                                ),
                               ),
                             ],
                           ),
-
-
+                          if (selectedRole == 'Driver') buildDriverFields(),
                           // Additional fields for Driver
-                          if (selectedRole == 'Driver') DriverInputFields().buildDriverFields(),
                           const SizedBox(height: 20),
 
                           // Mobile number input field
@@ -264,5 +286,35 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-
+  Widget buildDriverFields() {
+    print("hn3mel driver fields");
+    return Column(
+      children: [
+        const SizedBox(height: 10,),
+        TextFormFields().buildTextFormField(
+          controller: driverLicenseController,
+          hintText: 'Driver License Number',
+          icon: Icons.card_travel,
+          validator: (value) =>
+          value == null || value.isEmpty ? 'Enter your license number' : null,
+        ),
+        const SizedBox(height: 10),
+        TextFormFields().buildTextFormField(
+          controller: carModelController,
+          hintText: 'Car Model',
+          icon: Icons.car_repair,
+          validator: (value) =>
+          value == null || value.isEmpty ? 'Enter your car model' : null,
+        ),
+        const SizedBox(height: 10),
+        TextFormFields().buildTextFormField(
+          controller: carPlateController,
+          hintText: 'Car Plate Number',
+          icon: Icons.numbers,
+          validator: (value) =>
+          value == null || value.isEmpty ? 'Enter your car plate number' : null,
+        ),
+      ],
+    );
+  }
 }
