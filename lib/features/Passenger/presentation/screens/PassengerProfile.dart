@@ -88,6 +88,21 @@ class _PassengerProfileState extends State<PassengerProfile> {
                           key: _formKey,
                           child: Column(
                             children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.stars, color: Colors.yellow),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Points: ${passenger.points}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+
                               _buildTextField(
                                   controller: _emailController,
                                   hintText: "Email",

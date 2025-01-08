@@ -19,4 +19,6 @@ abstract class TripStorage {
   Future<void> RejectTrip(String userEmail, Map<String, dynamic> tripData, Driver driver);
 
   Stream<List<Trip>> getRequestedTripsStream();
+
+
 }

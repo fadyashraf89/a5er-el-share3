@@ -80,214 +80,217 @@ class _DriverProfileState extends State<DriverProfile> {
               title: "Driver Profile",
               height: 150,
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            body: ListView(
               children: [
-                const SizedBox(height: 30),
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              _buildTextField(
-                                  controller: _emailController,
-                                  hintText: "Email",
-                                  isEnabled: _isEditing,
-                                  isReadOnly: true,
-                                  // Make email always readonly
-                                  icon: Icons.email),
-                              const SizedBox(height: 10),
-                              _buildTextField(
-                                  controller: _nameController,
-                                  hintText: "Name",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.person),
-                              const SizedBox(height: 10),
-                              _buildTextField(
-                                  controller: _mobileNumberController,
-                                  hintText: "Mobile Number",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.call),
-                              const SizedBox(height: 20),
-                              _buildTextField(
-                                  controller: _carPlateController,
-                                  hintText: "Car Plate Number",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.numbers),
-                              const SizedBox(height: 20),
-                              _buildTextField(
-                                  controller: _driverLicenseController,
-                                  hintText: "Driver License Number",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.credit_card_rounded),
-                              const SizedBox(height: 20),
-                              _buildTextField(
-                                  controller: _carModelController,
-                                  hintText: "Car Model",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.car_repair_sharp),
-                              const SizedBox(height: 20),
-                            ],
+                Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                _buildTextField(
+                                    controller: _emailController,
+                                    hintText: "Email",
+                                    isEnabled: _isEditing,
+                                    isReadOnly: true,
+                                    // Make email always readonly
+                                    icon: Icons.email),
+                                const SizedBox(height: 10),
+                                _buildTextField(
+                                    controller: _nameController,
+                                    hintText: "Name",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.person),
+                                const SizedBox(height: 10),
+                                _buildTextField(
+                                    controller: _mobileNumberController,
+                                    hintText: "Mobile Number",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.call),
+                                const SizedBox(height: 20),
+                                _buildTextField(
+                                    controller: _carPlateController,
+                                    hintText: "Car Plate Number",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.numbers),
+                                const SizedBox(height: 20),
+                                _buildTextField(
+                                    controller: _driverLicenseController,
+                                    hintText: "Driver License Number",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.credit_card_rounded),
+                                const SizedBox(height: 20),
+                                _buildTextField(
+                                    controller: _carModelController,
+                                    hintText: "Car Model",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.car_repair_sharp),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 250,
-                            child: Align(
-                              child: _isEditing
-                                  ? TextButton(
-                                onPressed: () {
-                                  if (!_formKey.currentState!
-                                      .validate()) return;
-
-                                  // Create updated Passenger object
-                                  Driver updatedDriver =
-                                  Driver(
-                                    uid: driver.uid,
-                                    name: _nameController.text,
-                                    email: _emailController.text,
-                                    mobileNumber: _mobileNumberController.text,
-                                    role: driver.role,
-                                    carModel: _carModelController.text,
-                                    carPlateNumber: _carPlateController.text,
-                                    licenseNumber: _driverLicenseController.text,
-                                  );
-
-                                  // Update data using the PassengerCubit
-                                  context
-                                      .read<DriverCubit>()
-                                      .updateDriverData(
-                                      updatedDriver);
-
-                                  setState(() => _isEditing =
-                                  false); // Stop editing mode
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: kDarkBlueColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.save, color: Colors.white),
-                                    SizedBox(width: 8),
-                                    Text("Save Changes", style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold
-
-                                    ),),
-                                  ],
-                                ),
-                              )
-                                  : TextButton(
-                                onPressed: () {
-                                  setState(() => _isEditing =
-                                  true); // Enable editing mode
-                                },
-                                style: ElevatedButton.styleFrom(
+                        Column(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 250,
+                              child: Align(
+                                child: _isEditing
+                                    ? TextButton(
+                                  onPressed: () {
+                                    if (!_formKey.currentState!
+                                        .validate()) return;
+                        
+                                    // Create updated Passenger object
+                                    Driver updatedDriver =
+                                    Driver(
+                                      uid: driver.uid,
+                                      name: _nameController.text,
+                                      email: _emailController.text,
+                                      mobileNumber: _mobileNumberController.text,
+                                      role: driver.role,
+                                      carModel: _carModelController.text,
+                                      carPlateNumber: _carPlateController.text,
+                                      licenseNumber: _driverLicenseController.text,
+                                    );
+                        
+                                    // Update data using the PassengerCubit
+                                    context
+                                        .read<DriverCubit>()
+                                        .updateDriverData(
+                                        updatedDriver);
+                        
+                                    setState(() => _isEditing =
+                                    false); // Stop editing mode
+                                  },
+                                  style: ElevatedButton.styleFrom(
                                     backgroundColor: kDarkBlueColor,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
-
-                                    )
+                                    ),
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                        
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.save, color: Colors.white),
+                                      SizedBox(width: 8),
+                                      Text("Save Changes", style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold
+                        
+                                      ),),
+                                    ],
+                                  ),
+                                )
+                                    : TextButton(
+                                  onPressed: () {
+                                    setState(() => _isEditing =
+                                    true); // Enable editing mode
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: kDarkBlueColor,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                        
+                                      )
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.edit, color: Colors.white),
+                                      SizedBox(width: 8),
+                                      Text("Edit Profile", style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold
+                        
+                                      ),),
+                                    ],
+                                  ),
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 250,
+                        
+                              child: TextButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    backgroundColor: kDarkBlueColor
+                                ),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> DriverTripList(driver: driver,)));
+                                },
+                        
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.edit, color: Colors.white),
+                                    Icon(Icons.history, color:Colors.white),
                                     SizedBox(width: 8),
-                                    Text("Edit Profile", style: TextStyle(
+                                    Text("View Trip History", style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold
-
+                        
                                     ),),
                                   ],
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 250,
-
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: kDarkBlueColor
-                              ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> DriverTripList(driver: driver,)));
-                              },
-
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.history, color:Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("View Trip History", style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-
-                                  ),),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 250,
-
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: kDarkBlueColor
-                              ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
-                              },
-
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.password, color:Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("Reset Password", style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-
-                                  ),),
-                                ],
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 250,
+                        
+                              child: TextButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    backgroundColor: kDarkBlueColor
+                                ),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
+                                },
+                        
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.password, color:Colors.white),
+                                    SizedBox(width: 8),
+                                    Text("Reset Password", style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold
+                        
+                                    ),),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-
-
-                        ],
-                      ),
-                    ],
+                        
+                        
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ]),
           );
         }
 

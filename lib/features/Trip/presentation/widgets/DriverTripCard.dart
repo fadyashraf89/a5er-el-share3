@@ -157,6 +157,18 @@ class DriverTripCard extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.yellow),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Trip: ${trip.paymentMethod} ',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AcceptOrRejectButton(trip: trip, isAccept: true,),

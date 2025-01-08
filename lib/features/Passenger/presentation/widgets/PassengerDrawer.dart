@@ -106,7 +106,7 @@ class PassengerDrawer extends DrawerWidget{
                     Icons.history,
                     color: Colors.white,
                   ),
-                  title: const Text("Trip History",
+                  title: const Text("My Pending Trip Requests",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold)),
                   onTap: () {
@@ -151,27 +151,12 @@ class PassengerDrawer extends DrawerWidget{
                       thickness: 2,
                       color: Colors.grey,
                     )),
-                // ListTile(
-                //   leading: const Icon(Icons.settings, color: Colors.white),
-                //   title: const Text("Settings",
-                //       style: TextStyle(
-                //           color: Colors.white, fontWeight: FontWeight.bold)),
-                //   onTap: () {
-                //     Navigator.pop(context);
-                //     // Navigate to Settings
-                //   },
-                // ),
-                // const Center(
-                //     child: Divider(
-                //   height: 20,
-                //   thickness: 2,
-                //   color: Colors.grey,
-                // )),
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.white),
                   title: const Text("Log Out",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
+                          color: Colors.white, fontWeight: FontWeight.bold)
+                  ),
                   onTap: () async {
                     await authentication.SignOut();
                     Navigator.pushReplacement(

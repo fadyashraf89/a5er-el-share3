@@ -171,4 +171,11 @@ class Validators {
     return null;
   }
 
+  bool validatePoints(int? tripPoints, int? passengerPoints) {
+    if (tripPoints == null || passengerPoints == null) {
+      return false; // Consider null points invalid.
+    }
+    return passengerPoints >= tripPoints;
+  }
+
 }
