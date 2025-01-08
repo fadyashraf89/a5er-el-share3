@@ -100,6 +100,34 @@ class FirebaseTripStorage extends TripStorage {
     }
   }
 
+
+  @override
+  Future<List<Trip>> fetchTripHistoryForUser(String userEmail) async {
+    try {
+      // Reference the user's history document in the 'History' collection
+      DocumentSnapshot historySnapshot = await FirebaseFirestore.instance
+          .collection('History')
+          .doc(userEmail)
+          .get();
+
+      if (historySnapshot.exists) {
+        final data = historySnapshot.data() as Map<String, dynamic>;
+
+        // Parse the history data if it's stored as an array of trips
+        final List<dynamic> tripDataList = data['trips'] ?? [];
+        return tripDataList
+            .map((tripData) => Trip.fromMap(tripData as Map<String, dynamic>))
+            .toList();
+      } else {
+        print("No trip history found for user $userEmail");
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching trip history for user $userEmail: $e");
+      return [];
+    }
+  }
+
   @override
   Future<void> acceptTrip(
       String userEmail, Map<String, dynamic> tripData, Driver driver) async {
@@ -162,8 +190,20 @@ class FirebaseTripStorage extends TripStorage {
         await passengerDoc.update({'points': FieldValue.increment(tripPoints)});
         print("Incremented points by $tripPoints.");
       }
-
       print("Trip accepted and moved to AcceptedTrips.");
+
+      DocumentReference historyDoc =
+      FirebaseFirestore.instance.collection('History').doc(userEmail);
+
+// Use arrayUnion to append trip data to the user's history
+      await historyDoc.set(
+        {
+          'trips': FieldValue.arrayUnion([selectedTrip]),
+        },
+        SetOptions(merge: true),
+      );
+      print("Trip accepted and added to History collection.");
+
     } catch (e) {
       print("Error: ${e.toString()}, Stack: ${StackTrace.current}");
       throw Exception("Failed to accept trip.");
@@ -207,12 +247,22 @@ class FirebaseTripStorage extends TripStorage {
 
       selectedTrip['driver'] = driver.toMap();
 
-      // Add the updated trip to the AcceptedTrips collection
-      CollectionReference acceptedTripsCollection =
-          FirebaseFirestore.instance.collection('Rejected Trips');
-      await acceptedTripsCollection.add(selectedTrip);
+      // Reference the History collection for the user
+      DocumentReference historyDoc =
+      FirebaseFirestore.instance.collection('History').doc(userEmail);
 
-      print("Trip rejected and moved to Rejected Trips collection.");
+
+
+      // Add the rejected trip to History
+      await historyDoc.set(
+        {
+          'trips': FieldValue.arrayUnion([selectedTrip]),
+        },
+        SetOptions(merge: true),
+      );
+
+      print("Trip rejected and added to History collection.");
+
     } catch (e) {
       print("Error rejecting trip: $e");
       throw Exception("Failed to reject trip: $e");
