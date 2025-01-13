@@ -8,7 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/PassengerTripCard.dart';
 
 class PassengerTripList extends StatelessWidget {
-  const PassengerTripList({super.key});
+  final String? userEmail;
+  const PassengerTripList({super.key, required this.userEmail});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +21,14 @@ class PassengerTripList extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) => TripCubit(tripStorage: FirebaseTripStorage())
-          ..fetchTripsForLoggedInUser(), // Initiates fetching of trips
+          ..fetchAllTrips(userEmail!), // Fetch all trips for the user
         child: BlocBuilder<TripCubit, TripState>(
           builder: (context, state) {
             if (state is TripLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is TripDataFetched) {
               final trips = state.trips;
+              print("Trips fetched: ${trips.length} trips");
 
               if (trips.isEmpty) {
                 return const Center(child: Text('No trips found.'));

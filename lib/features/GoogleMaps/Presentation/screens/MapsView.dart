@@ -9,11 +9,11 @@ class MapsView extends StatelessWidget {
   final Set<Marker> markers;
 
   const MapsView({
-    Key? key,
+    super.key,
     this.onMapCreated,
     this.currentLocation,
     this.markers = const {},
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

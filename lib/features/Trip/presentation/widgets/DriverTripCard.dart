@@ -9,7 +9,7 @@ class DriverTripCard extends StatelessWidget {
   final Trip trip;
   final Driver driver; // Add Driver as a parameter
   final FirebaseTripStorage storage = FirebaseTripStorage();
-  DriverTripCard({Key? key, required this.trip, required this.driver}) : super(key: key);
+  DriverTripCard({super.key, required this.trip, required this.driver});
 
   @override
   Widget build(BuildContext context) {

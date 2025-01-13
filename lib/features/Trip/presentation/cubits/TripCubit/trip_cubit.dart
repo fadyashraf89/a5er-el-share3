@@ -33,6 +33,16 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
+  // Future<void> fetchTripHistoryForUser(String userEmail) async {
+  //   emit(TripLoading());
+  //   try {
+  //     final history = await tripStorage.fetchTripHistoryForUser(userEmail);
+  //     emit(TripHistoryFetched(history));
+  //   } catch (e) {
+  //     emit(TripError("Failed to fetch trip history for user $userEmail: $e"));
+  //   }
+  // }
+
   Future<void> fetchTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
@@ -42,8 +52,42 @@ class TripCubit extends Cubit<TripState> {
       emit(TripError("Failed to fetch trips for user $userEmail: $e"));
     }
   }
+  Future<void> fetchAcceptedTripsForUser(String userEmail) async {
+    emit(TripLoading());
+    try {
+      final trips = await tripStorage.fetchAcceptedTripsForUser(userEmail);
+      emit(TripDataFetched(trips));
+    } catch (e) {
+      emit(TripError("Failed to fetch accepted trips for user $userEmail: $e"));
+    }
+  }
+  Future<void> fetchRejectedTripsForUser(String userEmail) async {
+    emit(TripLoading());
+    try {
+      final trips = await tripStorage.fetchRejectedTripsForUser(userEmail);
+      emit(TripDataFetched(trips));
+    } catch (e) {
+      emit(TripError("Failed to fetch rejected trips for user $userEmail: $e"));
+    }
+  }
+// Combine both trips if needed
+  Future<void> fetchAllTrips(String userEmail) async {
+    emit(TripLoading());
+    try {
+      // Fetch trips and accepted trips
+      final trips = await tripStorage.fetchTripsForUser(userEmail);
+      final acceptedTrips = await tripStorage.fetchAcceptedTripsForUser(userEmail);
+      final rejectedTrips = await tripStorage.fetchRejectedTripsForUser(userEmail);
 
-// Integrated function to calculate distance and price
+      // Combine both lists into one
+      final allTrips = [...trips, ...acceptedTrips, ...rejectedTrips];
+      emit(TripDataFetched(allTrips));
+    } catch (e) {
+      emit(TripError("Failed to fetch trips: $e"));
+    }
+  }
+
+  // Integrated function to calculate distance and price
   void calculateTripDetails(LatLng pickupLocation, LatLng destinationLocation) async {
     try {
       // Calculate the distance first
@@ -91,6 +135,7 @@ class TripCubit extends Cubit<TripState> {
       emit(TripError("Failed to fetch requested trips: $e"));
     }
   }
+
 
   Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
     emit(TripLoading());

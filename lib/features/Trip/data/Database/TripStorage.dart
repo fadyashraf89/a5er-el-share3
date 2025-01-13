@@ -7,7 +7,7 @@ final String? currentEmail = currentUser?.email;
 
 abstract class TripStorage {
   Future<void> addTrip(List<Trip> tripsList);
-
+  // Future<List<Trip>> fetchTripHistoryForUser(String userEmail);
   Future<List<Trip>> fetchTripsForLoggedInUser();
 
   Future<List<Trip>> fetchTripsForUser(String userEmail);

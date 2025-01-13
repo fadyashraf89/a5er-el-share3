@@ -13,7 +13,7 @@ import '../../data/Database/FirebasePassengerStorage.dart';
 import "../widgets/PassengerDrawer.dart";
 
 class PassengerHome extends StatefulWidget {
-  const PassengerHome({Key? key}) : super(key: key);
+  const PassengerHome({super.key});
 
   @override
   State<PassengerHome> createState() => _PassengerHomeState();

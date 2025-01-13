@@ -9,7 +9,7 @@ import '../../domain/models/trip.dart';
 class PassengerTripCard extends StatefulWidget {
   final Trip trip;
 
-  const PassengerTripCard({Key? key, required this.trip}) : super(key: key);
+  const PassengerTripCard({super.key, required this.trip});
 
   @override
   State<PassengerTripCard> createState() => _PassengerTripCardState();

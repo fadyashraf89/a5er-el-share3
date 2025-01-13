@@ -6,20 +6,13 @@ class Passenger extends MyUser {
   // Constructor with default values for optional properties
   Passenger({
     this.points = 0, // defaulting points to 0 if not provided
-    String? email = "",
-    String? password = "",
-    String? mobileNumber = "",
-    String? role = "",
-    String? uid = "",
-    String? name = "",
-  }) : super(
-    name: name,
-    email: email,
-    password: password,
-    mobileNumber: mobileNumber,
-    role: role,
-    uid: uid,
-  );
+    super.email = "",
+    super.password = "",
+    super.mobileNumber = "",
+    super.role = "",
+    super.uid = "",
+    super.name = "",
+  });
 
   // Factory constructor to create a Passenger object from a Map
   factory Passenger.fromMap(Map<String, dynamic> data) {

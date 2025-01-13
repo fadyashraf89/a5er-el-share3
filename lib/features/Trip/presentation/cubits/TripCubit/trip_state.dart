@@ -17,6 +17,11 @@ class TripDataFetched extends TripState {
   TripDataFetched(this.trips);
 }
 
+class TripHistoryFetched extends TripState {
+  final List<Trip> trips;
+  TripHistoryFetched(this.trips);
+}
+
 class TripError extends TripState {
   final String message;
   TripError(this.message);

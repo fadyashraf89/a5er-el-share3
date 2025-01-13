@@ -11,19 +11,32 @@ final String? currentEmail = currentUser?.email;
 class FirebaseTripStorage extends TripStorage {
   @override
   Future<void> addTrip(List<Trip> tripsList) async {
-    CollectionReference trips = FirebaseFirestore.instance.collection('Trips');
+    CollectionReference tripsCollection = FirebaseFirestore.instance.collection('Trips');
+    CollectionReference historyCollection = FirebaseFirestore.instance.collection('History');
 
     for (Trip trip in tripsList) {
-      String documentId =
-          trip.passenger?.email ?? ''; // Use a default if email is null
+      String documentId = trip.passenger?.email ?? ''; // Use passenger email or default value
 
-      await trips.doc(documentId).set({
+      // Add the trip to the 'Trips' collection
+      await tripsCollection.doc(documentId).set({
         'trips': FieldValue.arrayUnion([]),
       }, SetOptions(merge: true));
 
-      await trips.doc(documentId).update({
+      await tripsCollection.doc(documentId).update({
         'trips': FieldValue.arrayUnion(
-            tripsList.map((trip) => trip.toMap()).toList()),
+          tripsList.map((trip) => trip.toMap()).toList(),
+        ),
+      });
+
+      // Add the trip to the 'History' collection
+      Map<String, dynamic> tripMap = trip.toMap();
+
+      await historyCollection.doc(documentId).set({
+        'trips': FieldValue.arrayUnion([]),
+      }, SetOptions(merge: true));
+
+      await historyCollection.doc(documentId).update({
+        'trips': FieldValue.arrayUnion([tripMap]),
       });
     }
   }
@@ -71,6 +84,59 @@ class FirebaseTripStorage extends TripStorage {
       return [];
     }
   }
+  Future<List<Trip>> fetchAcceptedTripsForUser(String userMail) async {
+    try {
+      CollectionReference acceptedTripsCollection =
+      FirebaseFirestore.instance.collection('AcceptedTrips');
+
+      // Query the 'AcceptedTrips' collection to find trips where the passenger's email matches
+      QuerySnapshot querySnapshot = await acceptedTripsCollection
+          .where('passenger.email', isEqualTo: userMail)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        print("No accepted trips found for user $userMail.");
+        return []; // Return an empty list if no documents are found
+      }
+
+      // Map the Firestore data to a list of Trip objects
+      List<Trip> acceptedTrips = querySnapshot.docs.map((doc) {
+        return Trip.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return acceptedTrips;
+    } catch (e) {
+      print("Error fetching accepted trips for user $userMail: $e");
+      return [];
+    }
+  }
+
+  Future<List<Trip>> fetchRejectedTripsForUser(String userMail) async {
+    try {
+      CollectionReference RejectedTripsCollection =
+      FirebaseFirestore.instance.collection('Rejected Trips');
+
+      // Query the 'AcceptedTrips' collection to find trips where the passenger's email matches
+      QuerySnapshot querySnapshot = await RejectedTripsCollection
+          .where('passenger.email', isEqualTo: userMail)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        print("No rejected trips found for user $userMail.");
+        return []; // Return an empty list if no documents are found
+      }
+
+      // Map the Firestore data to a list of Trip objects
+      List<Trip> rejectedTrips = querySnapshot.docs.map((doc) {
+        return Trip.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return rejectedTrips;
+    } catch (e) {
+      print("Error fetching rejected trips for user $userMail: $e");
+      return [];
+    }
+  }
 
   @override
   Future<List<Trip>> fetchAllRequestedTrips() async {
@@ -101,32 +167,35 @@ class FirebaseTripStorage extends TripStorage {
   }
 
 
-  @override
-  Future<List<Trip>> fetchTripHistoryForUser(String userEmail) async {
-    try {
-      // Reference the user's history document in the 'History' collection
-      DocumentSnapshot historySnapshot = await FirebaseFirestore.instance
-          .collection('History')
-          .doc(userEmail)
-          .get();
+  // @override
+  // Future<List<Trip>> fetchTripHistoryForUser(String userEmail) async {
+  //   try {
+  //     DocumentSnapshot historySnapshot =
+  //     await FirebaseFirestore.instance.collection('History').doc(userEmail).get();
+  //
+  //     if (!historySnapshot.exists) {
+  //       return []; // Return an empty list if no history document found
+  //     }
+  //
+  //     final data = historySnapshot.data() as Map<String, dynamic>?;
+  //
+  //     if (data == null || !data.containsKey('trips')) {
+  //       print("Error: 'trips' field is missing or null in history document.");
+  //       return [];
+  //     }
+  //
+  //     final List<dynamic> tripDataList = data['trips'] ?? [];
+  //     return tripDataList
+  //         .map((tripData) => Trip.fromMap(tripData as Map<String, dynamic>))
+  //         .toList();
+  //   } catch (e) {
+  //     print("Error fetching trip history: $e");
+  //     return [];
+  //   }
+  // }
 
-      if (historySnapshot.exists) {
-        final data = historySnapshot.data() as Map<String, dynamic>;
 
-        // Parse the history data if it's stored as an array of trips
-        final List<dynamic> tripDataList = data['trips'] ?? [];
-        return tripDataList
-            .map((tripData) => Trip.fromMap(tripData as Map<String, dynamic>))
-            .toList();
-      } else {
-        print("No trip history found for user $userEmail");
-        return [];
-      }
-    } catch (e) {
-      print("Error fetching trip history for user $userEmail: $e");
-      return [];
-    }
-  }
+
 
   @override
   Future<void> acceptTrip(

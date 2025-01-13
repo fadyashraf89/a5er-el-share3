@@ -10,6 +10,7 @@ import "../cubits/PassengerCubit/passenger_cubit.dart";
 import "../screens/PassengerProfile.dart";
 class PassengerDrawer extends DrawerWidget{
   FirebasePassengerStorage PStorage = FirebasePassengerStorage();
+
   @override
   Widget OpenDrawer() {
     return Drawer(
@@ -113,7 +114,7 @@ class PassengerDrawer extends DrawerWidget{
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const PassengerTripList()));
+                            builder: (context) => PassengerTripList(userEmail: passenger.email)));
                     // Navigate to Trip History
                   },
                 ),

@@ -222,7 +222,7 @@ class _PassengerProfileState extends State<PassengerProfile> {
                                 backgroundColor: kDarkBlueColor
                               ),
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const PassengerTripList()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> PassengerTripList(userEmail: passenger.email,)));
                               },
 
                               child: const Row(
