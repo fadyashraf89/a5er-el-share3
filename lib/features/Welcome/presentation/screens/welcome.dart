@@ -1,9 +1,9 @@
-import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
 import 'package:a5er_elshare3/features/Driver/presentation/screens/DriverHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../../Passenger/presentation/screens/PassengerHome.dart';
 import 'Opening.dart';
 
@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  Authentication authentication = Authentication();
+  AuthService authentication = AuthService();
 
   @override
   void initState() {

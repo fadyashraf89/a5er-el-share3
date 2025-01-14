@@ -87,26 +87,17 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
-  // Integrated function to calculate distance and price
   void calculateTripDetails(LatLng pickupLocation, LatLng destinationLocation) async {
     try {
-      // Calculate the distance first
       double distanceInKilometers = calculateDistance(pickupLocation, destinationLocation);
-
-      // Calculate the price based on the distance
       double price = calculatePrice(distanceInKilometers);
-
-      // Emit the result with the distance and price
       emit(TripRequestSuccess(
           "Trips successfully added. Distance: ${distanceInKilometers.toStringAsFixed(2)} km, Price: \$${price.toStringAsFixed(2)}"
       ));
     } catch (e) {
-      // Handle any errors that might occur during calculation
       emit(TripRequestFailed("Failed to calculate distance or price. Error: ${e.toString()}"));
     }
   }
-
-// Function to calculate the distance between two points (in kilometers)
   double calculateDistance(LatLng point1, LatLng point2) {
     double distanceInMeters = Geolocator.distanceBetween(
       point1.latitude,
@@ -114,17 +105,14 @@ class TripCubit extends Cubit<TripState> {
       point2.latitude,
       point2.longitude,
     );
-
-    double distanceInKilometers = distanceInMeters / 1000; // Convert meters to kilometers
+    double distanceInKilometers = distanceInMeters / 1000;
     return distanceInKilometers;
   }
 
-// Function to calculate the price based on the distance (example: $3 per kilometer)
   double calculatePrice(double distanceInKilometers) {
-    double price = distanceInKilometers * 3; // Pricing formula ($3 per kilometer)
+    double price = distanceInKilometers * 3;
     return price;
   }
-
 
   Future<void> fetchAllRequestedTrips() async {
     emit(TripLoading());
@@ -135,7 +123,6 @@ class TripCubit extends Cubit<TripState> {
       emit(TripError("Failed to fetch requested trips: $e"));
     }
   }
-
 
   Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
     emit(TripLoading());

@@ -1,9 +1,9 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/Database/FirebaseAuthentication.dart';
 import '../../../../core/utils/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
+import '../data/Database/FirebaseAuthentication.dart';
 
 
 class ResetPassword extends StatefulWidget {
@@ -35,7 +35,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 "Write your email to reset your password",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontFamily: "Archivo",
+                    fontFamily: kFontFamilyArchivo,
                     fontSize: 16,
                     color: kDarkBlueColor),
               ),
@@ -75,7 +75,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        Authentication auth = Authentication();
+                        AuthService auth = AuthService();
                         String message =
                             await auth.forgotPassword(emailController.text);
 
@@ -93,7 +93,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     child: const Text("Reset Password",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontFamily: "Archivo",
+                            fontFamily: kFontFamilyArchivo,
                             fontSize: 16,
                             color: Colors.white))),
               )

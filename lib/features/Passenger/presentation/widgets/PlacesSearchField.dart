@@ -34,13 +34,13 @@ class PlacesSearchField {
         return GestureDetector(
           onTap: () async {
             try {
-              if (ApiKey.isEmpty) {
+              if (kApiKey.isEmpty) {
                 throw Exception("Missing Places API Key");
               }
 
               Prediction? prediction = await PlacesAutocomplete.show(
                 context: ctx1,
-                apiKey: ApiKey,
+                apiKey: kApiKey,
                 mode: Mode.fullscreen,
                 language: "en",
               );

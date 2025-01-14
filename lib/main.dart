@@ -1,4 +1,5 @@
 import 'package:a5er_elshare3/features/Welcome/presentation/screens/welcome.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,11 +9,16 @@ import 'features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  // final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
+
   WidgetsFlutterBinding
-      .ensureInitialized(); // Ensures binding is initialized before Firebase
+      .ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseMessaging.instance.subscribeToTopic("street");
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print ("FCM Token: $fcmToken");
   runApp(const MyApp());
 }
 
@@ -33,7 +39,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-          fontFamily: 'Archivo', // The font family declared in pubspec.yaml
+          fontFamily: 'Archivo',
         ),
         debugShowCheckedModeBanner: false,
         home: const SplashScreen(),

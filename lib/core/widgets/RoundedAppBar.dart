@@ -1,3 +1,4 @@
+import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -53,8 +54,8 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Image.asset(
                   imagePath!,
                   fit: BoxFit.contain,
-                  width: 300, // Adjust as needed
-                  height: 300, // Adjust as needed
+                  width: 300,
+                  height: 300,
                 ),
               ),
             ),
@@ -67,7 +68,7 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                fontFamily: "Archivo",
+                fontFamily: kFontFamilyArchivo,
               ),
             ),
           ),

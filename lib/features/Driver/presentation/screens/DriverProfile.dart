@@ -4,7 +4,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 
 import "../../../../core/utils/constants.dart";
 import "../../../../core/widgets/RoundedAppBar.dart";
-import "../../../Authentication/presentation/screens/ForgotPassword.dart";
+import "../../../AuthService/screens/ForgotPassword.dart";
 import "../../../Trip/presentation/screens/DriverTripList.dart";
 import "../../domain/models/driver.dart";
 class DriverProfile extends StatefulWidget {

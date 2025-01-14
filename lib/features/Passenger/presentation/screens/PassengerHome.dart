@@ -1,11 +1,11 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
-import 'package:a5er_elshare3/features/Authentication/data/Database/FirebaseAuthentication.dart';
 import 'package:a5er_elshare3/features/Passenger/presentation/widgets/TripDetailsSheet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "../../../../core/utils/constants.dart";
+import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 import '../../../GoogleMaps/Presentation/screens/MapsView.dart';
 import '../../../Trip/data/Database/FirebaseTripStorage.dart';
@@ -23,7 +23,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   final TextEditingController pickUpController = TextEditingController();
   final TextEditingController destinationController = TextEditingController();
   Validators validators = Validators();
-  Authentication authentication = Authentication();
+  AuthService authentication = AuthService();
   final formKey = GlobalKey<FormState>();
   final Set<Marker> _markers = {};
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -84,7 +84,6 @@ class _PassengerHomeState extends State<PassengerHome> {
             left: 16,
             right: 16,
             child: ElevatedButton(
-              // onPressed: _getCurrentLocation,
               onPressed: () => TripDetailsSheet().showTripDetailsSheet(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: kDarkBlueColor,

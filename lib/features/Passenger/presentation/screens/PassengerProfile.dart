@@ -1,9 +1,9 @@
 import "package:a5er_elshare3/core/utils/constants.dart";
 import "package:a5er_elshare3/core/widgets/RoundedAppBar.dart";
-import "package:a5er_elshare3/features/Authentication/presentation/screens/ForgotPassword.dart";
 import "package:a5er_elshare3/features/Trip/presentation/screens/PassengerTripList.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "../../../AuthService/screens/ForgotPassword.dart";
 import "../../domain/models/Passenger.dart";
 import "../cubits/PassengerCubit/passenger_cubit.dart";
 

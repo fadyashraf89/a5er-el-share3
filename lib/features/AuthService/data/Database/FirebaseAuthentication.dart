@@ -1,6 +1,8 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 
+import "../../../../core/utils/constants.dart";
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -77,21 +79,19 @@ class AuthService {
 
   Future<String?> fetchUserRole(String userId) async {
     try {
-      // Fetch from Passengers collection
       final passengerDoc = await FirebaseFirestore.instance
-          .collection('Passengers')
+          .collection(kPassengersCollection)
           .doc(userId)
           .get();
 
       if (passengerDoc.exists) {
         print("Passenger document exists: ${passengerDoc.exists}");
         print("Passenger document data: ${passengerDoc.data()}");
-        return passengerDoc.data()?['role']; // Return 'Passenger' role
+        return passengerDoc.data()?['role'];
       }
 
-      // Fetch from Drivers collection if not found in Passengers
       final driverDoc = await FirebaseFirestore.instance
-          .collection('Drivers')
+          .collection(kDriversCollection)
           .doc(userId)
           .get();
 
@@ -101,9 +101,8 @@ class AuthService {
         return driverDoc.data()?['role']; // Return 'Driver' role
       }
 
-      // Log if neither document is found
       print("No document found for user ID: $userId");
-      return null; // User not found in both collections
+      return null;
     } catch (e) {
       print("Error fetching user role: $e");
       return null;
@@ -121,19 +120,16 @@ class AuthService {
 
   Future<String?> getCurrentUserEmail() async {
     try {
-      // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
-
-      // Check if the user is signed in
       if (user != null) {
-        return user.email; // Return the user's email address
+        return user.email;
       } else {
         print("No user is currently signed in.");
-        return null; // Handle case where no user is signed in
+        return null;
       }
     } catch (e) {
       print("Error getting current user email: $e");
-      return null; // Handle any error gracefully
+      return null;
     }
   }
 
