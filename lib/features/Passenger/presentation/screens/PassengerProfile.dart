@@ -24,13 +24,11 @@ class _PassengerProfileState extends State<PassengerProfile> {
   @override
   void initState() {
     super.initState();
-    // Fetch data when widget is initialized
     context.read<PassengerCubit>().fetchPassengerData();
   }
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
     _nameController.dispose();
     _emailController.dispose();
     _mobileNumberController.dispose();
@@ -60,7 +58,6 @@ class _PassengerProfileState extends State<PassengerProfile> {
               ? state.passenger
               : (state as PassengerUpdated).passenger;
 
-          // Initialize controllers with fetched data
           _nameController = TextEditingController(text: passenger.name);
           _emailController = TextEditingController(text: passenger.email);
           _mobileNumberController = TextEditingController(
@@ -138,7 +135,6 @@ class _PassengerProfileState extends State<PassengerProfile> {
                                   if (!_formKey.currentState!
                                       .validate()) return;
 
-                                  // Create updated Passenger object
                                   Passenger updatedPassenger =
                                   Passenger(
                                     uid: passenger.uid,
@@ -149,8 +145,6 @@ class _PassengerProfileState extends State<PassengerProfile> {
                                     role: passenger.role,
                                     points: passenger.points ?? 0
                                   );
-
-                                  // Update data using the PassengerCubit
                                   context
                                       .read<PassengerCubit>()
                                       .updatePassengerData(

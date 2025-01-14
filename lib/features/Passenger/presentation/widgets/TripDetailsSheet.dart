@@ -4,7 +4,6 @@ import "package:a5er_elshare3/features/Passenger/presentation/widgets/SelectPaym
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
-
 import "../../../../core/utils/constants.dart";
 import "../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart";
 import "../../../Trip/domain/models/trip.dart";
@@ -19,8 +18,7 @@ class TripDetailsSheet {
   final TextEditingController destinationController = TextEditingController();
   final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
 
-  // Initialize Passenger with default values (points defaulting to 0)
-  Passenger passenger = Passenger(); // Creating a Passenger instance
+  Passenger passenger = Passenger();
 
   Trip trip = Trip();
   double? calculatedPrice = 0.0;
@@ -88,7 +86,7 @@ class TripDetailsSheet {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                fontFamily: "Archivo",
+                                fontFamily: kFontFamilyArchivo,
                                 color: kDarkBlueColor,
                               ),
                             ),
@@ -119,7 +117,7 @@ class TripDetailsSheet {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                fontFamily: "Archivo",
+                                fontFamily: kFontFamilyArchivo,
                                 color: kDarkBlueColor,
                               ),
                             ),
@@ -145,7 +143,7 @@ class TripDetailsSheet {
                                     currentState.markers.firstWhere(
                                   (marker) =>
                                       marker.markerId ==
-                                      const MarkerId('pickup'),
+                                      const MarkerId(kPickupId),
                                   orElse: () => throw Exception(
                                       "Pickup location not set!"),
                                 );
@@ -154,7 +152,7 @@ class TripDetailsSheet {
                                     currentState.markers.firstWhere(
                                   (marker) =>
                                       marker.markerId ==
-                                      const MarkerId('destination'),
+                                      const MarkerId(kDestinationId),
                                   orElse: () => throw Exception(
                                       "Destination location not set!"),
                                 );
@@ -229,62 +227,6 @@ class TripDetailsSheet {
                                   }
 
                                   try {
-                                    // final currentState = context
-                                    //     .read<MapsCubit>()
-                                    //     .state as MapsLoaded;
-                                    //
-                                    // final pickupMarker = currentState.markers
-                                    //     .firstWhere(
-                                    //       (marker) =>
-                                    //   marker.markerId ==
-                                    //       const MarkerId('pickup'),
-                                    //   orElse: () =>
-                                    //   throw Exception("Pickup location not set!"),
-                                    // );
-                                    //
-                                    // final destinationMarker =
-                                    // currentState.markers.firstWhere(
-                                    //       (marker) =>
-                                    //   marker.markerId ==
-                                    //       const MarkerId('destination'),
-                                    //   orElse: () =>
-                                    //   throw Exception("Destination location not set!"),
-                                    // );
-                                    //
-                                    // LatLng pickupLocation =
-                                    //     pickupMarker.position;
-                                    // LatLng destinationLocation =
-                                    //     destinationMarker.position;
-                                    //
-                                    // double distance = TripCalculations()
-                                    //     .calculateDistance(
-                                    //   pickupLocation,
-                                    //   destinationLocation,
-                                    //   context,
-                                    // );
-                                    //
-                                    // double price = TripCalculations()
-                                    //     .calculatePrice(distance, context);
-                                    //
-                                    // calculatedPrice = price;
-                                    //
-                                    // int points = TripCalculations()
-                                    //     .calculateTripPoints(price, context);
-                                    //
-                                    // trip = Trip(
-                                    //   date: DateTime.now().toIso8601String(),
-                                    //   time: TimeOfDay.now().format(context),
-                                    //   FromLocation: pickUpController.text,
-                                    //   ToDestination: destinationController.text,
-                                    //   Status: "Requested",
-                                    //   driver: null,
-                                    //   passenger: passenger,
-                                    //   distance: distance,
-                                    //   price: price,
-                                    //   points: points,
-                                    //   paymentMethod: paymentMethod,
-                                    // );
-
                                     context.read<TripCubit>().addTrips([trip]);
                                   } catch (e) {
                                     MessageDialog().ShowDialog(
@@ -305,7 +247,7 @@ class TripDetailsSheet {
                                   child: Text(
                                     "Confirm Trip Request",
                                     style: TextStyle(
-                                      fontFamily: "Archivo",
+                                      fontFamily: kFontFamilyArchivo,
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

@@ -47,7 +47,7 @@ class PassengerDrawer extends DrawerWidget{
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "assets/images/default.png",
+                          kAppLogo,
                           width: 120,
                           height: 120,
                         ),
@@ -107,7 +107,7 @@ class PassengerDrawer extends DrawerWidget{
                     Icons.history,
                     color: Colors.white,
                   ),
-                  title: const Text("My Pending Trip Requests",
+                  title: const Text("Trip History",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold)),
                   onTap: () {

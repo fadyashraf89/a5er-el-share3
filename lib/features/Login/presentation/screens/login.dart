@@ -84,11 +84,11 @@ class _SignInPageState extends State<SignInPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
-                          child: Image.asset("assets/images/default.png",
+                          child: Image.asset(kAppLogo,
                               width: 350, height: 350)),
                       const Text(
                         "Sign In",
-                        style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
+                        style: TextStyle(fontSize: 22, fontFamily: kFontFamilyArchivo),
                       ),
                       const SizedBox(height: 10),
                       Form(
@@ -104,7 +104,7 @@ class _SignInPageState extends State<SignInPage> {
                               decoration: InputDecoration(
                                 hintText: 'Email',
                                 hintStyle:
-                                    const TextStyle(fontFamily: "Archivo"),
+                                    const TextStyle(fontFamily: kFontFamilyArchivo),
                                 prefixIcon: const Icon(Icons.email),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -130,7 +130,7 @@ class _SignInPageState extends State<SignInPage> {
                               decoration: InputDecoration(
                                 hintText: 'Password',
                                 hintStyle:
-                                    const TextStyle(fontFamily: "Archivo"),
+                                    const TextStyle(fontFamily: kFontFamilyArchivo),
                                 prefixIcon: const Icon(Icons.password),
                                 suffixIcon: IconButton(
                                   onPressed: () {
@@ -169,7 +169,7 @@ class _SignInPageState extends State<SignInPage> {
                                   "Forgot Password",
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.8),
-                                      fontFamily: "Archivo",
+                                      fontFamily: kFontFamilyArchivo,
                                   fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -197,7 +197,7 @@ class _SignInPageState extends State<SignInPage> {
                                   "Sign In",
                                   style: TextStyle(
                                       color: Color(0xffFFFFFF),
-                                      fontFamily: "Archivo"),
+                                      fontFamily: kFontFamilyArchivo),
                                 ),
                               ),
                             ),
@@ -208,7 +208,7 @@ class _SignInPageState extends State<SignInPage> {
                               children: [
                                 const Text(
                                   "Don't have an account ?",
-                                  style: TextStyle(fontFamily: "Archivo"),
+                                  style: TextStyle(fontFamily: kFontFamilyArchivo),
                                 ),
                                 TextButton(
                                   onPressed: () {
@@ -224,7 +224,7 @@ class _SignInPageState extends State<SignInPage> {
                                     style: TextStyle(
                                         color: Colors.black.withOpacity(0.8),
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: "Archivo"),
+                                        fontFamily: kFontFamilyArchivo),
                                   ),
                                 ),
                               ],

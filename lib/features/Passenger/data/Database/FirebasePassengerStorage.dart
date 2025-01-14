@@ -1,3 +1,4 @@
+import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:a5er_elshare3/features/Passenger/data/Database/PassengerStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/models/Passenger.dart';
@@ -6,7 +7,7 @@ class FirebasePassengerStorage extends PassengerStorage {
   @override
   Future<void> addPassenger(Passenger passenger) async {
     CollectionReference passengers =
-    FirebaseFirestore.instance.collection('Passengers');
+    FirebaseFirestore.instance.collection(kPassengersCollection);
     try {
       await passengers.doc(passenger.uid).set({
         'email': passenger.email,
@@ -28,7 +29,7 @@ class FirebasePassengerStorage extends PassengerStorage {
     if (user == null) throw Exception("User not logged in");
 
     final doc =
-    await firestore.collection('Passengers').doc(user.uid).get(); // Fetch user data from Firestore.
+    await firestore.collection(kPassengersCollection).doc(user.uid).get(); // Fetch user data from Firestore.
 
     if (doc.exists) {
       return Passenger.fromMap(doc.data()!);
@@ -44,9 +45,9 @@ class FirebasePassengerStorage extends PassengerStorage {
 
     try {
       await firestore
-          .collection('Passengers')
+          .collection(kPassengersCollection)
           .doc(user.uid)
-          .update(updatedData); // Use Firestore's `update` method
+          .update(updatedData);
       print("Passenger Data Updated Successfully");
     } catch (error) {
       print("Failed to update passenger: $error");

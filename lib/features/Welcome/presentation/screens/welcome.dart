@@ -1,3 +1,4 @@
+import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:a5er_elshare3/features/Driver/presentation/screens/DriverHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen>
           child: FadeTransition(
             opacity: _animation,
             child: Image.asset(
-              "assets/images/default.png",
+              kAppLogo,
               width: MediaQuery.of(context).size.width * 0.6, // Constrain width
               height:
               MediaQuery.of(context).size.height * 0.4, // Constrain height

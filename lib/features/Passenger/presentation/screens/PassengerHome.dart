@@ -96,7 +96,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                 child: Text(
                   "Request a Trip",
                   style: TextStyle(
-                      fontFamily: "Archivo",
+                      fontFamily: kFontFamilyArchivo,
                       fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),

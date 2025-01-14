@@ -1,3 +1,4 @@
+import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
@@ -7,7 +8,7 @@ class FirebaseDriverStorage extends DriverStorage {
   @override
   Future<void> addDriver(Driver driver) async {
     CollectionReference drivers =
-    FirebaseFirestore.instance.collection('Drivers');
+    FirebaseFirestore.instance.collection(kDriversCollection);
     try {
       // Use `set` with the UID as the document ID
       await drivers.doc(driver.uid).set({
@@ -33,7 +34,7 @@ class FirebaseDriverStorage extends DriverStorage {
     if (user == null) throw Exception("User not logged in");
 
     final doc =
-    await firestore.collection('Drivers').doc(user.uid).get(); // Fetch user data from Firestore.
+    await firestore.collection(kDriversCollection).doc(user.uid).get(); // Fetch user data from Firestore.
 
     if (doc.exists) {
       return Driver.fromMap(doc.data()!);
@@ -48,7 +49,7 @@ class FirebaseDriverStorage extends DriverStorage {
 
     try {
       await firestore
-          .collection('Drivers')
+          .collection(kDriversCollection)
           .doc(user.uid)
           .update(updatedData); // Use Firestore's `update` method
       print("Driver Data Updated Successfully");

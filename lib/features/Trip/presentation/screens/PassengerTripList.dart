@@ -21,7 +21,7 @@ class PassengerTripList extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) => TripCubit(tripStorage: FirebaseTripStorage())
-          ..fetchAllTrips(userEmail!), // Fetch all trips for the user
+          ..fetchAllTrips(userEmail!),
         child: BlocBuilder<TripCubit, TripState>(
           builder: (context, state) {
             if (state is TripLoading) {

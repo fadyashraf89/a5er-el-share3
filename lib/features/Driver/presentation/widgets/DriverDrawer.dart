@@ -47,7 +47,7 @@ class DriverDrawer extends DrawerWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "assets/images/default.png",
+                          kAppLogo,
                           width: 120,
                           height: 120,
                         ),
@@ -126,22 +126,6 @@ class DriverDrawer extends DrawerWidget {
                       thickness: 2,
                       color: Colors.grey,
                     )),
-                // ListTile(
-                //   leading: const Icon(Icons.settings, color: Colors.white),
-                //   title: const Text("Settings",
-                //       style: TextStyle(
-                //           color: Colors.white, fontWeight: FontWeight.bold)),
-                //   onTap: () {
-                //     Navigator.pop(context);
-                //     // Navigate to Settings
-                //   },
-                // ),
-                // const Center(
-                //     child: Divider(
-                //   height: 20,
-                //   thickness: 2,
-                //   color: Colors.grey,
-                // )),
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.white),
                   title: const Text("Log Out",

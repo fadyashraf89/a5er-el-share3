@@ -23,7 +23,7 @@ class _DriverProfileState extends State<DriverProfile> {
   late TextEditingController _driverLicenseController = TextEditingController();
   late TextEditingController _nameController = TextEditingController();
   late TextEditingController _carModelController = TextEditingController();
-  bool _isEditing = false; // Track editing state
+  bool _isEditing = false;
   @override
   void initState() {
     super.initState();
@@ -63,15 +63,12 @@ class _DriverProfileState extends State<DriverProfile> {
               ? state.driver
               : (state as DriverUpdated).driver;
 
-          // Initialize controllers with fetched data
           _nameController = TextEditingController(text: driver.name);
           _emailController = TextEditingController(text: driver.email);
           _mobileNumberController = TextEditingController(text: driver.mobileNumber);
           _driverLicenseController = TextEditingController(text: driver.licenseNumber);
           _carPlateController = TextEditingController(text: driver.carPlateNumber);
           _carModelController = TextEditingController(text: driver.carModel);
-
-
 
           return Scaffold(
             appBar: const RoundedAppBar(
@@ -100,7 +97,6 @@ class _DriverProfileState extends State<DriverProfile> {
                                     hintText: "Email",
                                     isEnabled: _isEditing,
                                     isReadOnly: true,
-                                    // Make email always readonly
                                     icon: Icons.email),
                                 const SizedBox(height: 10),
                                 _buildTextField(
@@ -160,15 +156,13 @@ class _DriverProfileState extends State<DriverProfile> {
                                       carPlateNumber: _carPlateController.text,
                                       licenseNumber: _driverLicenseController.text,
                                     );
-                        
-                                    // Update data using the PassengerCubit
                                     context
                                         .read<DriverCubit>()
                                         .updateDriverData(
                                         updatedDriver);
                         
                                     setState(() => _isEditing =
-                                    false); // Stop editing mode
+                                    false);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: kDarkBlueColor,
@@ -194,7 +188,7 @@ class _DriverProfileState extends State<DriverProfile> {
                                     : TextButton(
                                   onPressed: () {
                                     setState(() => _isEditing =
-                                    true); // Enable editing mode
+                                    true);
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: kDarkBlueColor,
@@ -245,7 +239,8 @@ class _DriverProfileState extends State<DriverProfile> {
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold
                         
-                                    ),),
+                                    ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -297,7 +292,9 @@ class _DriverProfileState extends State<DriverProfile> {
             body: Center(
                 child: CircularProgressIndicator(
                   color: kDarkBlueColor,
-                )));
+                )
+            )
+        );
       },
     );
   }
@@ -316,9 +313,12 @@ class _DriverProfileState extends State<DriverProfile> {
           prefixIcon: Icon(icon),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: const BorderSide(
               color: kDarkBlueColor
-          )),
+          )
+          ),
           enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: kDarkBlueColor))),
+              borderSide: BorderSide(color: kDarkBlueColor)
+          )
+      ),
     );
   }
 

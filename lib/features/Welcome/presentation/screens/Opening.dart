@@ -32,7 +32,7 @@ class _OpeningState extends State<Opening> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/images/default.png", width: 350, height: 350,), // Specify your image path
+                Image.asset(kAppLogo, width: 350, height: 350,), // Specify your image path
                 SizedBox(
                   width: 250,
                   child: TextButton(
@@ -56,7 +56,7 @@ class _OpeningState extends State<Opening> {
                     },
                     child: const Text(
                       "Sign In",
-                      style: TextStyle(color: kDarkBlueColor, fontSize: 18, fontFamily: "Archivo", fontWeight: FontWeight.bold),
+                      style: TextStyle(color: kDarkBlueColor, fontSize: 18, fontFamily: kFontFamilyArchivo, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -81,7 +81,7 @@ class _OpeningState extends State<Opening> {
                     },
                     child: const Text(
                       "Sign Up",
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: "Archivo", fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: kFontFamilyArchivo, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

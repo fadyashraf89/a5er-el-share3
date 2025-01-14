@@ -1,3 +1,4 @@
+import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -73,13 +74,11 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      // Retrieve user input
                       String cardNumber = cardNumberController.text.trim();
                       String expirationDate =
                           expirationDateController.text.trim();
                       String cvv = cvvController.text.trim();
 
-                      // Validate input
                       if (cardNumber.isEmpty ||
                           expirationDate.isEmpty ||
                           cvv.isEmpty) {
@@ -87,7 +86,6 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
                         return;
                       }
 
-                      // Create a card object
                       Cards card = Cards(
                         CardNumber: cardNumber,
                         ExpiryDate: expirationDate,
@@ -95,13 +93,9 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
                         passenger: passenger,
                       );
 
-                      // Save the card details
                       await addCard(card, passenger);
-
-                      // Process the payment
                       print('Processing payment for card number $cardNumber');
 
-                      // Navigate back after payment or show success
                       Navigator.pop(context);
                     },
                     child: const Text('Save and Pay'),
@@ -116,19 +110,16 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
   Future<void> addCard(Cards card, Passenger passenger) async {
     try {
       CollectionReference cardsCollection =
-          FirebaseFirestore.instance.collection('Cards');
+          FirebaseFirestore.instance.collection(kCardsCollection);
 
       String documentId = passenger.email ?? '';
       if (documentId.isEmpty) {
         throw Exception("Passenger email is required to save card.");
       }
-
-      // Merge existing cards or create a new array
       await cardsCollection.doc(documentId).set({
         'cards': FieldValue.arrayUnion([]),
       }, SetOptions(merge: true));
 
-      // Update the card list with the new card
       await cardsCollection.doc(documentId).update({
         'cards': FieldValue.arrayUnion([card.toMap()]),
       });

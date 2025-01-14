@@ -32,18 +32,7 @@ class TripCubit extends Cubit<TripState> {
       emit(TripError("Failed to fetch trips: $e"));
     }
   }
-
-  // Future<void> fetchTripHistoryForUser(String userEmail) async {
-  //   emit(TripLoading());
-  //   try {
-  //     final history = await tripStorage.fetchTripHistoryForUser(userEmail);
-  //     emit(TripHistoryFetched(history));
-  //   } catch (e) {
-  //     emit(TripError("Failed to fetch trip history for user $userEmail: $e"));
-  //   }
-  // }
-
-  Future<void> fetchTripsForUser(String userEmail) async {
+    Future<void> fetchTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
       final trips = await tripStorage.fetchTripsForUser(userEmail);
@@ -70,17 +59,15 @@ class TripCubit extends Cubit<TripState> {
       emit(TripError("Failed to fetch rejected trips for user $userEmail: $e"));
     }
   }
-// Combine both trips if needed
+
   Future<void> fetchAllTrips(String userEmail) async {
     emit(TripLoading());
     try {
-      // Fetch trips and accepted trips
       final trips = await tripStorage.fetchTripsForUser(userEmail);
       final acceptedTrips = await tripStorage.fetchAcceptedTripsForUser(userEmail);
       final rejectedTrips = await tripStorage.fetchRejectedTripsForUser(userEmail);
 
-      // Combine both lists into one
-      final allTrips = [...trips, ...acceptedTrips, ...rejectedTrips];
+      final allTrips = [...trips.reversed, ...acceptedTrips.reversed, ...rejectedTrips.reversed];
       emit(TripDataFetched(allTrips));
     } catch (e) {
       emit(TripError("Failed to fetch trips: $e"));

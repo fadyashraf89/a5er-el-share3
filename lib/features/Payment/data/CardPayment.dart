@@ -11,7 +11,6 @@ class CardPayment extends Payment {
   @override
   dynamic Pay(Passenger passenger, Trip trip) {
     return (BuildContext context) {
-      print("hne3mel push lel saf7a");
       Navigator.push(
         context,
         MaterialPageRoute(

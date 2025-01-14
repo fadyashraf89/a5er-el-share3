@@ -13,17 +13,11 @@ class PointsPayment extends Payment {
         throw Exception("Insufficient points to pay for this trip.");
       }
 
-      // Subtract trip points from passenger's points
       passenger.points = (passenger.points ?? 0) - (trip.points ?? 0);
 
-      // Optional: Return a confirmation message or the updated passenger object
       return "Payment successful. Remaining points: ${passenger.points}";
     }
 
-      // // Subtract trip points from passenger's points
-      // passenger.points = (passenger.points ?? 0) - (trip.points ?? 0);
-      //
-      // // Optional: Return a confirmation message or the updated passenger object
-      // return "Payment successful. Remaining points: ${passenger.points}";
+
     }
 }

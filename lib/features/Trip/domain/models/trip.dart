@@ -4,7 +4,7 @@ import '../../../Passenger/domain/models/Passenger.dart';
 class Trip {
   String? date, time, FromLocation, ToDestination;
   Driver? driver;
-  Passenger? passenger;  // Define as nullable type
+  Passenger? passenger;
   double? distance;
   String? Status;
   double? price;
@@ -29,8 +29,8 @@ class Trip {
   factory Trip.fromMap(Map<dynamic, dynamic> data) {
     return Trip(
       distance: (data['Distance'] is int)
-          ? (data['Distance'] as int).toDouble()  // Convert int to double if necessary
-          : data['Distance'] as double?,  // Already a double or null
+          ? (data['Distance'] as int).toDouble()
+          : data['Distance'] as double?,
       FromLocation: data['FromLocation'] as String?,
       ToDestination: data['ToDestination'] as String?,
       Status: data['Status'] as String?,
@@ -43,8 +43,8 @@ class Trip {
           ? Passenger.fromMap(data['passenger'] as Map<String, dynamic>)
           : null,
       price: (data['Price'] is int)
-          ? (data['Price'] as int).toDouble()  // Convert int to double if necessary
-          : data['Price'] as double?,  // Already a double or null
+          ? (data['Price'] as int).toDouble()
+          : data['Price'] as double?,
       points: data['points'],
       paymentMethod: data['paymentMethod']
     );
@@ -58,7 +58,7 @@ class Trip {
       'ToDestination': ToDestination,
       'Status': Status,
       'Distance': distance?.toDouble(),
-      'driver': driver?.toMap(), // Convert driver to a Map if not null
+      'driver': driver?.toMap(),
       'passenger': passenger?.toMap(),
       'Price': price?.toDouble(),
       'points': points?.toInt(),

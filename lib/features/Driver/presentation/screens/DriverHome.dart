@@ -27,7 +27,6 @@ class _DriverHomeState extends State<DriverHome> {
       body: Stack(
         children: [
           Container(child: DriverTripList(driver: driver)),
-          // Pass driver to DriverTripList
           Positioned(
             bottom: 20,
             right: 16,

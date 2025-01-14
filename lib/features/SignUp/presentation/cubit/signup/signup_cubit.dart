@@ -28,7 +28,6 @@ class SignupCubit extends Cubit<SignupState> {
     try {
       String message = await _registerWithEmailAndPassword(email, password);
       if (message.contains('successful')) {
-        // Perform role-specific operations
         if (role == 'Passenger') {
           Passenger passenger = Passenger(
             email: email,

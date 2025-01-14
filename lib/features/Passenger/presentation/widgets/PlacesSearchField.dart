@@ -34,13 +34,13 @@ class PlacesSearchField {
         return GestureDetector(
           onTap: () async {
             try {
-              if (kApiKey.isEmpty) {
+              if (apiKey.isEmpty) {
                 throw Exception("Missing Places API Key");
               }
 
               Prediction? prediction = await PlacesAutocomplete.show(
                 context: ctx1,
-                apiKey: kApiKey,
+                apiKey: apiKey,
                 mode: Mode.fullscreen,
                 language: "en",
               );
@@ -53,7 +53,6 @@ class PlacesSearchField {
                   LatLng latLng = LatLng(location.latitude, location.longitude);
                   String locationName = prediction.description ?? "";
 
-                  // Updating state after fetching the location.
                   ctx1.read<MapsCubit>().updateCurrentLocation(
                         latLng,
                         locationName,
@@ -93,7 +92,6 @@ class PlacesSearchField {
                   ),
                 ),
                 onPressed: () async {
-                  // Get current location when button is pressed
                   await ctx1
                       .read<MapsCubit>()
                       .getCurrentLocation(isPickup: isPickup);
@@ -107,7 +105,7 @@ class PlacesSearchField {
                       "Your Current Location",
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: "Archivo",
+                        fontFamily: kFontFamilyArchivo,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

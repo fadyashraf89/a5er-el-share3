@@ -3,9 +3,8 @@ import '../../../../core/domain/Models/User.dart';
 class Passenger extends MyUser {
   late final int? points;
 
-  // Constructor with default values for optional properties
   Passenger({
-    this.points = 0, // defaulting points to 0 if not provided
+    this.points = 0,
     super.email = "",
     super.password = "",
     super.mobileNumber = "",
@@ -14,7 +13,6 @@ class Passenger extends MyUser {
     super.name = "",
   });
 
-  // Factory constructor to create a Passenger object from a Map
   factory Passenger.fromMap(Map<String, dynamic> data) {
     return Passenger(
       points: data['points'] as int?,
@@ -26,7 +24,6 @@ class Passenger extends MyUser {
     );
   }
 
-  // Method to convert a Passenger object to a Map
   Map<String, dynamic> toMap() {
     return {
       'name': name,

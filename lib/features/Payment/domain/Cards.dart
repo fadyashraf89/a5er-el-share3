@@ -16,7 +16,6 @@ class Cards {
     );
   }
 
-  // Method to convert a Card object to a Map
   Map<String, dynamic> toMap() {
     return {
       'passenger': passenger?.toMap(),

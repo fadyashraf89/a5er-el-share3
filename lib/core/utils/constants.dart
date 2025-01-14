@@ -1,9 +1,18 @@
 import 'dart:ui';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 const kDarkBlueColor = Color(0xff1d198b);
-const String kPickupId = "pickup";
-const String kdestinationId = "destination";
-const String kApiKey = "AIzaSyB74uwwESOOrHljNdslaA1cb8iseyiLYPM";
-const String kDriversCollection = "Drivers";
-const String kPassengersCollection = "Passengers";
-const String kFontFamilyArchivo = "Archivo";
+const kPickupId = "pickup";
+const kDestinationId = "destination";
+String apiKey = dotenv.env['API_KEY']!;
+const kDriversCollection = "Drivers";
+const kPassengersCollection = "Passengers";
+const kFontFamilyArchivo = "Archivo";
+const kAppLogo = "assets/images/default.png";
+const kCardsCollection = "Cards";
+const kTripHistoryCollection = "History";
+const kAcceptedTripsCollection = "AcceptedTrips";
+const kRejectedTripsCollection = "Rejected Trips";
+const kTripsCollection = "Trips";
+

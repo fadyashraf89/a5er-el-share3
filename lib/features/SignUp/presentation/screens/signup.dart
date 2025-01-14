@@ -59,14 +59,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     const Text(
                       "Sign Up",
-                      style: TextStyle(fontSize: 22, fontFamily: "Archivo"),
+                      style: TextStyle(fontSize: 22, fontFamily: kFontFamilyArchivo),
                     ),
                     const SizedBox(height: 10),
                     Form(
                       key: formKey,
                       child: Column(
                         children: [
-                          // Email input field
                           TextFormFields().buildTextFormField(
                             controller: emailController,
                             hintText: 'Email',
@@ -75,7 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           const SizedBox(height: 20),
 
-                          // Password input field
                           PasswordField().buildPasswordFormField(
                             controller: passwordController,
                             hintText: 'Password',
@@ -144,24 +142,22 @@ class _SignUpPageState extends State<SignUpPage> {
                             ],
                           ),
                           if (selectedRole == 'Driver') buildDriverFields(),
-                          // Additional fields for Driver
                           const SizedBox(height: 20),
 
-                          // Mobile number input field
                           TextFormFields().buildTextFormField(
                             controller: mobileController,
                             hintText: 'Mobile Number',
                             icon: Icons.phone,
                             validator: (value) => value == null || value.isEmpty
                                 ? 'Please enter your mobile number'
-                                : null, // Synchronous validation only
+                                : null,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
                                 " Already have an account ?",
-                                style: TextStyle(fontFamily: "Archivo"),
+                                style: TextStyle(fontFamily: kFontFamilyArchivo),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -175,18 +171,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.8),
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: "Archivo"),
+                                      fontFamily: kFontFamilyArchivo),
                                 ),
                               )
                             ],
                           ),
 
 
-                          // Sign Up button
                           BlocConsumer<SignupCubit, SignupState>(
                             listener: (context, state) {
                               if (state is SignupSuccess) {
-                                // Navigate based on role
                                 if (selectedRole == 'Passenger') {
                                   Navigator.pushReplacement(
                                     context,
@@ -220,17 +214,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
-                                      // Perform asynchronous mobile number validation
                                       String? mobileError = await validators.ValidateMobileNumber(mobileController.text);
                                       if (mobileError != null) {
-                                        // Show error if async validation fails
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(content: Text(mobileError), backgroundColor: Colors.red),
                                         );
-                                        return; // Stop further execution
+                                        return;
                                       }
 
-                                      // Asynchronous license number validation for drivers
                                       if (selectedRole == 'Driver') {
                                         String? licenseError = await validators.ValidateLicenseNumber(driverLicenseController.text);
                                         if (licenseError != null) {
@@ -241,7 +232,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                         }
                                       }
 
-                                      // If all validations pass, proceed with sign-up
                                       final SignUpCubit = BlocProvider.of<SignupCubit>(context);
                                       SignUpCubit.signUp(
                                         email: emailController.text,
@@ -268,7 +258,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   ),
                                   child: const Text(
                                     "Sign Up",
-                                    style: TextStyle(color: Colors.white, fontFamily: "Archivo"),
+                                    style: TextStyle(color: Colors.white, fontFamily: kFontFamilyArchivo),
                                   ),
                                 ),
                               );

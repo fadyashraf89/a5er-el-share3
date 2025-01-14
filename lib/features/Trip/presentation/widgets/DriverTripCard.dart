@@ -7,7 +7,7 @@ import 'AcceptOrRejectButton.dart';
 
 class DriverTripCard extends StatelessWidget {
   final Trip trip;
-  final Driver driver; // Add Driver as a parameter
+  final Driver driver;
   final FirebaseTripStorage storage = FirebaseTripStorage();
   DriverTripCard({super.key, required this.trip, required this.driver});
 

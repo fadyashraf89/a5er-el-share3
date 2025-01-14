@@ -21,23 +21,17 @@ class MapsView extends StatelessWidget {
       body: BlocConsumer<MapsCubit, MapsState>(
         listener: (context, state) {
           if (state is MapsError) {
-            // Show an error message or take any required action in case of an error.
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-          } else if (state is MapsCameraMoved) {
-            // Handle camera moved state (if needed)
           }
         },
         builder: (context, state) {
           if (state is MapsLoading) {
-            // Show loading state, like a loading spinner or something.
             return const Center(child: CircularProgressIndicator());
           } else if (state is MapsError) {
-            // Show error message as fallback
             return Center(child: Text('Error: ${state.message}'));
           } else if (state is MapsLoaded) {
-            // When the map is loaded and the markers are available
             return GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: state.currentLocation ??
@@ -47,7 +41,6 @@ class MapsView extends StatelessWidget {
               myLocationEnabled: true,
               markers: state.markers,
               onMapCreated: (controller) {
-                // Notify the parent or cubit about the created map controller
                 onMapCreated?.call(controller);
                 context.read<MapsCubit>().setMapController(controller);
               },
@@ -57,8 +50,7 @@ class MapsView extends StatelessWidget {
               mapToolbarEnabled: false,
             );
           } else {
-            // Handle the initial or empty state
-            return const Center(child: Text('Initializing Map...'));
+           return const Center(child: Text('Initializing Map...'));
           }
         },
       ),

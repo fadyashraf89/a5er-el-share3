@@ -29,22 +29,17 @@ class _AcceptOrRejectButtonState extends State<AcceptOrRejectButton> {
               Driver? currentDriver =
                   await FirebaseDriverStorage().fetchDriverData();
               try {
-                // Perform the asynchronous operation (e.g., accept the trip)
                 await context.read<TripCubit>().acceptTrip(
-                  widget.trip.passenger?.email ?? "", // Passenger email
-                  widget.trip.toMap(), // Trip data
+                  widget.trip.passenger?.email ?? "",
+                  widget.trip.toMap(),
                   currentDriver,
                 );
-
-                // Ensure the widget is still mounted before showing Snackbar
                 if (!mounted) return;
 
-                // Show success Snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Trip accepted successfully!")),
                 );
               } catch (e) {
-                // Ensure the widget is still mounted before showing Snackbar
                 if (!mounted) return;
 
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -75,11 +70,10 @@ class _AcceptOrRejectButtonState extends State<AcceptOrRejectButton> {
                   await FirebaseDriverStorage().fetchDriverData();
 
               try {
-                // Pass the driver data here
                 await context.read<TripCubit>().rejectTrip(
-                  widget.trip.passenger?.email ?? "", // Passenger email
-                  widget.trip.toMap(), // Trip data
-                  currentDriver, // Driver data passed here
+                  widget.trip.passenger?.email ?? "",
+                  widget.trip.toMap(),
+                  currentDriver,
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Trip rejected successfully!")),

@@ -59,7 +59,7 @@ class _SelectPaymentState extends State<SelectPayment> {
               MaterialPageRoute(
                 builder: (context) => CardPaymentScreen(
                   selectedPaymentMethod: _selectedMethod!,
-                  passenger: Passenger(), // Assume passenger is initialized
+                  passenger: Passenger(),
                   trip: Trip(passenger: Passenger()), // Pass trip data
                 ),
               ),
@@ -89,7 +89,6 @@ class _SelectPaymentState extends State<SelectPayment> {
 }
 
 dynamic SelectPaymentMethod(String method, Passenger passenger, Trip trip) {
-
   Payment pay;
   switch (method) {
     case "Cash":
