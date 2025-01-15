@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/FormatedDate.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
-import 'AcceptOrRejectButton.dart';
+import 'AcceptButton.dart';
 
 class DriverTripCard extends StatelessWidget {
   final Trip trip;
@@ -171,8 +171,9 @@ class DriverTripCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        AcceptOrRejectButton(trip: trip, isAccept: true,),
-                        AcceptOrRejectButton(trip: trip, isAccept: false,),
+                        // AcceptButton(trip: trip, isAccept: true,),
+                        // AcceptButton(trip: trip, isAccept: false,),
+                        AcceptButton(trip: trip),
                       ],
                     ),
                   ],
