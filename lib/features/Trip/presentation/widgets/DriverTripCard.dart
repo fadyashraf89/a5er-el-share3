@@ -47,17 +47,11 @@ class DriverTripCard extends StatelessWidget {
                         const Icon(Icons.calendar_today, color: Colors.blue),
                         const SizedBox(width: 10),
                         FutureBuilder<String>(
-                          future: FormattedDate().FormatDate(trip.date!),
+                          // Using the Future to format the date
+                          future: FormattedDate().formatToReadableDate(trip.date!),  // Make sure trip.date is not null
                           builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Text(
-                                snapshot.data!,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            } else {
+                            // Handling loading state
+                            if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Text(
                                 "Loading...",
                                 style: TextStyle(
@@ -66,6 +60,34 @@ class DriverTripCard extends StatelessWidget {
                                 ),
                               );
                             }
+                            // Handling error state
+                            if (snapshot.hasError) {
+                              return const Text(
+                                "Invalid date",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              );
+                            }
+                            // Display formatted date when data is ready
+                            if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data!,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }
+                            return const Text(
+                              "No Date Available",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -158,10 +180,10 @@ class DriverTripCard extends StatelessWidget {
 
                     Row(
                       children: [
-                        const Icon(Icons.star, color: Colors.yellow),
+                        const Icon(Icons.watch_later, color: Colors.yellow),
                         const SizedBox(width: 10),
                         Text(
-                          'Trip: ${trip.paymentMethod} ',
+                          'Status: ${trip.Status} ',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],

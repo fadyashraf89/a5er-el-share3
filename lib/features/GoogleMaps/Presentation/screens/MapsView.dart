@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapsView extends StatelessWidget {
+class MapsView extends StatefulWidget {
   final Function(GoogleMapController)? onMapCreated;
   final LatLng? currentLocation;
   final Set<Marker> markers;
-
   const MapsView({
     super.key,
     this.onMapCreated,
@@ -15,6 +14,16 @@ class MapsView extends StatelessWidget {
     this.markers = const {},
   });
 
+  @override
+  State<MapsView> createState() => _MapsViewState();
+}
+
+class _MapsViewState extends State<MapsView> {
+  @override
+  void dispose() {
+    widget.markers.clear();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +50,7 @@ class MapsView extends StatelessWidget {
               myLocationEnabled: true,
               markers: state.markers,
               onMapCreated: (controller) {
-                onMapCreated?.call(controller);
+                widget.onMapCreated?.call(controller);
                 context.read<MapsCubit>().setMapController(controller);
               },
               zoomControlsEnabled: false,

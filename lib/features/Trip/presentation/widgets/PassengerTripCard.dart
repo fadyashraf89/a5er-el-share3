@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package for date/time formatting
 
+import '../../../../core/utils/FormatedDate.dart';
 import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../../Passenger/data/Database/FirebasePassengerStorage.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
@@ -56,7 +57,7 @@ class _PassengerTripCardState extends State<PassengerTripCard> {
                         const Icon(Icons.calendar_today, color: Colors.blue),
                         const SizedBox(width: 10),
                         FutureBuilder<String>(
-                          future: _formatDate(widget.trip.date!),
+                          future:FormattedDate().formatToReadableDate(widget.trip.date!),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Text(

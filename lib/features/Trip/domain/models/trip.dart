@@ -28,26 +28,25 @@ class Trip {
 
   factory Trip.fromMap(Map<dynamic, dynamic> data) {
     return Trip(
-      distance: (data['Distance'] is int)
-          ? (data['Distance'] as int).toDouble()
-          : data['Distance'] as double?,
-      FromLocation: data['FromLocation'] as String?,
-      ToDestination: data['ToDestination'] as String?,
-      Status: data['Status'] as String?,
-      date: data['date'] as String?,
-      time: data['time'] as String?,
-      driver: data['driver'] != null
-          ? Driver.fromMap(data['driver'] as Map<String, dynamic>)
-          : null,
-      passenger: data['passenger'] != null
-          ? Passenger.fromMap(data['passenger'] as Map<String, dynamic>)
-          : null,
-      price: (data['Price'] is int)
-          ? (data['Price'] as int).toDouble()
-          : data['Price'] as double?,
-      points: data['points'],
-      paymentMethod: data['paymentMethod']
-    );
+        distance: (data['Distance'] is int)
+            ? (data['Distance'] as int).toDouble()
+            : data['Distance'] as double?,
+        FromLocation: data['FromLocation'] as String?,
+        ToDestination: data['ToDestination'] as String?,
+        Status: data['Status'] as String?,
+        date: data['date'] as String?,
+        time: data['time'] as String?,
+        driver: data['driver'] != null
+            ? Driver.fromMap(data['driver'] as Map<String, dynamic>)
+            : null,
+        passenger: data['passenger'] != null
+            ? Passenger.fromMap(data['passenger'] as Map<String, dynamic>)
+            : null,
+        price: (data['Price'] is int)
+            ? (data['Price'] as int).toDouble()
+            : data['Price'] as double?,
+        points: data['points'],
+        paymentMethod: data['paymentMethod']);
   }
 
   Map<String, dynamic> toMap() {
@@ -62,7 +61,35 @@ class Trip {
       'passenger': passenger?.toMap(),
       'Price': price?.toDouble(),
       'points': points?.toInt(),
-      'paymentMethod':paymentMethod
+      'paymentMethod': paymentMethod
     };
+  }
+
+  Trip copyWith({
+    String? date,
+    String? time,
+    String? FromLocation,
+    String? ToDestination,
+    Driver? driver,
+    Passenger? passenger,
+    double? distance,
+    String? Status,
+    double? price,
+    int? points,
+    String? paymentMethod = 'Cash',
+  }) {
+    return Trip(
+      passenger: passenger ?? this.passenger,
+      time: time ?? this.time,
+      ToDestination: ToDestination ?? this.ToDestination,
+      FromLocation: FromLocation ?? this.FromLocation,
+      Status: Status ?? this.Status,
+      driver: driver ?? this.driver,
+      distance: distance ?? this.distance,
+      price: price ?? this.price,
+      points: points ?? this.points,
+      date: date ?? this.date,
+      paymentMethod: paymentMethod ?? this.paymentMethod
+    );
   }
 }

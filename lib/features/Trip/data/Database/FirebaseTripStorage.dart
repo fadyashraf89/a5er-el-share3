@@ -13,9 +13,9 @@ class FirebaseTripStorage extends TripStorage {
   @override
   Future<void> addTrip(List<Trip> tripsList) async {
     CollectionReference tripsCollection =
-        FirebaseFirestore.instance.collection(kTripsCollection);
+    FirebaseFirestore.instance.collection(kTripsCollection);
     CollectionReference historyCollection =
-        FirebaseFirestore.instance.collection(kTripHistoryCollection);
+    FirebaseFirestore.instance.collection(kTripHistoryCollection);
 
     for (Trip trip in tripsList) {
       String documentId = trip.passenger?.email ?? '';
@@ -89,7 +89,7 @@ class FirebaseTripStorage extends TripStorage {
   Future<List<Trip>> fetchAcceptedTripsForUser(String userMail) async {
     try {
       CollectionReference acceptedTripsCollection =
-          FirebaseFirestore.instance.collection(kAcceptedTripsCollection);
+      FirebaseFirestore.instance.collection(kAcceptedTripsCollection);
 
       QuerySnapshot querySnapshot = await acceptedTripsCollection
           .where('passenger.email', isEqualTo: userMail)
@@ -115,11 +115,11 @@ class FirebaseTripStorage extends TripStorage {
   Future<List<Trip>> fetchRejectedTripsForUser(String userMail) async {
     try {
       CollectionReference RejectedTripsCollection =
-          FirebaseFirestore.instance.collection(kRejectedTripsCollection);
+      FirebaseFirestore.instance.collection(kRejectedTripsCollection);
 
       QuerySnapshot querySnapshot = await RejectedTripsCollection.where(
-              'passenger.email',
-              isEqualTo: userMail)
+          'passenger.email',
+          isEqualTo: userMail)
           .get();
 
       if (querySnapshot.docs.isEmpty) {
@@ -142,7 +142,7 @@ class FirebaseTripStorage extends TripStorage {
   Future<List<Trip>> fetchAllRequestedTrips() async {
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection(kTripsCollection).get();
+      await FirebaseFirestore.instance.collection(kTripsCollection).get();
 
       List<Trip> requestedTrips = [];
 
@@ -165,12 +165,12 @@ class FirebaseTripStorage extends TripStorage {
   }
 
   @override
-  Future<void> acceptTrip(
-      String userEmail, Map<String, dynamic> tripData, Driver driver) async {
+  Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
     try {
       DocumentReference userTripsDoc =
-          FirebaseFirestore.instance.collection(kTripsCollection).doc(userEmail);
+      FirebaseFirestore.instance.collection(kTripsCollection).doc(userEmail);
 
+      // Validate the existence of the passenger data.
       if (tripData['passenger'] == null) {
         throw Exception("Missing passenger data in trip.");
       }
@@ -181,30 +181,25 @@ class FirebaseTripStorage extends TripStorage {
       }
 
       DocumentReference passengerDoc =
-          FirebaseFirestore.instance.collection('Passengers').doc(passengerUid);
+      FirebaseFirestore.instance.collection('Passengers').doc(passengerUid);
       if (!(await passengerDoc.get()).exists) {
         throw Exception("Passenger document not found.");
       }
 
       DocumentSnapshot userDocSnapshot = await userTripsDoc.get();
-      if (!userDocSnapshot.exists) throw Exception("User document not found.");
+      if (!userDocSnapshot.exists) {
+        throw Exception("User document not found.");
+      }
 
       List<dynamic> tripsList = userDocSnapshot['trips'];
       final tripIndex = tripsList
           .indexWhere((trip) => trip['Distance'] == tripData['Distance']);
-      if (tripIndex == -1) throw Exception("Trip not found.");
+      if (tripIndex == -1) {
+        throw Exception("Trip not found.");
+      }
 
+      // Retrieve the trip and update points if required
       Map<String, dynamic> selectedTrip = tripsList[tripIndex];
-      tripsList.removeAt(tripIndex);
-      await userTripsDoc.update({'trips': tripsList});
-
-      selectedTrip['Status'] = "accepted";
-      selectedTrip['driver'] = driver.toMap();
-
-      await FirebaseFirestore.instance
-          .collection(kAcceptedTripsCollection)
-          .add(selectedTrip);
-
       int tripPoints = tripData['points'] ?? 0;
       String paymentMethod = tripData['paymentMethod'] ?? '';
 
@@ -212,40 +207,52 @@ class FirebaseTripStorage extends TripStorage {
         DocumentSnapshot passengerSnapshot = await passengerDoc.get();
         int currentPoints = passengerSnapshot['points'] ?? 0;
 
-        if (currentPoints >= tripPoints) {
-          await passengerDoc
-              .update({'points': FieldValue.increment(-tripPoints)});
-          print("Decremented points by $tripPoints.");
-        } else {
+        if (currentPoints < tripPoints) {
           throw Exception("Not enough points to complete the payment.");
         }
+
+        await passengerDoc.update({'points': FieldValue.increment(-tripPoints)});
+        print("Decremented points by $tripPoints.");
       } else {
         await passengerDoc.update({'points': FieldValue.increment(tripPoints)});
         print("Incremented points by $tripPoints.");
       }
-      print("Trip accepted and moved to $kAcceptedTripsCollection");
 
+      // Remove the trip from the user's active trips list
+      tripsList.removeAt(tripIndex);
+      await userTripsDoc.update({'trips': tripsList});
+      print("Removed trip from active trips.");
+
+      // Set trip status to 'accepted'
+      selectedTrip['Status'] = "accepted";
+      selectedTrip['driver'] = driver.toMap();
+
+      // Add to the accepted trips collection
+      await FirebaseFirestore.instance
+          .collection(kAcceptedTripsCollection)
+          .add(selectedTrip);
+      print("Trip accepted and moved to $kAcceptedTripsCollection.");
+
+      // Add to the user's trip history
       DocumentReference historyDoc =
-          FirebaseFirestore.instance.collection(kTripHistoryCollection).doc(userEmail);
+      FirebaseFirestore.instance.collection(kTripHistoryCollection).doc(userEmail);
 
-      await historyDoc.set(
-        {
-          'trips': FieldValue.arrayUnion([selectedTrip]),
-        },
-        SetOptions(merge: true),
-      );
-      print("Trip accepted and added to $kTripHistoryCollection collection.");
+      await historyDoc.set({
+        'trips': FieldValue.arrayUnion([selectedTrip]),
+      }, SetOptions(merge: true));
+      print("Trip added to $kTripHistoryCollection.");
     } catch (e) {
-      print("Error: ${e.toString()}, Stack: ${StackTrace.current}");
+      print("Error accepting trip: ${e.toString()}");
       throw Exception("Failed to accept trip.");
     }
   }
+
 
   @override
   Future<void> RejectTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
     try {
       DocumentReference userTripsDoc =
-          FirebaseFirestore.instance.collection(kTripsCollection).doc(userEmail);
+      FirebaseFirestore.instance.collection(kTripsCollection).doc(userEmail);
 
       CollectionReference rejectedTrips = FirebaseFirestore.instance.collection(kRejectedTripsCollection);
       DocumentSnapshot userDocSnapshot = await userTripsDoc.get();
@@ -273,7 +280,7 @@ class FirebaseTripStorage extends TripStorage {
       selectedTrip['driver'] = driver.toMap();
 
       DocumentReference historyDoc =
-          FirebaseFirestore.instance.collection(kTripHistoryCollection).doc(userEmail);
+      FirebaseFirestore.instance.collection(kTripHistoryCollection).doc(userEmail);
 
       await historyDoc.set(
         {
@@ -292,22 +299,77 @@ class FirebaseTripStorage extends TripStorage {
   }
 
   @override
-  Stream<List<Trip>> getRequestedTripsStream() => FirebaseFirestore.instance
-          .collection(kTripsCollection)
-          .snapshots()
-          .map((snapshot) {
-        List<Trip> requestedTrips = [];
-        for (var doc in snapshot.docs) {
-          final data = doc.data();
-          final List<dynamic> tripDataList = data['trips'] ?? [];
+  Stream<List<Trip>> getRequestedTripsStream() async* {
+    final requestedTripsStream = FirebaseFirestore.instance
+        .collection(kTripsCollection)
+        .snapshots()
+        .map((snapshot) {
+      List<Trip> requestedTrips = [];
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final List<dynamic> tripDataList = data['trips'] ?? [];
 
-          for (var tripData in tripDataList) {
-            if (tripData['Status'] == 'Requested') {
-              requestedTrips
-                  .add(Trip.fromMap(tripData as Map<String, dynamic>));
-            }
+        for (var tripData in tripDataList) {
+          if (tripData['Status'] == 'Requested') {
+            requestedTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
           }
         }
-        return requestedTrips;
-      });
+      }
+      return requestedTrips;
+    });
+
+    // Yield values from the requestedTripsStream
+    await for (final requestedTrips in requestedTripsStream) {
+      yield requestedTrips;
+    }
+  }
+
+  // @override
+  // Stream<List<Trip>> getActiveTripsTripsStream() async* {
+  //   final ActiveTripsTripsStream = FirebaseFirestore.instance
+  //       .collection(kTripsCollection)
+  //       .snapshots()
+  //       .map((snapshot) {
+  //     List<Trip> ActiveTrips = [];
+  //     for (var doc in snapshot.docs) {
+  //       final data = doc.data();
+  //       final List<dynamic> tripDataList = data['trips'] ?? [];
+  //
+  //       for (var tripData in tripDataList) {
+  //         if (tripData['Status'] == 'Active') {
+  //           ActiveTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
+  //         }
+  //       }
+  //     }
+  //     return ActiveTrips;
+  //   });
+  //
+  //   // Yield values from the requestedTripsStream
+  //   await for (final activeTrips in ActiveTripsTripsStream) {
+  //     yield activeTrips;
+  //   }
+  // }
+
+  @override
+  Stream<List<Trip>> getActiveTripsTripsStream() =>
+    FirebaseFirestore.instance
+        .collection(kTripsCollection)
+        .snapshots()
+        .map((snapshot) {
+      List<Trip> ActiveTrips = [];
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final List<dynamic> tripDataList = data['trips'] ?? [];
+
+        for (var tripData in tripDataList) {
+          if (tripData['Status'] == 'Active') {
+            ActiveTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
+          }
+        }
+      }
+      return ActiveTrips;
+    });
 }
+
+
+

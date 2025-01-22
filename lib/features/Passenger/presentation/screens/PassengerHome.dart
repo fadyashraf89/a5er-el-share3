@@ -31,6 +31,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   final FirebaseTripStorage TStorage = FirebaseTripStorage();
   @override
   void dispose() {
+    _markers.clear();
     super.dispose();
   }
 

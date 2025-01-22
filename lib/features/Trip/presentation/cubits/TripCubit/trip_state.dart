@@ -27,6 +27,16 @@ class TripError extends TripState {
   TripError(this.message);
 }
 
+class TripActive extends TripState {
+  final Trip trip;
+  TripActive(this.trip);
+}
+
+class TripExpired extends TripState {
+  final Trip trip;
+  TripExpired(this.trip);
+}
+
 class TripRequestFailed extends TripState {
   final String message;
   TripRequestFailed(this.message);
@@ -34,7 +44,8 @@ class TripRequestFailed extends TripState {
 
 class TripRequested extends TripState {
   final Trip trip;
-  TripRequested(this.trip);
+  final Duration expiryDuration;
+  TripRequested(this.trip, this.expiryDuration);
 }
 
 class TripAccepted extends TripState {
