@@ -126,140 +126,149 @@ class _PassengerProfileState extends State<PassengerProfile> {
                       ),
                       Column(
                         children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 250,
-                            child: Align(
-                              child: _isEditing
-                                  ? TextButton(
-                                onPressed: () {
-                                  if (!_formKey.currentState!
-                                      .validate()) return;
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Align(
+                                child: _isEditing
+                                    ? TextButton(
+                                  onPressed: () {
+                                    if (!_formKey.currentState!
+                                        .validate()) return;
 
-                                  Passenger updatedPassenger =
-                                  Passenger(
-                                    uid: passenger.uid,
-                                    name: _nameController.text,
-                                    email: _emailController.text,
-                                    mobileNumber:
-                                    _mobileNumberController.text,
-                                    role: passenger.role,
-                                    points: passenger.points ?? 0
-                                  );
-                                  context
-                                      .read<PassengerCubit>()
-                                      .updatePassengerData(
-                                      updatedPassenger);
+                                    Passenger updatedPassenger =
+                                    Passenger(
+                                      uid: passenger.uid,
+                                      name: _nameController.text,
+                                      email: _emailController.text,
+                                      mobileNumber:
+                                      _mobileNumberController.text,
+                                      role: passenger.role,
+                                      points: passenger.points ?? 0
+                                    );
+                                    context
+                                        .read<PassengerCubit>()
+                                        .updatePassengerData(
+                                        updatedPassenger);
 
-                                  setState(() => _isEditing =
-                                  false); // Stop editing mode
-                                },
+                                    setState(() => _isEditing =
+                                    false); // Stop editing mode
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: kDarkBlueColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
+
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.save, color: Colors.white),
+                                      SizedBox(width: 8),
+                                      Text("Save Changes", style: TextStyle(
+                                        color: Colors.white,
+                                          fontWeight: FontWeight.bold
+
+                                      ),),
+                                    ],
+                                  ),
+                                )
+                                    : TextButton(
+                                  onPressed: () {
+                                    setState(() => _isEditing =
+                                    true); // Enable editing mode
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: kDarkBlueColor,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+
+                                    )
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.edit, color: Colors.white),
+                                      SizedBox(width: 8),
+                                      Text("Edit Profile", style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold
+
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: double.infinity,
+
+                              child: TextButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: kDarkBlueColor,
+                                  padding: const EdgeInsets.symmetric(vertical: 15),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-
+                                  backgroundColor: kDarkBlueColor
                                 ),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PassengerTripList(userEmail: passenger.email,)));
+                                },
+
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.save, color: Colors.white),
+                                    Icon(Icons.history, color:Colors.white),
                                     SizedBox(width: 8),
-                                    Text("Save Changes", style: TextStyle(
-                                      color: Colors.white,
-                                        fontWeight: FontWeight.bold
+                                    Text("View Trip History", style: TextStyle(
+                                        color: Colors.white,
+                                      fontWeight: FontWeight.bold
 
                                     ),),
                                   ],
                                 ),
-                              )
-                                  : TextButton(
-                                onPressed: () {
-                                  setState(() => _isEditing =
-                                  true); // Enable editing mode
-                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: double.infinity,
+
+                              child: TextButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: kDarkBlueColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15),
+                                  padding: const EdgeInsets.symmetric(vertical: 15),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
-
-                                  )
+                                  ),
+                                  backgroundColor: kDarkBlueColor
                                 ),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
+                                },
+
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.edit, color: Colors.white),
+                                    Icon(Icons.password, color:Colors.white),
                                     SizedBox(width: 8),
-                                    Text("Edit Profile", style: TextStyle(
+                                    Text("Reset Password", style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold
 
                                     ),),
                                   ],
                                 ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 250,
-
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                backgroundColor: kDarkBlueColor
-                              ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> PassengerTripList(userEmail: passenger.email,)));
-                              },
-
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.history, color:Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("View Trip History", style: TextStyle(
-                                      color: Colors.white,
-                                    fontWeight: FontWeight.bold
-
-                                  ),),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 250,
-
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                backgroundColor: kDarkBlueColor
-                              ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
-                              },
-
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.password, color:Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("Reset Password", style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-
-                                  ),),
-                                ],
                               ),
                             ),
                           ),

@@ -178,21 +178,6 @@ class _PassengerTripCardState extends State<PassengerTripCard> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    // Status
-                    Row(
-                      children: [
-                        const Icon(Icons.info, color: Colors.blueAccent),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Status: ${widget.trip.Status}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
 
                     // Distance
                     Row(

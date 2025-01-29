@@ -193,8 +193,6 @@ class DriverTripCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // AcceptButton(trip: trip, isAccept: true,),
-                        // AcceptButton(trip: trip, isAccept: false,),
                         AcceptButton(trip: trip),
                       ],
                     ),

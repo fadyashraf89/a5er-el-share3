@@ -17,74 +17,73 @@ class TripCubit extends Cubit<TripState> {
 
   TripCubit({required this.tripStorage}) : super(TripInitial());
 
-  Future<void> addTrips(List<Trip> trips, {Duration expiryDuration = const Duration(minutes: 1)}) async {
+  Future<void> addTrips(List<Trip> trips,
+      {Duration expiryDuration = const Duration(minutes: 3)}) async {
     emit(TripLoading());
     try {
       await tripStorage.addTrip(trips);
       emit(TripRequestSuccess("Trips successfully added."));
-
       for (var trip in trips) {
         emit(TripActive(trip));
-        emit(TripRequested(trip, expiryDuration));
-        // Set a timer to handle trip expiry
         setTripStatus(trip, expiryDuration);
+        emit(TripRequested(trip, expiryDuration));
       }
-
     } catch (e) {
       emit(TripError("Failed to add trips: $e"));
     }
   }
 
-
   void setTripStatus(Trip trip, Duration expiryDuration) async {
+    final batch = FirebaseFirestore.instance.batch();
     final CollectionReference tripsCollection =
     FirebaseFirestore.instance.collection(kTripsCollection);
+    final activeTripsCollection =
+    FirebaseFirestore.instance.collection(kActiveTripsCollection),
+        expiredTripsCollection =
+        FirebaseFirestore.instance.collection(kExpiredTripsCollection);
 
     emit(TripLoading());
 
     try {
-      // Immediately set the trip as "Active" when it is requested successfully
-      trip = trip.copyWith(Status: "Active");
+      if (trip.driver == null) throw Exception("Driver not found.");
       emit(TripAccepted(trip));
 
-      // Update the trip status in Firebase
       String? documentId = trip.passenger?.email;
       if (documentId == null || documentId.isEmpty) {
-        throw Exception("Invalid passenger email, cannot update trip status in Firebase.");
+        throw Exception("Invalid passenger email, cannot update trip status.");
       }
 
-      // Find the correct trip in Firebase by its ID and update the status
-      await tripsCollection.doc(documentId).update({
-        'trips': FieldValue.arrayRemove([trip.toMap()]), // Remove the old trip
-      });
+      batch.update(
+          tripsCollection.doc(documentId),
+          {'trips': FieldValue.arrayRemove([trip.toMap()])});
 
-      await tripsCollection.doc(documentId).update({
-        'trips': FieldValue.arrayUnion([trip.toMap()]), // Add the updated trip
-      });
+      batch.update(
+          activeTripsCollection.doc(documentId),
+          {'trips': FieldValue.arrayUnion([trip.toMap()])});
 
-      // Set a timer to change status to "Expired"
+      await batch.commit();
+
       Timer(expiryDuration, () async {
         if (trip.Status == "Active") {
           trip = trip.copyWith(Status: "Expired");
-          emit(TripExpired(trip));
+          batch.update(
+              activeTripsCollection.doc(documentId),
+              {'trips': FieldValue.arrayRemove([trip.toMap()])});
 
-          // Update Firebase to reflect the status change to "Expired"
-          await tripsCollection.doc(documentId).update({
-            'trips': FieldValue.arrayRemove([trip.toMap()]), // Remove old status
-          });
+          batch.set(
+              expiredTripsCollection.doc(documentId),
+              {'trips': FieldValue.arrayUnion([trip.toMap()])},
+              SetOptions(merge: true));
 
-          await tripsCollection.doc(documentId).update({
-            'trips': FieldValue.arrayUnion([trip.toMap()]), // Add updated status
-          });
+          await batch.commit();
+
+          emit(TripInitial());
         }
       });
     } catch (e) {
-      print("Error updating trip status: $e");
-      emit(TripError(e.toString()));
+      emit(TripError("Error updating trip status: $e"));
     }
   }
-
-
 
   Future<void> fetchTripsForLoggedInUser() async {
     emit(TripLoading());
@@ -92,33 +91,40 @@ class TripCubit extends Cubit<TripState> {
       final trips = await tripStorage.fetchTripsForLoggedInUser();
       emit(TripDataFetched(trips));
     } catch (e) {
+      print('Error fetching trips: $e');
       emit(TripError("Failed to fetch trips: $e"));
     }
   }
-    Future<void> fetchTripsForUser(String userEmail) async {
+
+  Future<void> fetchTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
       final trips = await tripStorage.fetchTripsForUser(userEmail);
       emit(TripDataFetched(trips));
     } catch (e) {
+      print('Error fetching trips for user: $userEmail $e');
       emit(TripError("Failed to fetch trips for user $userEmail: $e"));
     }
   }
+
   Future<void> fetchAcceptedTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
       final trips = await tripStorage.fetchAcceptedTripsForUser(userEmail);
       emit(TripDataFetched(trips));
     } catch (e) {
+      print('Error fetching accepted trips for user: $userEmail $e');
       emit(TripError("Failed to fetch accepted trips for user $userEmail: $e"));
     }
   }
+
   Future<void> fetchRejectedTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
       final trips = await tripStorage.fetchRejectedTripsForUser(userEmail);
       emit(TripDataFetched(trips));
     } catch (e) {
+      print('Error fetching rejected trips for user: $userEmail $e');
       emit(TripError("Failed to fetch rejected trips for user $userEmail: $e"));
     }
   }
@@ -127,27 +133,31 @@ class TripCubit extends Cubit<TripState> {
     emit(TripLoading());
     try {
       final trips = await tripStorage.fetchTripsForUser(userEmail);
-      final acceptedTrips = await tripStorage.fetchAcceptedTripsForUser(userEmail);
-      final rejectedTrips = await tripStorage.fetchRejectedTripsForUser(userEmail);
-
-      final allTrips = [...trips.reversed, ...acceptedTrips.reversed, ...rejectedTrips.reversed];
+      await tripStorage.fetchAcceptedTripsForUser(userEmail);
+      final allTrips = [
+        ...trips.reversed,
+      ];
       emit(TripDataFetched(allTrips));
     } catch (e) {
+      print('Error fetching all trips: $e');
       emit(TripError("Failed to fetch trips: $e"));
     }
   }
 
-  void calculateTripDetails(LatLng pickupLocation, LatLng destinationLocation) async {
+  void calculateTripDetails(
+      LatLng pickupLocation, LatLng destinationLocation) async {
     try {
-      double distanceInKilometers = calculateDistance(pickupLocation, destinationLocation);
+      double distanceInKilometers =
+      calculateDistance(pickupLocation, destinationLocation);
       double price = calculatePrice(distanceInKilometers);
       emit(TripRequestSuccess(
-          "Trips successfully added. Distance: ${distanceInKilometers.toStringAsFixed(2)} km, Price: \$${price.toStringAsFixed(2)}"
-      ));
+          "Trips successfully added. Distance: ${distanceInKilometers.toStringAsFixed(2)} km, Price: \$${price.toStringAsFixed(2)}"));
     } catch (e) {
-      emit(TripRequestFailed("Failed to calculate distance or price. Error: ${e.toString()}"));
+      emit(TripRequestFailed(
+          "Failed to calculate distance or price. Error: ${e.toString()}"));
     }
   }
+
   double calculateDistance(LatLng point1, LatLng point2) {
     double distanceInMeters = Geolocator.distanceBetween(
       point1.latitude,
@@ -164,33 +174,65 @@ class TripCubit extends Cubit<TripState> {
     return price;
   }
 
-  Future<void> fetchAllRequestedTrips() async {
-    emit(TripLoading());
+  Future<void> acceptTrip(
+      String userEmail, Map<String, dynamic> tripData, Driver driver) async {
     try {
-      final requestedTrips = await tripStorage.fetchAllRequestedTrips();
-      emit(TripDataFetched(requestedTrips));
-    } catch (e) {
-      emit(TripError("Failed to fetch requested trips: $e"));
-    }
-  }
+      emit(TripLoading());
 
-  Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
-    emit(TripLoading());
-    try {
-      await tripStorage.acceptTrip(userEmail, tripData, driver);
-      emit(TripAccepted(Trip.fromMap(tripData)));
+      // Reference to the user's document in the ActiveTrips collection
+      DocumentReference userActiveTripsDoc =
+      FirebaseFirestore.instance.collection('Active Trips').doc(userEmail);
+
+      DocumentSnapshot userDocSnapshot = await userActiveTripsDoc.get();
+      if (!userDocSnapshot.exists) {
+        throw Exception("User document not found in ActiveTrips collection");
+      }
+
+      List<dynamic> activeTripsList = List.from(userDocSnapshot['trips'] ?? []);
+
+      final tripIndex = activeTripsList.indexWhere(
+              (trip) => trip['Distance'] == tripData['Distance']);
+      if (tripIndex == -1) {
+        throw Exception("Trip not found in the ActiveTrips collection");
+      }
+
+      Map<String, dynamic> selectedTrip = activeTripsList[tripIndex];
+      activeTripsList.removeAt(tripIndex);
+
+
+
+      await userActiveTripsDoc.update({'trips': activeTripsList});
+
+      selectedTrip['Status'] = "accepted";
+      selectedTrip['driver'] = driver.toMap();
+
+      final updatedTrip = Trip.fromMap(selectedTrip);
+      emit(TripAccepted(updatedTrip));
+
+      await FirebaseFirestore.instance.collection('AcceptedTrips').add(selectedTrip);
+
+      print("Trip successfully accepted and moved to AcceptedTrips.");
     } catch (e) {
+      print("Error accepting trip: $e");
       emit(TripError("Failed to accept trip: $e"));
     }
   }
 
-  Future<void> rejectTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
-    emit(TripLoading());
+  void StartTrip(Trip trip) {
     try {
-      await tripStorage.RejectTrip(userEmail, tripData, driver);
-      emit(TripRejected(message: "Trip rejected successfully.", trip: Trip.fromMap(tripData)));
+      emit(TripStarted(trip));
     } catch (e) {
-      emit(TripError("Failed to reject trip: $e"));
+      print("Error starting the trip: $e");
+    }
+  }
+
+  void EndTrip(Trip trip) async {
+    try {
+      emit(TripFinished(trip));
+      await Future.delayed(const Duration(seconds: 300));
+      emit(TripInitial());
+    } catch (e) {
+      print("Error finishing the trip: $e");
     }
   }
 }

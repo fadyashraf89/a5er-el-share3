@@ -74,3 +74,14 @@ class DriverAssigned extends TripState {
   final Driver driver;
   DriverAssigned(this.driver);
 }
+
+
+class TripStarted extends TripState {
+  final Trip trip;
+  TripStarted(this.trip);
+}
+
+class TripFinished extends TripState {
+  final Trip trip;
+  TripFinished(this.trip);
+}

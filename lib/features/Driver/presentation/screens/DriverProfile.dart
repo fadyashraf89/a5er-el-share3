@@ -136,7 +136,7 @@ class _DriverProfileState extends State<DriverProfile> {
                         Column(
                           children: [
                             SizedBox(
-                              width: MediaQuery.of(context).size.width - 250,
+                              width: double.infinity,
                               child: Align(
                                 child: _isEditing
                                     ? TextButton(
@@ -216,7 +216,7 @@ class _DriverProfileState extends State<DriverProfile> {
                             ),
                             const SizedBox(height: 8),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width - 250,
+                              width: double.infinity,
                         
                               child: TextButton(
                                 style: ElevatedButton.styleFrom(
@@ -247,7 +247,7 @@ class _DriverProfileState extends State<DriverProfile> {
                             ),
                             const SizedBox(height: 8),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width - 250,
+                              width: double.infinity,
                         
                               child: TextButton(
                                 style: ElevatedButton.styleFrom(

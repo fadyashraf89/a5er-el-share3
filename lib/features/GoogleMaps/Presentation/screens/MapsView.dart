@@ -1,24 +1,53 @@
 import 'package:a5er_elshare3/features/GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MapsView extends StatefulWidget {
   final Function(GoogleMapController)? onMapCreated;
-  final LatLng? currentLocation;
+  late LatLng? currentLocation;
   final Set<Marker> markers;
-  const MapsView({
+  MapsView({
     super.key,
     this.onMapCreated,
     this.currentLocation,
     this.markers = const {},
   });
 
+
+
   @override
   State<MapsView> createState() => _MapsViewState();
 }
 
 class _MapsViewState extends State<MapsView> {
+
+  Future<void> _checkPermissions() async {
+    // Check location permission status
+    PermissionStatus permissionStatus = await Permission.location.request();
+
+    if (permissionStatus.isGranted) {
+      // Permissions are granted, proceed with loading current location
+      print("Location permission granted");
+
+      // Optionally fetch the current location
+      Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        widget.currentLocation = LatLng(currentPosition.latitude, currentPosition.longitude);
+      });
+    } else if (permissionStatus.isDenied || permissionStatus.isPermanentlyDenied) {
+      // Request for location permission if it's denied or permanently denied
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location permission is required to use this feature')),
+      );
+      openAppSettings(); // Optionally navigate to app settings to allow permissions
+    }
+  }
   @override
   void dispose() {
     widget.markers.clear();
@@ -65,4 +94,12 @@ class _MapsViewState extends State<MapsView> {
       ),
     );
   }
+  @override
+  void initState() {
+    super.initState();
+    // Request location permissions
+    _checkPermissions();
+  }
+
+
 }

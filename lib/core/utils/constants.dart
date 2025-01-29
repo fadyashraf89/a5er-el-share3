@@ -15,4 +15,5 @@ const kTripHistoryCollection = "History";
 const kAcceptedTripsCollection = "AcceptedTrips";
 const kRejectedTripsCollection = "Rejected Trips";
 const kTripsCollection = "Trips";
-
+const kActiveTripsCollection = "Active Trips";
+const kExpiredTripsCollection = "Expired Trips";
