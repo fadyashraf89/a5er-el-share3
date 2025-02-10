@@ -44,14 +44,14 @@ class AuthService {
   //   }
   // }
 
-  Future SignOut() async {
-    try {
-      return await _auth.signOut();
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
+  // Future SignOut() async {
+  //   try {
+  //     return await _auth.signOut();
+  //   } catch (e) {
+  //     print(e.toString());
+  //     return null;
+  //   }
+  // }
 
   // Future<String> forgotPassword(String emailAddress) async {
   //   try {

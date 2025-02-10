@@ -68,7 +68,6 @@ class _DriverTripListState extends State<DriverTripList> {
           if (state is TripAccepted) {
             final trip = state.trip;
 
-            // Ensure a valid widget is always returned
             return FutureBuilder<List<LatLng?>>(
               future: Future.wait([
                 convertAddressToLatLng(trip.FromLocation ?? "Unknown From"),

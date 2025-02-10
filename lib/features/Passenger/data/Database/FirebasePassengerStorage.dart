@@ -2,10 +2,11 @@ import 'package:a5er_elshare3/core/utils/constants.dart';
 import 'package:a5er_elshare3/features/Passenger/data/Database/PassengerStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/models/Passenger.dart';
+import '../Entities/PassengerEntity.dart';
 
 class FirebasePassengerStorage extends PassengerStorage {
   @override
-  Future<void> addPassenger(Passenger passenger) async {
+  Future<void> addPassenger(PassengerEntity passenger) async {
     CollectionReference passengers =
     FirebaseFirestore.instance.collection(kPassengersCollection);
     try {

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../dependency_injection.dart';
+import '../../../AuthService/Domain/UseCases/SignOutUseCase.dart';
 import '../../../Welcome/presentation/screens/Opening.dart';
 import '../../domain/models/driver.dart';
 import '../cubits/DriverCubit/driver_cubit.dart';
@@ -132,7 +134,8 @@ class DriverDrawer extends DrawerWidget {
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold)),
                   onTap: () async {
-                    await authentication.SignOut();
+                    SignOutUseCase signout = sl<SignOutUseCase>();
+                    await signout.SignOut();
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

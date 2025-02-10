@@ -1,5 +1,7 @@
 import 'package:a5er_elshare3/features/Login/Data/Repositories/LoginRepositoryImpl.dart';
 import 'package:a5er_elshare3/features/Login/Domain/Repositories/LoginRepository.dart';
+import 'package:a5er_elshare3/features/Payment/domain/Repositories/CardRepository.dart';
+import 'package:a5er_elshare3/features/Payment/domain/UseCases/AddCardUseCase.dart';
 import 'package:a5er_elshare3/features/SignUp/Data/Repositories/SignUpRepository.dart';
 import 'package:get_it/get_it.dart';
 import 'features/AuthService/Domain/Repositories/UserAuthRepository.dart';
@@ -10,6 +12,7 @@ import 'features/AuthService/Domain/UseCases/forgotPasswordUseCase.dart';
 import 'features/AuthService/Domain/UseCases/getCurrentUserEmailUseCase.dart';
 import 'features/AuthService/Domain/UseCases/getCurrentUserUidUseCase.dart';
 import 'features/AuthService/Domain/UseCases/getCurrentUserUseCase.dart';
+import 'features/Payment/data/Repositories/CardRepositoryImpl.dart';
 import 'features/SignUp/Domain/UseCases/registerWithEmailAndPasswordUseCase.dart';
 import 'features/AuthService/data/Repositories/UserAuthRepositoryImpl.dart';
 import 'features/SignUp/Domain/Repositories/SignUpRepositoryImpl.dart';
@@ -19,6 +22,7 @@ void setupLocator() {
   sl.registerLazySingleton<UserAuthRepository>(() => UserAuthRepositoryImpl());
   sl.registerLazySingleton<LoginRepository>(() => LoginRepositoryImpl());
   sl.registerLazySingleton<SignUpRepository>(() => SignUpRepositoryImpl());
+  sl.registerLazySingleton<CardRepository>(() => CardRepositoryImpl());
 
 
   // Register the Use Cases
@@ -30,4 +34,6 @@ void setupLocator() {
   sl.registerLazySingleton(() => SignOutUseCase(sl<UserAuthRepository>()));
   sl.registerLazySingleton(() => SignInWithEmailAndPasswordUseCase(sl<LoginRepository>()));
   sl.registerLazySingleton(() => registerWithEmailAndPasswordUseCase(sl<SignUpRepository>()));
+  sl.registerLazySingleton(() => AddCardUseCase(sl<CardRepository>()));
+
 }

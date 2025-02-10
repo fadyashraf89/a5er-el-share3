@@ -1,4 +1,5 @@
 import 'package:a5er_elshare3/core/utils/constants.dart';
+import 'package:a5er_elshare3/features/Driver/data/Entities/DriverEntity.dart';
 import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
@@ -6,7 +7,7 @@ import '../../domain/models/driver.dart';
 
 class FirebaseDriverStorage extends DriverStorage {
   @override
-  Future<void> addDriver(Driver driver) async {
+  Future<void> addDriver(DriverEntity driver) async {
     CollectionReference drivers =
     FirebaseFirestore.instance.collection(kDriversCollection);
     try {

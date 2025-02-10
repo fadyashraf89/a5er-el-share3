@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../dependency_injection.dart';
-import '../../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../../Domain/UseCases/SignInWithEmailAndPasswordUseCase.dart';
 
 
@@ -13,7 +12,6 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial());
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  AuthService authentication = AuthService();
 
   // Sign-In
   Future<void> signIn({

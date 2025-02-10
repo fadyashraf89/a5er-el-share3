@@ -1,8 +1,10 @@
 import "package:a5er_elshare3/core/widgets/DrawerWidget.dart";
+import "package:a5er_elshare3/features/AuthService/Domain/UseCases/SignOutUseCase.dart";
 import "package:a5er_elshare3/features/Passenger/data/Database/FirebasePassengerStorage.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "../../../../core/utils/constants.dart";
+import "../../../../dependency_injection.dart";
 import "../../../Trip/presentation/screens/PassengerTripList.dart";
 import "../../../Welcome/presentation/screens/Opening.dart";
 import "../../domain/models/Passenger.dart";
@@ -159,7 +161,8 @@ class PassengerDrawer extends DrawerWidget{
                           color: Colors.white, fontWeight: FontWeight.bold)
                   ),
                   onTap: () async {
-                    await authentication.SignOut();
+                    SignOutUseCase signout =  sl<SignOutUseCase>();
+                    await signout.SignOut();
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

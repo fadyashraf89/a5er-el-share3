@@ -1,10 +1,10 @@
-import '../../../../core/domain/Models/User.dart';
+import 'package:a5er_elshare3/features/Passenger/data/Entities/PassengerEntity.dart';
 
-class Passenger extends MyUser {
-  late final int? points;
+
+class Passenger extends PassengerEntity{
 
   Passenger({
-    this.points = 0,
+    super.points = 0,
     super.email = "",
     super.password = "",
     super.mobileNumber = "",

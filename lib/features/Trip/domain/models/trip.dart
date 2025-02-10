@@ -1,52 +1,36 @@
 import '../../../Driver/domain/models/driver.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
+import '../../data/Entities/TripEntity.dart';
 
-class Trip {
-  String? date, time, FromLocation, ToDestination;
-  Driver? driver;
-  Passenger? passenger;
-  double? distance;
-  String? Status;
-  double? price;
-  int? points;
-  String? paymentMethod = 'Cash';
-
-  // Constructor
+class Trip extends TripEntity {
   Trip({
-    this.points,
-    this.paymentMethod,
-    this.date,
-    this.price,
-    this.distance,
-    this.Status,
-    this.time,
-    this.FromLocation,
-    this.ToDestination,
-    this.driver,
-    this.passenger,
+    super.date,
+    super.time,
+    super.FromLocation,
+    super.ToDestination,
+    super.driver,
+    super.passenger,
+    super.distance,
+    super.Status,
+    super.price,
+    super.points,
+    super.paymentMethod,
   });
 
-  factory Trip.fromMap(Map<dynamic, dynamic> data) {
+  factory Trip.fromMap(Map<String, dynamic> data) {
     return Trip(
-        distance: (data['Distance'] is int)
-            ? (data['Distance'] as int).toDouble()
-            : data['Distance'] as double?,
-        FromLocation: data['FromLocation'] as String?,
-        ToDestination: data['ToDestination'] as String?,
-        Status: data['Status'] as String?,
-        date: data['date'] as String?,
-        time: data['time'] as String?,
-        driver: data['driver'] != null
-            ? Driver.fromMap(data['driver'] as Map<String, dynamic>)
-            : null,
-        passenger: data['passenger'] != null
-            ? Passenger.fromMap(data['passenger'] as Map<String, dynamic>)
-            : null,
-        price: (data['Price'] is int)
-            ? (data['Price'] as int).toDouble()
-            : data['Price'] as double?,
-        points: data['points'],
-        paymentMethod: data['paymentMethod']);
+      date: data['date'] ?? '',
+      time: data['time'] ?? '',
+      FromLocation: data['FromLocation'] ?? '',
+      ToDestination: data['ToDestination'] ?? '',
+      Status: data['Status'] ?? '',
+      distance: (data['Distance'] is int) ? (data['Distance'] as int).toDouble() : (data['Distance'] ?? 0.0),
+      price: (data['Price'] is int) ? (data['Price'] as int).toDouble() : (data['Price'] ?? 0.0),
+      points: data['points'] ?? 0,
+      paymentMethod: data['paymentMethod'] ?? 'Cash',
+      driver: data['driver'] != null ? Driver.fromMap(data['driver'] as Map<String, dynamic>) : null,
+      passenger: data['passenger'] != null ? Passenger.fromMap(data['passenger'] as Map<String, dynamic>) : null,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -56,40 +40,40 @@ class Trip {
       'FromLocation': FromLocation,
       'ToDestination': ToDestination,
       'Status': Status,
-      'Distance': distance?.toDouble(),
+      'Distance': distance,
+      'Price': price,
+      'points': points,
+      'paymentMethod': paymentMethod,
       'driver': driver?.toMap(),
       'passenger': passenger?.toMap(),
-      'Price': price?.toDouble(),
-      'points': points?.toInt(),
-      'paymentMethod': paymentMethod
     };
   }
 
   Trip copyWith({
     String? date,
     String? time,
-    String? FromLocation,
-    String? ToDestination,
+    String? fromLocation,
+    String? toDestination,
     Driver? driver,
     Passenger? passenger,
     double? distance,
     String? Status,
     double? price,
     int? points,
-    String? paymentMethod = 'Cash',
+    String? paymentMethod,
   }) {
     return Trip(
-      passenger: passenger ?? this.passenger,
+      date: date ?? this.date,
       time: time ?? this.time,
-      ToDestination: ToDestination ?? this.ToDestination,
-      FromLocation: FromLocation ?? this.FromLocation,
-      Status: Status ?? this.Status,
+      FromLocation: FromLocation ?? FromLocation,
+      ToDestination: ToDestination ?? ToDestination,
       driver: driver ?? this.driver,
+      passenger: passenger ?? this.passenger,
       distance: distance ?? this.distance,
+      Status: Status ?? this.Status,
       price: price ?? this.price,
       points: points ?? this.points,
-      date: date ?? this.date,
-      paymentMethod: paymentMethod ?? this.paymentMethod
+      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 }

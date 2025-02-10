@@ -1,6 +1,7 @@
-import '../../../../core/domain/Models/User.dart';
+import 'package:a5er_elshare3/features/Driver/data/Entities/DriverEntity.dart';
 
-class Driver extends MyUser {
+
+class Driver extends DriverEntity {
   final String? carPlateNumber, licenseNumber, carModel;
   Driver({
     email, password, mobileNumber, role, uid, name,
