@@ -133,7 +133,7 @@ class _DriverTripListState extends State<DriverTripList> {
             final price = trip.price;
             final name = trip.passenger!.name;
             return Center(
-              child: Text("Take \$ ${price} from ${name}"),
+              child: Text("Take \$ $price from $name"),
             );
           }
           else {

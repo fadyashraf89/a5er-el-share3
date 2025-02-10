@@ -1,4 +1,3 @@
-import 'package:a5er_elshare3/features/GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 import 'package:a5er_elshare3/features/Trip/domain/models/trip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,14 +55,14 @@ class _TripPageState extends State<TripPage> {
                   currentLocation: widget.fromLatLng,
                   markers: {
                     Marker(
-                      markerId: MarkerId('fromLocation'),
+                      markerId: const MarkerId('fromLocation'),
                       position: widget.fromLatLng,
-                      infoWindow: InfoWindow(title: 'From Location'),
+                      infoWindow: const InfoWindow(title: 'From Location'),
                     ),
                     Marker(
-                      markerId: MarkerId('toLocation'),
+                      markerId: const MarkerId('toLocation'),
                       position: widget.toLatLng,
-                      infoWindow: InfoWindow(title: 'To Location'),
+                      infoWindow: const InfoWindow(title: 'To Location'),
                     ),
                   },
                   onMapCreated: (controller) {
@@ -82,18 +81,18 @@ class _TripPageState extends State<TripPage> {
               children: [
                 // Trip Information
                 Text("From: ${widget.fromLocation}",
-                    style: TextStyle(fontSize: 16, color: kDarkBlueColor)),
+                    style: const TextStyle(fontSize: 16, color: kDarkBlueColor)),
                 Text("To: ${widget.toLocation}",
-                    style: TextStyle(fontSize: 16, color: kDarkBlueColor)),
+                    style: const TextStyle(fontSize: 16, color: kDarkBlueColor)),
                 Text("Price: \$${widget.price.toStringAsFixed(2)}",
-                    style: TextStyle(fontSize: 16, color: kDarkBlueColor)),
+                    style: const TextStyle(fontSize: 16, color: kDarkBlueColor)),
                 const SizedBox(height: 10),
 
                 // Passenger Information
                 Text("Passenger: ${widget.passengerName}",
-                    style: TextStyle(fontSize: 16, color: kDarkBlueColor)),
+                    style: const TextStyle(fontSize: 16, color: kDarkBlueColor)),
                 Text("Phone: ${widget.passengerPhone}",
-                    style: TextStyle(fontSize: 16, color: kDarkBlueColor)),
+                    style: const TextStyle(fontSize: 16, color: kDarkBlueColor)),
                 const SizedBox(height: 20),
 
                 // Start Trip Button
@@ -107,8 +106,8 @@ class _TripPageState extends State<TripPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
                       child: Text(
                         "Start the Trip",
                         style: TextStyle(

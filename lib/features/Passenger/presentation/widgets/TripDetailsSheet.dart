@@ -223,11 +223,11 @@ class TripDetailsSheet {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("Trip Started", style: TextStyle(
+                            const Text("Trip Started", style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold
                             ),),
-                            SizedBox(height: 20,),
+                            const SizedBox(height: 20,),
                             PassengerTripCard(trip: trip,),
                           ],
                         )
@@ -241,12 +241,12 @@ class TripDetailsSheet {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Please Pay", style: TextStyle(
+                              const Text("Please Pay", style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold
                               ),),
-                              SizedBox(height: 10,),
-                              Text("\$${trip.price}", style: TextStyle(
+                              const SizedBox(height: 10,),
+                              Text("\$${trip.price}", style: const TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold
                               ),),

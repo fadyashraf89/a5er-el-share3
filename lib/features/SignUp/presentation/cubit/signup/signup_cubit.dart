@@ -1,7 +1,9 @@
+import 'package:a5er_elshare3/features/SignUp/Domain/UseCases/registerWithEmailAndPasswordUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../../dependency_injection.dart';
 import '../../../../Driver/data/database/FirebaseDriverStorage.dart';
 import '../../../../Driver/domain/models/driver.dart';
 import '../../../../Passenger/data/Database/FirebasePassengerStorage.dart';
@@ -24,9 +26,10 @@ class SignupCubit extends Cubit<SignupState> {
     String? carPlateNumber,
     String? carModel,
   }) async {
+    registerWithEmailAndPasswordUseCase register = sl<registerWithEmailAndPasswordUseCase>();
     emit(SignupLoading());
     try {
-      String message = await _registerWithEmailAndPassword(email, password);
+      String message = await register.registerWithEmailAndPassword(email, password);
       if (message.contains('successful')) {
         if (role == 'Passenger') {
           Passenger passenger = Passenger(
@@ -57,22 +60,6 @@ class SignupCubit extends Cubit<SignupState> {
       }
     } catch (e) {
       emit(SignupFailure(message: "Sign-up failed: $e"));
-    }
-  }
-
-  Future<String> _registerWithEmailAndPassword(String email, String password) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      return 'Registration successful!';
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
-      }
-      return 'Registration failed. Please try again.';
-    } catch (e) {
-      return 'An error occurred. Please try again.';
     }
   }
 }

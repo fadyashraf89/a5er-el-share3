@@ -1,9 +1,10 @@
 import 'package:a5er_elshare3/core/validators/validators.dart';
+import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/forgotPasswordUseCase.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
-import '../data/Database/FirebaseAuthentication.dart';
+import '../../../dependency_injection.dart';
 
 
 class ResetPassword extends StatefulWidget {
@@ -75,9 +76,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                     ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        AuthService auth = AuthService();
+                        forgotPasswordUseCase forgotPasswordUC = sl<forgotPasswordUseCase>();
                         String message =
-                            await auth.forgotPassword(emailController.text);
+                            await forgotPasswordUC.forgotPassword(emailController.text);
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
