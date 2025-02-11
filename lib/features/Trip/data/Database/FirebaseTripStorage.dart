@@ -1,7 +1,8 @@
 import 'package:a5er_elshare3/core/utils/constants.dart';
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/getCurrentUserEmailUseCase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 import 'TripStorage.dart';
@@ -55,9 +56,9 @@ class FirebaseTripStorage extends TripStorage {
 
   @override
   Future<List<Trip>> fetchTripsForLoggedInUser() async {
-    AuthService auth = AuthService();
+    getCurrentUserEmailUseCase getemail = sl<getCurrentUserEmailUseCase>();
     try {
-      String? currentEmail = await auth.getCurrentUserEmail();
+      String? currentEmail = await getemail.getCurrentUserEmail();
 
       if (currentEmail == null) {
         print("No user currently signed in.");

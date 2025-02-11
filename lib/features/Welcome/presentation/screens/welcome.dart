@@ -1,10 +1,11 @@
 import 'package:a5er_elshare3/core/utils/constants.dart';
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/fetchUserRoleUseCase.dart';
 import 'package:a5er_elshare3/features/Driver/presentation/screens/DriverHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../../Passenger/presentation/screens/PassengerHome.dart';
 import 'Opening.dart';
 
@@ -19,8 +20,6 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  AuthService authentication = AuthService();
-
   @override
   void initState() {
     super.initState();
@@ -47,8 +46,8 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (user != null) {
       try {
-        // Fetch user role from Firestore (Passengers or Drivers collections)
-        String? role = await authentication.fetchUserRole(user.uid);
+        fetchUserRoleUseCase fetchuserrole = sl<fetchUserRoleUseCase>();
+        String? role = await fetchuserrole.fetchUserRole(user.uid);
 
         if (role == 'Passenger') {
           // Navigate to Passenger Home

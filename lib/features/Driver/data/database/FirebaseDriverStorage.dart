@@ -1,8 +1,9 @@
 import 'package:a5er_elshare3/core/utils/constants.dart';
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/getCurrentUserUseCase.dart';
 import 'package:a5er_elshare3/features/Driver/data/Entities/DriverEntity.dart';
 import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
 import '../../domain/models/driver.dart';
 
 class FirebaseDriverStorage extends DriverStorage {
@@ -29,9 +30,9 @@ class FirebaseDriverStorage extends DriverStorage {
 
   @override
   Future<Driver> fetchDriverData() async {
-    AuthService authentication = AuthService();
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final user = await authentication.getCurrentUser(); // Assume this method gets the current Firebase user.
+    getCurrentUserUseCase getcurrentuser = sl<getCurrentUserUseCase>();
+    final user = await getcurrentuser.getCurrentUser(); // Assume this method gets the current Firebase user.
     if (user == null) throw Exception("User not logged in");
 
     final doc =
@@ -45,7 +46,8 @@ class FirebaseDriverStorage extends DriverStorage {
   }
   @override
   Future<void> updateDriverData(Map<String, dynamic> updatedData) async {
-    final user = await authentication.getCurrentUser();
+    getCurrentUserUseCase getcurrentuser = sl<getCurrentUserUseCase>();
+    final user = await getcurrentuser.getCurrentUser();
     if (user == null) throw Exception("User not logged in");
 
     try {
