@@ -67,15 +67,15 @@ class AuthService {
   //   }
   // }
 
-  Future<String?> getCurrentUserUid() async {
-    try {
-      User? user = _auth.currentUser;
-      return user?.uid;
-    } catch (e) {
-      print('Error getting current user UID: $e');
-      return null;
-    }
-  }
+  // Future<String?> getCurrentUserUid() async {
+  //   try {
+  //     User? user = _auth.currentUser;
+  //     return user?.uid;
+  //   } catch (e) {
+  //     print('Error getting current user UID: $e');
+  //     return null;
+  //   }
+  // }
 
   Future<String?> fetchUserRole(String userId) async {
     try {

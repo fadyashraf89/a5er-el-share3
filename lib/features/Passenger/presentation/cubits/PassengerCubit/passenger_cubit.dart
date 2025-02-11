@@ -1,19 +1,21 @@
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/UpdatePassengerDataUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../../../data/Database/FirebasePassengerStorage.dart';
 import '../../../domain/models/Passenger.dart';
 
 part 'passenger_state.dart';
 
 class PassengerCubit extends Cubit<PassengerState> {
-  final FirebasePassengerStorage _passengerStorage;
 
-  PassengerCubit(this._passengerStorage) : super(PassengerInitial());
+  PassengerCubit() : super(PassengerInitial());
 
   Future<void> fetchPassengerData() async {
+    FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
     try {
       emit(PassengerLoading());
-      final passenger = await _passengerStorage.fetchPassengerData();
+      final passenger = await fetchPassengerDataUseCase.fetchPassengerData();
       emit(PassengerLoaded(passenger: passenger));
     } catch (e) {
       emit(PassengerError(message: e.toString()));
@@ -21,11 +23,12 @@ class PassengerCubit extends Cubit<PassengerState> {
   }
 
   Future<void> updatePassengerData(Passenger passenger) async {
+    UpdatePassengerDataUseCase updatePassengerDataUseCase = sl<UpdatePassengerDataUseCase>();
     try {
       emit(PassengerUpdating());
       final updatedData = passenger.toMap();
 
-      await _passengerStorage.updatePassengerData(updatedData);
+      await updatePassengerDataUseCase.updatePassengerData(updatedData);
       emit(PassengerUpdated(passenger: passenger));
     } catch (e) {
       emit(PassengerError(message: e.toString()));

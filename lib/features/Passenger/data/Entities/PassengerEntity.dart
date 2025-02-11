@@ -3,5 +3,11 @@ abstract class PassengerEntity {
   late final int? points;
 
   PassengerEntity(
-      {this.name,this.email, this.password, this.mobileNumber, this.role, this.uid, this.points});
+      {this.name,
+      this.email,
+      this.password,
+      this.mobileNumber,
+      this.role,
+      this.uid,
+      this.points});
 }

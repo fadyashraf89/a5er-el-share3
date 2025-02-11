@@ -1,3 +1,5 @@
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:a5er_elshare3/features/Payment/data/Database/CardStorage.dart';
 import 'package:flutter/material.dart';
 
@@ -30,10 +32,12 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Card Payment')),
       body: FutureBuilder<Passenger>(
-          future: PStorage.fetchPassengerData(),
+          future: fetchPassengerDataUseCase.fetchPassengerData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

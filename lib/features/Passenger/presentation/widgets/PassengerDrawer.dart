@@ -1,6 +1,7 @@
 import "package:a5er_elshare3/core/widgets/DrawerWidget.dart";
 import "package:a5er_elshare3/features/AuthService/Domain/UseCases/SignOutUseCase.dart";
 import "package:a5er_elshare3/features/Passenger/data/Database/FirebasePassengerStorage.dart";
+import "package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "../../../../core/utils/constants.dart";
@@ -15,11 +16,13 @@ class PassengerDrawer extends DrawerWidget{
 
   @override
   Widget OpenDrawer() {
+    FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
+
     return Drawer(
       backgroundColor: kDarkBlueColor,
       width: 250,
       child: FutureBuilder<Passenger>(
-        future: PStorage.fetchPassengerData(),
+        future: fetchPassengerDataUseCase.fetchPassengerData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -140,7 +143,7 @@ class PassengerDrawer extends DrawerWidget{
                       MaterialPageRoute(
                         builder: (_) => BlocProvider(
                           create: (context) =>
-                              PassengerCubit(FirebasePassengerStorage()),
+                              PassengerCubit(),
                           child: const PassengerProfile(),
                         ),
                       ),

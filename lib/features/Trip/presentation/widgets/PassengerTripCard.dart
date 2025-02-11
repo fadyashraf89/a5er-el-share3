@@ -1,5 +1,7 @@
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import intl package for date/time formatting
+// Import intl package for date/time formatting
 
 import '../../../../core/utils/FormatedDate.dart';
 import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
@@ -18,6 +20,8 @@ class PassengerTripCard extends StatefulWidget {
 
 class _PassengerTripCardState extends State<PassengerTripCard> {
   AuthService auth = AuthService();
+  FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
+
 
   final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
 
@@ -88,7 +92,7 @@ class _PassengerTripCardState extends State<PassengerTripCard> {
                         const Icon(Icons.person, color: Colors.green),
                         const SizedBox(width: 10),
                         FutureBuilder<Passenger>(
-                          future: PStorage.fetchPassengerData(), // Replace with your actual async method to fetch the passenger's name
+                          future: fetchPassengerDataUseCase.fetchPassengerData(), // Replace with your actual async method to fetch the passenger's name
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
@@ -198,12 +202,5 @@ class _PassengerTripCardState extends State<PassengerTripCard> {
         ),
       ),
     );
-  }
-
-  Future<String> _formatDate(String dateString) async {
-    final formatter = DateFormat('yyyy-MM-dd');
-    final date = formatter.parse(dateString);
-    final formattedDate = DateFormat.yMMMMd().format(date);
-    return formattedDate;
   }
 }

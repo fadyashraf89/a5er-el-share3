@@ -1,5 +1,7 @@
 import "package:a5er_elshare3/core/utils/FormatedDate.dart";
 import "package:a5er_elshare3/core/widgets/ThreeDotsLoading.dart";
+import "package:a5er_elshare3/dependency_injection.dart";
+import "package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart";
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/MessageDialog.dart";
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/PlacesSearchField.dart";
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/SelectPayment.dart";
@@ -13,7 +15,6 @@ import "../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart";
 import "../../../Trip/domain/models/trip.dart";
 import "../../../Trip/domain/utils/TripCalculations.dart";
 import "../../../Trip/presentation/cubits/TripCubit/trip_cubit.dart";
-import "../../data/Database/FirebasePassengerStorage.dart";
 import "../../domain/models/Passenger.dart";
 import "InfoRow.dart";
 import "TripPriceBox.dart";
@@ -21,15 +22,15 @@ import "TripPriceBox.dart";
 class TripDetailsSheet {
   final TextEditingController pickUpController = TextEditingController();
   final TextEditingController destinationController = TextEditingController();
-  final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
-
   Passenger passenger = Passenger();
   Trip trip = Trip();
   double? calculatedPrice = 0.0;
 
   Future<void> showTripDetailsSheet(BuildContext context) async {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    passenger = await PStorage.fetchPassengerData();
+    FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
+
+    passenger = await fetchPassengerDataUseCase.fetchPassengerData();
 
     String? paymentMethod = 'Cash';
 

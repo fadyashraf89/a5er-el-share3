@@ -1,9 +1,14 @@
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/UpdatePassengerDataUseCase.dart';
+import 'package:get_it/get_it.dart';
 import 'package:a5er_elshare3/features/Login/Data/Repositories/LoginRepositoryImpl.dart';
 import 'package:a5er_elshare3/features/Login/Domain/Repositories/LoginRepository.dart';
+import 'package:a5er_elshare3/features/Passenger/data/Repositories/PassengerRepositoryImpl.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/Repositories/PassengerRepository.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/AddPassengerUseCase.dart';
+import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:a5er_elshare3/features/Payment/domain/Repositories/CardRepository.dart';
 import 'package:a5er_elshare3/features/Payment/domain/UseCases/AddCardUseCase.dart';
 import 'package:a5er_elshare3/features/SignUp/Data/Repositories/SignUpRepository.dart';
-import 'package:get_it/get_it.dart';
 import 'features/AuthService/Domain/Repositories/UserAuthRepository.dart';
 import 'features/Login/Domain/UseCases/SignInWithEmailAndPasswordUseCase.dart';
 import 'features/AuthService/Domain/UseCases/SignOutUseCase.dart';
@@ -23,6 +28,7 @@ void setupLocator() {
   sl.registerLazySingleton<LoginRepository>(() => LoginRepositoryImpl());
   sl.registerLazySingleton<SignUpRepository>(() => SignUpRepositoryImpl());
   sl.registerLazySingleton<CardRepository>(() => CardRepositoryImpl());
+  sl.registerLazySingleton<PassengerRepository>(() => PassengerRepositoryImpl());
 
 
   // Register the Use Cases
@@ -35,5 +41,11 @@ void setupLocator() {
   sl.registerLazySingleton(() => SignInWithEmailAndPasswordUseCase(sl<LoginRepository>()));
   sl.registerLazySingleton(() => registerWithEmailAndPasswordUseCase(sl<SignUpRepository>()));
   sl.registerLazySingleton(() => AddCardUseCase(sl<CardRepository>()));
+  sl.registerLazySingleton(() => AddPassengerUseCase(sl<PassengerRepository>()));
+  sl.registerLazySingleton(() => FetchPassengerDataUseCase(sl<PassengerRepository>()));
+  sl.registerLazySingleton(() => UpdatePassengerDataUseCase(sl<PassengerRepository>()));
+
+
+
 
 }
