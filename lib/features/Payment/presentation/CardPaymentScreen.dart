@@ -1,16 +1,16 @@
 import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Passenger/data/Entities/PassengerEntity.dart';
 import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:a5er_elshare3/features/Payment/data/Database/CardStorage.dart';
 import 'package:flutter/material.dart';
 
-import '../../Passenger/data/Database/FirebasePassengerStorage.dart';
 import '../../Passenger/domain/models/Passenger.dart';
 import '../../Trip/domain/models/trip.dart';
 import '../domain/Cards.dart';
 
 class CardPaymentScreen extends StatefulWidget {
   final String selectedPaymentMethod;
-  final Passenger passenger;
+  final PassengerEntity passenger;
   final Trip trip;
 
   const CardPaymentScreen({super.key, 
@@ -28,7 +28,6 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
   final TextEditingController expirationDateController =
       TextEditingController();
   final TextEditingController cvvController = TextEditingController();
-  FirebasePassengerStorage PStorage = FirebasePassengerStorage();
 
   @override
   Widget build(BuildContext context) {

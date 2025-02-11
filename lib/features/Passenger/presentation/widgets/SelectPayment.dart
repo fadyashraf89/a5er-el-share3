@@ -1,11 +1,11 @@
 import 'package:a5er_elshare3/core/utils/constants.dart';
-import 'package:a5er_elshare3/core/validators/validators.dart';
+import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Passenger/data/Entities/PassengerEntity.dart';
+import 'package:a5er_elshare3/features/Payment/domain/UseCases/CardPaymentUseCase.dart';
+import 'package:a5er_elshare3/features/Payment/domain/UseCases/CashPaymentUseCase.dart';
 import 'package:a5er_elshare3/features/Payment/presentation/CardPaymentScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:a5er_elshare3/features/Passenger/domain/models/Passenger.dart';
-import 'package:a5er_elshare3/features/Payment/data/payment.dart';
-import 'package:a5er_elshare3/features/Payment/data/CardPayment.dart';
-import 'package:a5er_elshare3/features/Payment/data/CashPayment.dart';
 import 'package:a5er_elshare3/features/Trip/domain/models/trip.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
@@ -148,26 +148,19 @@ class _SelectPaymentState extends State<SelectPayment> {
 
 
 
-dynamic SelectPaymentMethod(String method, Passenger passenger, Trip trip) {
-  Payment pay;
+dynamic SelectPaymentMethod(String method, PassengerEntity passenger, Trip trip) {
+  CardPaymentUseCase cardPaymentUseCase = sl<CardPaymentUseCase>();
+  CashPaymentUseCase cashPaymentUseCase = sl<CashPaymentUseCase>();
   switch (method) {
     case "Cash":
-      pay = CashPayment(passenger: passenger, trip: trip);
-      pay.Pay(passenger, trip);
+      cashPaymentUseCase.CashPayment(passenger, trip);
       break;
     case "Card":
-      pay = CardPayment(passenger: passenger, trip: trip);
-      pay.Pay(passenger, trip);
+      cardPaymentUseCase.CardPayment(passenger, trip);
     case "Points":
-      Validators validators = Validators();
-      if (validators.validatePoints(trip.points ?? 0, passenger.points ?? 0)) {
-        return "Validated";
-      } else {
-        return "Not Validated";
-      }
+
     default:
-      pay = CashPayment(passenger: passenger, trip: trip);
-      pay.Pay(passenger, trip);
+      cashPaymentUseCase.CashPayment(passenger, trip);
   }
   return method;
 }

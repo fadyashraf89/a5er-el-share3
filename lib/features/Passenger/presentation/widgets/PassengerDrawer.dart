@@ -1,6 +1,5 @@
 import "package:a5er_elshare3/core/widgets/DrawerWidget.dart";
 import "package:a5er_elshare3/features/AuthService/Domain/UseCases/SignOutUseCase.dart";
-import "package:a5er_elshare3/features/Passenger/data/Database/FirebasePassengerStorage.dart";
 import "package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -12,8 +11,6 @@ import "../../domain/models/Passenger.dart";
 import "../cubits/PassengerCubit/passenger_cubit.dart";
 import "../screens/PassengerProfile.dart";
 class PassengerDrawer extends DrawerWidget{
-  FirebasePassengerStorage PStorage = FirebasePassengerStorage();
-
   @override
   Widget OpenDrawer() {
     FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
