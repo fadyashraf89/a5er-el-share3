@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter_api/google_places_flutter_api.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 
-import '../../../../core/utils/constants.dart';
+import '../../../../core/utils/Constants/constants.dart';
 import '../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 
 class PlacesSearchField {

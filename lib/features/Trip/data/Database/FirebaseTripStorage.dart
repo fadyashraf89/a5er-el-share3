@@ -1,5 +1,5 @@
-import 'package:a5er_elshare3/core/utils/constants.dart';
-import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/core/utils/Constants/constants.dart';
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/getCurrentUserEmailUseCase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

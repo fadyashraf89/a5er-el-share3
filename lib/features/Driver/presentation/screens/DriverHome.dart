@@ -1,9 +1,8 @@
 import "package:a5er_elshare3/features/Trip/presentation/screens/DriverTripList.dart";
 import "package:flutter/material.dart";
 
-import "../../../../core/utils/constants.dart";
+import '../../../../core/utils/Constants/constants.dart';
 import "../../../Trip/data/Database/FirebaseTripStorage.dart";
-import "../../data/database/FirebaseDriverStorage.dart";
 import "../../domain/models/driver.dart";
 import "../widgets/DriverDrawer.dart";
 
@@ -15,7 +14,6 @@ class DriverHome extends StatefulWidget {
 }
 
 class _DriverHomeState extends State<DriverHome> {
-  final FirebaseDriverStorage DStorage = FirebaseDriverStorage();
   final FirebaseTripStorage TStorage = FirebaseTripStorage();
   Driver driver = Driver();
   @override

@@ -1,12 +1,12 @@
-import 'package:a5er_elshare3/core/utils/constants.dart';
-import 'package:a5er_elshare3/dependency_injection.dart';
+import '../../domain/Repositories/DriverRepository.dart';
+import 'package:a5er_elshare3/core/utils/Constants/constants.dart';
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/getCurrentUserUseCase.dart';
 import 'package:a5er_elshare3/features/Driver/data/Entities/DriverEntity.dart';
-import 'package:a5er_elshare3/features/Driver/data/database/DriverStorage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/models/driver.dart';
-
-class FirebaseDriverStorage extends DriverStorage {
+class DriverRepositoryImpl implements DriverRepository {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   @override
   Future<void> addDriver(DriverEntity driver) async {
     CollectionReference drivers =

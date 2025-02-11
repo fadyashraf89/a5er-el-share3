@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/constants.dart';
+import '../../../../core/utils/Constants/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
 import '../../../Login/presentation/screens/login.dart';
 import '../../../SignUp/presentation/screens/signup.dart';

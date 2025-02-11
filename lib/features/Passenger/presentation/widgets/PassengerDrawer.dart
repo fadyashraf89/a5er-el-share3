@@ -3,8 +3,8 @@ import "package:a5er_elshare3/features/AuthService/Domain/UseCases/SignOutUseCas
 import "package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "../../../../core/utils/constants.dart";
-import "../../../../dependency_injection.dart";
+import '../../../../core/utils/Constants/constants.dart';
+import '../../../../core/utils/Injections/dependency_injection.dart';
 import "../../../Trip/presentation/screens/PassengerTripList.dart";
 import "../../../Welcome/presentation/screens/Opening.dart";
 import "../../domain/models/Passenger.dart";

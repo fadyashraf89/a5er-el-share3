@@ -1,5 +1,5 @@
-import 'package:a5er_elshare3/core/utils/constants.dart';
-import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/core/utils/Constants/constants.dart';
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/features/Passenger/data/Entities/PassengerEntity.dart';
 import 'package:a5er_elshare3/features/Payment/domain/UseCases/CardPaymentUseCase.dart';
 import 'package:a5er_elshare3/features/Payment/domain/UseCases/CashPaymentUseCase.dart';

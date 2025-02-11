@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:a5er_elshare3/core/utils/constants.dart';
+import 'package:a5er_elshare3/core/utils/Constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class TimerWidget extends StatefulWidget {

@@ -1,11 +1,11 @@
+import 'package:a5er_elshare3/features/Driver/domain/UseCases/AddDriverUseCase.dart';
 import 'package:a5er_elshare3/features/Passenger/domain/UseCases/AddPassengerUseCase.dart';
 import 'package:a5er_elshare3/features/SignUp/Domain/UseCases/registerWithEmailAndPasswordUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../dependency_injection.dart';
-import '../../../../Driver/data/database/FirebaseDriverStorage.dart';
+import '../../../../../core/utils/Injections/dependency_injection.dart';
 import '../../../../Driver/domain/models/driver.dart';
 import '../../../../Passenger/domain/models/Passenger.dart';
 
@@ -43,6 +43,7 @@ class SignupCubit extends Cubit<SignupState> {
           AddPassengerUseCase addPassengerUseCase = sl<AddPassengerUseCase>();
           addPassengerUseCase.addPassenger(passenger);
         } else if (role == 'Driver') {
+          AddDriverUseCase addDriverUseCase = sl<AddDriverUseCase>();
           Driver driver = Driver(
             email: email,
             mobileNumber: mobileNumber,
@@ -53,7 +54,7 @@ class SignupCubit extends Cubit<SignupState> {
             name: name,
             role: "Driver",
           );
-          FirebaseDriverStorage().addDriver(driver);
+          addDriverUseCase.addDriver(driver);
         }
         emit(SignupSuccess());
       } else {

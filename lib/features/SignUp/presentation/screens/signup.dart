@@ -1,8 +1,8 @@
-import 'package:a5er_elshare3/core/validators/validators.dart';
 import 'package:a5er_elshare3/features/SignUp/presentation/widgets/PasswordField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/utils/constants.dart';
+import '../../../../core/utils/Constants/constants.dart';
+import '../../../../core/utils/validators/validators.dart';
 import '../../../Driver/presentation/screens/DriverHome.dart';
 import '../../../Login/presentation/screens/login.dart';
 import '../../../Passenger/presentation/screens/PassengerHome.dart';

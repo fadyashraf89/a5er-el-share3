@@ -1,20 +1,22 @@
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Driver/domain/UseCases/FetchDriverDataUseCase.dart';
+import 'package:a5er_elshare3/features/Driver/domain/UseCases/UpdateDriverDataUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../data/database/FirebaseDriverStorage.dart';
 import '../../../domain/models/driver.dart';
 
 part 'driver_state.dart';
 
 class DriverCubit extends Cubit<DriverState> {
-  final FirebaseDriverStorage _driverStorage;
 
-  DriverCubit(this._driverStorage) : super(DriverInitial());
+  DriverCubit() : super(DriverInitial());
 
   Future<void> fetchDriverData() async {
     try {
       emit(DriverLoading());
-      final driver = await _driverStorage.fetchDriverData();
+      FetchDriverDataUseCase fetchDriverDataUseCase = sl<FetchDriverDataUseCase>();
+      final driver = await fetchDriverDataUseCase.fetchDriverData();
       emit(DriverLoaded(driver: driver));
     } catch (e) {
       emit(DriverError(message: e.toString()));
@@ -25,7 +27,8 @@ class DriverCubit extends Cubit<DriverState> {
     try {
       emit(DriverUpdating());
       final updatedData = driver.toMap();
-      await _driverStorage.updateDriverData(updatedData);
+      UpdateDriverDataUseCase driverDataUseCase = sl<UpdateDriverDataUseCase>();
+      await driverDataUseCase.updateDriverData(updatedData);
       emit(DriverUpdated(driver: driver));
     } catch (e) {
       emit(DriverError(message: e.toString()));

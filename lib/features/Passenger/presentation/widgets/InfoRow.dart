@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "../../../../core/utils/constants.dart";
+import '../../../../core/utils/Constants/constants.dart';
 Widget infoRow(String label, String? value) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 8.0),

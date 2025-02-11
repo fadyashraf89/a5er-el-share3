@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../Driver/data/database/FirebaseDriverStorage.dart';
+import '../../../../core/utils/Injections/dependency_injection.dart';
+import '../../../Driver/domain/UseCases/FetchDriverDataUseCase.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 import '../cubits/TripCubit/trip_cubit.dart';
@@ -10,10 +10,10 @@ class AcceptButton extends StatefulWidget {
   const AcceptButton({
     super.key,
     required this.trip,
-    // required this.isAccept,
   });
 
   final Trip trip;
+
   // final bool isAccept;
 
   @override
@@ -21,18 +21,19 @@ class AcceptButton extends StatefulWidget {
 }
 
 class _AcceptButtonState extends State<AcceptButton> {
+  FetchDriverDataUseCase fetchDriverDataUseCase = sl<FetchDriverDataUseCase>();
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () async {
-        Driver? currentDriver =
-        await FirebaseDriverStorage().fetchDriverData();
+        Driver? currentDriver = await fetchDriverDataUseCase.fetchDriverData();
         try {
           await context.read<TripCubit>().acceptTrip(
-            widget.trip.passenger?.email ?? "",
-            widget.trip.toMap(),
-            currentDriver,
-          );
+                widget.trip.passenger?.email ?? "",
+                widget.trip.toMap(),
+                currentDriver,
+              );
           if (!mounted) return;
 
           ScaffoldMessenger.of(context).showSnackBar(

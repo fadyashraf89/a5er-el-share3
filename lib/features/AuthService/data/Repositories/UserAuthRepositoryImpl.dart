@@ -2,7 +2,7 @@ import 'package:a5er_elshare3/features/AuthService/Domain/Repositories/UserAuthR
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../../../core/utils/constants.dart';
+import '../../../../core/utils/Constants/constants.dart';
 
 class UserAuthRepositoryImpl implements UserAuthRepository{
   final FirebaseAuth _auth = FirebaseAuth.instance;

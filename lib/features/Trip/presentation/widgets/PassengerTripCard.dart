@@ -1,9 +1,9 @@
-import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:flutter/material.dart';
 // Import intl package for date/time formatting
 
-import '../../../../core/utils/FormatedDate.dart';
+import '../../../../core/utils/UseCases/FormatDate.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
 import '../../domain/models/trip.dart';
 

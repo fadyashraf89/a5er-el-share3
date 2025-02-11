@@ -1,31 +1,27 @@
-import 'package:a5er_elshare3/core/utils/constants.dart';
+import 'package:a5er_elshare3/core/utils/Constants/constants.dart';
 import 'package:a5er_elshare3/features/Welcome/presentation/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dependency_injection.dart';
+import 'core/utils/Injections/dependency_injection.dart';
 import 'features/GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 import 'features/Trip/data/Database/FirebaseTripStorage.dart';
 import 'features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  setupLocator(); // Initialize GetIt dependencies
+  setupLocator();
   WidgetsFlutterBinding
       .ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await FirebaseMessaging.instance.subscribeToTopic("street");
-  // final fcmToken = await FirebaseMessaging.instance.getToken();
-  // print ("FCM Token: $fcmToken");
-  // await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(const A5erElShare3());
 }
 
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class A5erElShare3 extends StatelessWidget {
+  const A5erElShare3({super.key});
 
   @override
   Widget build(BuildContext context) {

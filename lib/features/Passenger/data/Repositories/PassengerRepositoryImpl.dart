@@ -1,8 +1,8 @@
 import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/getCurrentUserUseCase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../../core/utils/constants.dart';
-import '../../../../dependency_injection.dart';
+import '../../../../core/utils/Constants/constants.dart';
+import '../../../../core/utils/Injections/dependency_injection.dart';
 import '../../domain/Repositories/PassengerRepository.dart';
 import '../../domain/models/Passenger.dart';
 import '../Entities/PassengerEntity.dart';

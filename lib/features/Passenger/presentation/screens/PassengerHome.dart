@@ -2,7 +2,7 @@ import 'package:a5er_elshare3/features/Passenger/presentation/widgets/TripDetail
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import "../../../../core/utils/constants.dart";
+import '../../../../core/utils/Constants/constants.dart';
 import '../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
 import '../../../GoogleMaps/Presentation/screens/MapsView.dart';
 import "../widgets/PassengerDrawer.dart";

@@ -1,6 +1,6 @@
 import 'package:a5er_elshare3/features/Trip/data/Database/FirebaseTripStorage.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/utils/FormatedDate.dart';
+import '../../../../core/utils/UseCases/FormatDate.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 import 'AcceptButton.dart';

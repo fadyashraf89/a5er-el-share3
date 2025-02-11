@@ -1,4 +1,4 @@
-import 'package:a5er_elshare3/dependency_injection.dart';
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/features/Passenger/data/Entities/PassengerEntity.dart';
 import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:a5er_elshare3/features/Payment/data/Database/CardStorage.dart';

@@ -1,25 +1,25 @@
 import 'package:a5er_elshare3/core/widgets/DrawerWidget.dart';
-import 'package:a5er_elshare3/features/Driver/data/database/FirebaseDriverStorage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/utils/constants.dart';
-import '../../../../dependency_injection.dart';
+import '../../../../core/utils/Constants/constants.dart';
+import '../../../../core/utils/Injections/dependency_injection.dart';
 import '../../../AuthService/Domain/UseCases/SignOutUseCase.dart';
 import '../../../Welcome/presentation/screens/Opening.dart';
+import '../../domain/UseCases/FetchDriverDataUseCase.dart';
 import '../../domain/models/driver.dart';
 import '../cubits/DriverCubit/driver_cubit.dart';
 import '../screens/DriverProfile.dart';
 
 class DriverDrawer extends DrawerWidget {
-  FirebaseDriverStorage DStorage = FirebaseDriverStorage();
   @override
   Widget OpenDrawer() {
+    FetchDriverDataUseCase fetchDriverDataUseCase = sl<FetchDriverDataUseCase>();
     return Drawer(
       backgroundColor: kDarkBlueColor,
       width: 250,
       child: FutureBuilder<Driver>(
-        future: DStorage.fetchDriverData(),
+        future: fetchDriverDataUseCase.fetchDriverData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -116,7 +116,7 @@ class DriverDrawer extends DrawerWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => BlocProvider(
-                              create: (context) => DriverCubit(DStorage),
+                              create: (context) => DriverCubit(),
                               child: const DriverProfile(),
                             )));
                     // Navigate to Profile

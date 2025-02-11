@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../dependency_injection.dart';
+import '../../../../../core/utils/Injections/dependency_injection.dart';
 import '../../../Domain/UseCases/SignInWithEmailAndPasswordUseCase.dart';
 
 

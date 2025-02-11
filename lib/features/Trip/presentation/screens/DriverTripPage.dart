@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../GoogleMaps/Presentation/screens/MapsView.dart';
-import '../../../../core/utils/constants.dart';
+import '../../../../core/utils/Constants/constants.dart';
 import '../cubits/TripCubit/trip_cubit.dart';  // Make sure kDarkBlueColor is defined in this file
 
 class TripPage extends StatefulWidget {

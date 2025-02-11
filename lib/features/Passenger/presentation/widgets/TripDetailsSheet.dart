@@ -1,6 +1,6 @@
-import "package:a5er_elshare3/core/utils/FormatedDate.dart";
+import 'package:a5er_elshare3/core/utils/UseCases/FormatDate.dart';
 import "package:a5er_elshare3/core/widgets/ThreeDotsLoading.dart";
-import "package:a5er_elshare3/dependency_injection.dart";
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import "package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart";
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/MessageDialog.dart";
 import "package:a5er_elshare3/features/Passenger/presentation/widgets/PlacesSearchField.dart";
@@ -10,7 +10,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:url_launcher/url_launcher.dart";
-import "../../../../core/utils/constants.dart";
+import '../../../../core/utils/Constants/constants.dart';
 import "../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart";
 import "../../../Trip/domain/models/trip.dart";
 import "../../../Trip/domain/utils/TripCalculations.dart";

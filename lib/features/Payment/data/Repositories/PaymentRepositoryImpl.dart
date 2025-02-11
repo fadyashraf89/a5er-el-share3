@@ -2,8 +2,8 @@ import 'package:a5er_elshare3/features/Payment/domain/Repositories/PaymentReposi
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/constants.dart';
-import '../../../../core/validators/validators.dart';
+import '../../../../core/utils/Constants/constants.dart';
+import '../../../../core/utils/validators/validators.dart';
 import '../../../Passenger/data/Entities/PassengerEntity.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
 import '../../../Trip/domain/models/trip.dart';
