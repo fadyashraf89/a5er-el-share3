@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Import intl package for date/time formatting
 
 import '../../../../core/utils/FormatedDate.dart';
-import '../../../AuthService/data/Database/FirebaseAuthentication.dart';
-import '../../../Passenger/data/Database/FirebasePassengerStorage.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
 import '../../domain/models/trip.dart';
 
@@ -19,11 +17,8 @@ class PassengerTripCard extends StatefulWidget {
 }
 
 class _PassengerTripCardState extends State<PassengerTripCard> {
-  AuthService auth = AuthService();
   FetchPassengerDataUseCase fetchPassengerDataUseCase = sl<FetchPassengerDataUseCase>();
 
-
-  final FirebasePassengerStorage PStorage = FirebasePassengerStorage();
 
   @override
   Widget build(BuildContext context) {

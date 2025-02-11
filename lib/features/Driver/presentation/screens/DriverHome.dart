@@ -2,7 +2,6 @@ import "package:a5er_elshare3/features/Trip/presentation/screens/DriverTripList.
 import "package:flutter/material.dart";
 
 import "../../../../core/utils/constants.dart";
-import "../../../AuthService/data/Database/FirebaseAuthentication.dart";
 import "../../../Trip/data/Database/FirebaseTripStorage.dart";
 import "../../data/database/FirebaseDriverStorage.dart";
 import "../../domain/models/driver.dart";
@@ -19,7 +18,6 @@ class _DriverHomeState extends State<DriverHome> {
   final FirebaseDriverStorage DStorage = FirebaseDriverStorage();
   final FirebaseTripStorage TStorage = FirebaseTripStorage();
   Driver driver = Driver();
-  AuthService authentication = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
