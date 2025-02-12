@@ -8,7 +8,5 @@ abstract class TripRepository{
   Future<List<Trip>> fetchRejectedTripsForUser(String userMail);
   Future<List<Trip>> fetchTripsForUser(String userEmail);
   Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver);
-  Stream<List<Trip>> getRequestedTripsStream();
   Stream<List<Trip>> getActiveTripsStream();
-
 }
