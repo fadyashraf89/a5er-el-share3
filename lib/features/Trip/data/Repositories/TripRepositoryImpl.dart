@@ -230,32 +230,6 @@ class TripRepositoryImpl implements TripRepository{
     }
   }
   @override
-  Stream<List<Trip>> getRequestedTripsStream() async* {
-    final requestedTripsStream = FirebaseFirestore.instance
-        .collection(kTripsCollection)
-        .snapshots()
-        .map((snapshot) {
-      List<Trip> requestedTrips = [];
-      for (var doc in snapshot.docs) {
-        final data = doc.data();
-        final List<dynamic> tripDataList = data['trips'] ?? [];
-
-        for (var tripData in tripDataList) {
-          if (tripData['Status'] == 'Requested') {
-            requestedTrips.add(Trip.fromMap(tripData as Map<String, dynamic>));
-          }
-        }
-      }
-      return requestedTrips;
-    });
-
-    // Yield values from the requestedTripsStream
-    await for (final requestedTrips in requestedTripsStream) {
-      yield requestedTrips;
-    }
-  }
-
-  @override
   Stream<List<Trip>> getActiveTripsStream() =>
       FirebaseFirestore.instance
           .collection(kActiveTripsCollection)
