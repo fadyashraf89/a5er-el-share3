@@ -7,7 +7,13 @@ import 'AcceptButton.dart';
 class DriverTripCard extends StatelessWidget {
   final Trip trip;
   final Driver driver;
-  const DriverTripCard({super.key, required this.trip, required this.driver});
+  final bool highlight; // Add highlight parameter
+  const DriverTripCard({
+    super.key,
+    required this.trip,
+    required this.driver,
+    this.highlight = false, // Default to false
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +23,8 @@ class DriverTripCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
+        color: highlight ? Colors.blue.shade100 : Colors.white, // Apply highlighting
+
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -46,10 +54,13 @@ class DriverTripCard extends StatelessWidget {
                         const SizedBox(width: 10),
                         FutureBuilder<String>(
                           // Using the Future to format the date
-                          future: FormattedDate().formatToReadableDate(trip.date!),  // Make sure trip.date is not null
+                          future:
+                              FormattedDate().formatToReadableDate(trip.date!),
+                          // Make sure trip.date is not null
                           builder: (context, snapshot) {
                             // Handling loading state
-                            if (snapshot.connectionState == ConnectionState.waiting) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return const Text(
                                 "Loading...",
                                 style: TextStyle(
@@ -204,4 +215,3 @@ class DriverTripCard extends StatelessWidget {
     );
   }
 }
-

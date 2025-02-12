@@ -28,27 +28,36 @@ class DriverTripList extends StatefulWidget {
 class _DriverTripListState extends State<DriverTripList> {
   Duration expirationTime = const Duration(minutes: 1);
   final FormattedDate formatter = FormattedDate();
-  Trip? latestActiveTrip;
-  Timer? expirationTimer; // Change from `late Timer?` to `Timer?` to handle null cases safely.
+  Timer? expirationTimer;
+  int currentTripIndex = 0;
+  List<Trip> activeTrips = [];
 
   @override
   void initState() {
     super.initState();
-    expirationTimer = Timer.periodic(expirationTime, (timer) {
-      if (mounted) {
-        setState(() {
-          latestActiveTrip = null;
-        });
-      } else {
-        timer.cancel();
-      }
-    });
+    startTripTimer();
   }
 
+  void startTripTimer() {
+    expirationTimer?.cancel();
+    if (currentTripIndex < activeTrips.length) {
+      expirationTimer = Timer(expirationTime, () {
+        if (mounted) {
+          setState(() {
+            currentTripIndex++;
+            if (currentTripIndex >= activeTrips.length) {
+              currentTripIndex = 0;
+            }
+          });
+          startTripTimer();
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
-    expirationTimer?.cancel(); // Safely cancel the timer before disposal.
+    expirationTimer?.cancel();
     super.dispose();
   }
 
@@ -61,13 +70,10 @@ class _DriverTripListState extends State<DriverTripList> {
         color: kDarkBlueColor,
       ),
       body: BlocConsumer<TripCubit, TripState>(
-        listener: (context, state) {
-          // TODO: Implement listener if needed
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           if (state is TripAccepted) {
             final trip = state.trip;
-
             return FutureBuilder<List<LatLng?>>(
               future: Future.wait([
                 convertAddressToLatLng(trip.FromLocation ?? "Unknown From"),
@@ -80,10 +86,8 @@ class _DriverTripListState extends State<DriverTripList> {
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
-
                 final fromLatLng = snapshot.data?[0];
                 final toLatLng = snapshot.data?[1];
-
                 if (fromLatLng != null && toLatLng != null) {
                   return TripPage(
                     trip: trip,
@@ -146,46 +150,25 @@ class _DriverTripListState extends State<DriverTripList> {
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
-
-                final activeTrips = (snapshot.data ?? []).where((trip) {
-                  return trip.Status == 'Active';
-                }).toList();
-
+                activeTrips = (snapshot.data ?? []).where((trip) => trip.Status == 'Active').toList();
                 if (activeTrips.isEmpty) {
                   return const Center(child: Text('No Active Requests.'));
                 }
-
-                latestActiveTrip = activeTrips.isNotEmpty ? activeTrips.first : null;
-
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      if (latestActiveTrip != null) ...[
-                        DriverTripCard(
-                          trip: latestActiveTrip!,
+                  child: ListView.builder(
+                    itemCount: activeTrips.length,
+                    itemBuilder: (context, index) {
+                      final trip = activeTrips[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: DriverTripCard(
+                          trip: trip,
                           driver: widget.driver,
+                          highlight: index == currentTripIndex,
                         ),
-                      ],
-                      Expanded( // Ensure ListView doesn't cause overflow
-                        child: ListView.builder(
-                          itemCount: activeTrips.length,
-                          itemBuilder: (context, index) {
-                            final trip = activeTrips[index];
-                            if (trip != latestActiveTrip) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
-                                child: DriverTripCard(
-                                  trip: trip,
-                                  driver: widget.driver,
-                                ),
-                              );
-                            }
-                            return Container(); // Skip displaying latestActiveTrip again
-                          },
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 );
               },
@@ -195,8 +178,6 @@ class _DriverTripListState extends State<DriverTripList> {
       ),
     );
   }
-
-
 
   Future<LatLng?> convertAddressToLatLng(String address) async {
     try {
