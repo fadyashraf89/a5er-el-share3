@@ -1,6 +1,5 @@
 import 'package:a5er_elshare3/core/utils/Constants/constants.dart';
 import 'package:a5er_elshare3/core/widgets/RoundedAppBar.dart';
-import 'package:a5er_elshare3/features/Trip/data/Database/FirebaseTripStorage.dart';
 import 'package:a5er_elshare3/features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +19,7 @@ class PassengerTripList extends StatelessWidget {
         color: kDarkBlueColor,
       ),
       body: BlocProvider(
-        create: (context) => TripCubit(tripStorage: FirebaseTripStorage())
+        create: (context) => TripCubit()
           ..fetchAllTrips(userEmail!),
         child: BlocBuilder<TripCubit, TripState>(
           builder: (context, state) {

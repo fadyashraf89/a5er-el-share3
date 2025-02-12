@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/core/utils/UseCases/FormatDate.dart';
+import 'package:a5er_elshare3/features/Trip/domain/UseCases/getActiveTripsStreamUseCase.dart';
 import 'package:a5er_elshare3/features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +12,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/utils/Constants/constants.dart';
 import '../../../../core/widgets/RoundedAppBar.dart';
 import '../../../Driver/domain/models/driver.dart';
-import '../../data/Database/FirebaseTripStorage.dart';
 import '../../domain/models/trip.dart';
 import '../widgets/DriverTripCard.dart';
 import 'DriverTripPage.dart';
@@ -25,7 +26,6 @@ class DriverTripList extends StatefulWidget {
 }
 
 class _DriverTripListState extends State<DriverTripList> {
-  FirebaseTripStorage TStorage = FirebaseTripStorage();
   Duration expirationTime = const Duration(minutes: 1);
   final FormattedDate formatter = FormattedDate();
   Trip? latestActiveTrip;
@@ -136,8 +136,9 @@ class _DriverTripListState extends State<DriverTripList> {
             );
           }
           else {
+            getActiveTripsStreamUseCase active = sl<getActiveTripsStreamUseCase>();
             return StreamBuilder<List<Trip>>(
-              stream: TStorage.getActiveTripsTripsStream(),
+              stream: active.getActiveTripsStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());

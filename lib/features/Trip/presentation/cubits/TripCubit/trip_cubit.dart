@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
+import 'package:a5er_elshare3/features/Trip/domain/UseCases/addTripUseCase.dart';
+import 'package:a5er_elshare3/features/Trip/domain/UseCases/fetchTripsForLoggedInUserUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,21 +10,22 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import '../../../../../core/utils/Constants/constants.dart';
 import '../../../../Driver/domain/models/driver.dart';
-import '../../../data/Database/FirebaseTripStorage.dart';
+import '../../../domain/UseCases/fetchAcceptedTripsForUserUseCase.dart';
+import '../../../domain/UseCases/fetchTripsForUserUseCase.dart';
 import '../../../domain/models/trip.dart';
 
 part 'trip_state.dart';
 
 class TripCubit extends Cubit<TripState> {
-  final FirebaseTripStorage tripStorage;
 
-  TripCubit({required this.tripStorage}) : super(TripInitial());
+  TripCubit() : super(TripInitial());
 
   Future<void> addTrips(List<Trip> trips,
       {Duration expiryDuration = const Duration(minutes: 3)}) async {
     emit(TripLoading());
     try {
-      await tripStorage.addTrip(trips);
+      addTripUseCase addtrip = sl<addTripUseCase>();
+      await addtrip.addTrip(trips);
       emit(TripRequestSuccess("Trips successfully added."));
       for (var trip in trips) {
         emit(TripActive(trip));
@@ -88,7 +92,8 @@ class TripCubit extends Cubit<TripState> {
   Future<void> fetchTripsForLoggedInUser() async {
     emit(TripLoading());
     try {
-      final trips = await tripStorage.fetchTripsForLoggedInUser();
+      fetchTripsForLoggedInUserUseCase fetchtrips = sl<fetchTripsForLoggedInUserUseCase>();
+      final trips = await fetchtrips.fetchTripsForLoggedInUser();
       emit(TripDataFetched(trips));
     } catch (e) {
       print('Error fetching trips: $e');
@@ -99,7 +104,9 @@ class TripCubit extends Cubit<TripState> {
   Future<void> fetchTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
-      final trips = await tripStorage.fetchTripsForUser(userEmail);
+      fetchTripsForUserUseCase fetchtrips = sl<fetchTripsForUserUseCase>();
+
+      final trips = await fetchtrips.fetchTripsForUser(userEmail);
       emit(TripDataFetched(trips));
     } catch (e) {
       print('Error fetching trips for user: $userEmail $e');
@@ -110,7 +117,8 @@ class TripCubit extends Cubit<TripState> {
   Future<void> fetchAcceptedTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
-      final trips = await tripStorage.fetchAcceptedTripsForUser(userEmail);
+      fetchAcceptedTripsForUserUseCase accepted = sl<fetchAcceptedTripsForUserUseCase>();
+      final trips = await accepted.fetchAcceptedTripsForUser(userEmail);
       emit(TripDataFetched(trips));
     } catch (e) {
       print('Error fetching accepted trips for user: $userEmail $e');
@@ -118,22 +126,14 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
-  Future<void> fetchRejectedTripsForUser(String userEmail) async {
-    emit(TripLoading());
-    try {
-      final trips = await tripStorage.fetchRejectedTripsForUser(userEmail);
-      emit(TripDataFetched(trips));
-    } catch (e) {
-      print('Error fetching rejected trips for user: $userEmail $e');
-      emit(TripError("Failed to fetch rejected trips for user $userEmail: $e"));
-    }
-  }
-
   Future<void> fetchAllTrips(String userEmail) async {
     emit(TripLoading());
     try {
-      final trips = await tripStorage.fetchTripsForUser(userEmail);
-      await tripStorage.fetchAcceptedTripsForUser(userEmail);
+      fetchTripsForUserUseCase tripsforuser = sl<fetchTripsForUserUseCase>();
+      fetchAcceptedTripsForUserUseCase accepted = sl<fetchAcceptedTripsForUserUseCase>();
+
+      final trips = await tripsforuser.fetchTripsForUser(userEmail);
+      await accepted.fetchAcceptedTripsForUser(userEmail);
       final allTrips = [
         ...trips.reversed,
       ];

@@ -1,4 +1,3 @@
-import 'package:a5er_elshare3/features/Trip/data/Database/FirebaseTripStorage.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/utils/UseCases/FormatDate.dart';
 import '../../../Driver/domain/models/driver.dart';
@@ -8,8 +7,7 @@ import 'AcceptButton.dart';
 class DriverTripCard extends StatelessWidget {
   final Trip trip;
   final Driver driver;
-  final FirebaseTripStorage storage = FirebaseTripStorage();
-  DriverTripCard({super.key, required this.trip, required this.driver});
+  const DriverTripCard({super.key, required this.trip, required this.driver});
 
   @override
   Widget build(BuildContext context) {

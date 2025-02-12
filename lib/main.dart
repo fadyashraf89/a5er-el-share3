@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/utils/Injections/dependency_injection.dart';
 import 'features/GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart';
-import 'features/Trip/data/Database/FirebaseTripStorage.dart';
 import 'features/Trip/presentation/cubits/TripCubit/trip_cubit.dart';
 import 'firebase_options.dart';
 
@@ -28,7 +27,7 @@ class A5erElShare3 extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => TripCubit(tripStorage: FirebaseTripStorage()),
+          create: (_) => TripCubit(),
         ),
         BlocProvider(
           create: (ctx1) => MapsCubit(),
