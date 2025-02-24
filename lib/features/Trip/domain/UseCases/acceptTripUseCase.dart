@@ -7,7 +7,7 @@ class acceptTripUseCase {
 
   acceptTripUseCase(this.repository);
 
-  Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver) async {
-    return await repository.acceptTrip(userEmail, tripData, driver);
+  Future<void> acceptTrip(String tripId, Driver driver, String email) async {
+    return await repository.acceptTrip(tripId, email, driver);
   }
 }

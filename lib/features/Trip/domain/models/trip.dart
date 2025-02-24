@@ -4,6 +4,7 @@ import '../../data/Entities/TripEntity.dart';
 
 class Trip extends TripEntity {
   Trip({
+    super.id,
     super.date,
     super.time,
     super.FromLocation,
@@ -19,6 +20,7 @@ class Trip extends TripEntity {
 
   factory Trip.fromMap(Map<String, dynamic> data) {
     return Trip(
+      id: data['id'] ?? '',
       date: data['date'] ?? '',
       time: data['time'] ?? '',
       FromLocation: data['FromLocation'] ?? '',
@@ -35,6 +37,7 @@ class Trip extends TripEntity {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'date': date,
       'time': time,
       'FromLocation': FromLocation,
@@ -50,6 +53,7 @@ class Trip extends TripEntity {
   }
 
   Trip copyWith({
+    String? id,
     String? date,
     String? time,
     String? fromLocation,
@@ -63,6 +67,7 @@ class Trip extends TripEntity {
     String? paymentMethod,
   }) {
     return Trip(
+      id: id ?? this.id,
       date: date ?? this.date,
       time: time ?? this.time,
       FromLocation: FromLocation ?? FromLocation,

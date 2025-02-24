@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/core/utils/UseCases/FormatDate.dart';
 import 'package:a5er_elshare3/features/Trip/domain/UseCases/getActiveTripsStreamUseCase.dart';
@@ -26,40 +25,11 @@ class DriverTripList extends StatefulWidget {
 }
 
 class _DriverTripListState extends State<DriverTripList> {
-  Duration expirationTime = const Duration(minutes: 1);
+  final Duration expirationTime = const Duration(minutes: 1);
   final FormattedDate formatter = FormattedDate();
-  Timer? expirationTimer;
+  final Set<String> skippedTrips = {};
   int currentTripIndex = 0;
   List<Trip> activeTrips = [];
-
-  @override
-  void initState() {
-    super.initState();
-    startTripTimer();
-  }
-
-  void startTripTimer() {
-    expirationTimer?.cancel();
-    if (currentTripIndex < activeTrips.length) {
-      expirationTimer = Timer(expirationTime, () {
-        if (mounted) {
-          setState(() {
-            currentTripIndex++;
-            if (currentTripIndex >= activeTrips.length) {
-              currentTripIndex = 0;
-            }
-          });
-          startTripTimer();
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    expirationTimer?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +44,8 @@ class _DriverTripListState extends State<DriverTripList> {
         builder: (context, state) {
           if (state is TripAccepted) {
             final trip = state.trip;
+
+            // Ensure a valid widget is always returned
             return FutureBuilder<List<LatLng?>>(
               future: Future.wait([
                 convertAddressToLatLng(trip.FromLocation ?? "Unknown From"),
@@ -86,8 +58,10 @@ class _DriverTripListState extends State<DriverTripList> {
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
+
                 final fromLatLng = snapshot.data?[0];
                 final toLatLng = snapshot.data?[1];
+
                 if (fromLatLng != null && toLatLng != null) {
                   return TripPage(
                     trip: trip,
@@ -140,43 +114,71 @@ class _DriverTripListState extends State<DriverTripList> {
             );
           }
           else {
-            getActiveTripsStreamUseCase active = sl<getActiveTripsStreamUseCase>();
-            return StreamBuilder<List<Trip>>(
-              stream: active.getActiveTripsStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                activeTrips = (snapshot.data ?? []).where((trip) => trip.Status == 'Active').toList();
-                if (activeTrips.isEmpty) {
-                  return const Center(child: Text('No Active Requests.'));
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: activeTrips.length,
-                    itemBuilder: (context, index) {
-                      final trip = activeTrips[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: DriverTripCard(
-                          trip: trip,
-                          driver: widget.driver,
-                          highlight: index == currentTripIndex,
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            );
+            return _buildActiveTrips();
           }
         },
       ),
     );
+  }
+
+
+    Widget _buildActiveTrips() {
+    final getActiveTripsStreamUseCase active = sl<getActiveTripsStreamUseCase>();
+
+    return StreamBuilder<List<Trip>>(
+      stream: active.getActiveTripsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        activeTrips = (snapshot.data ?? [])
+            .where((trip) => trip.Status == 'active' && !skippedTrips.contains(trip.id))
+            .toList();
+
+        if (activeTrips.isEmpty) {
+          return const Center(child: Text('No Active Requests.'));
+        }
+
+        return Column(
+          children: [
+            Expanded(
+              child: PageView.builder(
+                itemCount: activeTrips.length,
+                controller: PageController(viewportFraction: 0.9),
+                itemBuilder: (context, index) {
+                  final trip = activeTrips[index];
+                  return DriverTripCard(
+                    trip: trip,
+                    driver: widget.driver,
+                    highlight: index == currentTripIndex,
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: _skipTrip,
+                child: const Text("Skip Trip"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _skipTrip() {
+    setState(() {
+      if (currentTripIndex < activeTrips.length) {
+        skippedTrips.add(activeTrips[currentTripIndex].id!);
+        currentTripIndex++;
+      }
+    });
   }
 
   Future<LatLng?> convertAddressToLatLng(String address) async {
@@ -184,12 +186,10 @@ class _DriverTripListState extends State<DriverTripList> {
       List<Location> locations = await locationFromAddress(address);
       if (locations.isNotEmpty) {
         return LatLng(locations.first.latitude, locations.first.longitude);
-      } else {
-        print('No location found for the address');
-        return null;
       }
+      return null;
     } catch (e) {
-      print('Error occurred during geocoding: $e');
+      print('Error during geocoding: $e');
       return null;
     }
   }

@@ -10,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_maps_flutter/google_maps_flutter.dart";
 import "package:url_launcher/url_launcher.dart";
+import "package:uuid/uuid.dart";
 import '../../../../core/utils/Constants/constants.dart';
 import "../../../GoogleMaps/Presentation/cubits/MapsCubit/maps_cubit.dart";
 import "../../../Trip/domain/models/trip.dart";
@@ -52,6 +53,7 @@ class TripDetailsSheet {
               return SingleChildScrollView(
                 child: BlocConsumer<TripCubit, TripState>(
                   listener: (_, state) {
+                    print("Current Trip State is: $state for user name : ${passenger.email}");
                     // if (state is TripRequestSuccess) {
                     //   MessageDialog().ShowDialog(
                     //     context,
@@ -67,7 +69,7 @@ class TripDetailsSheet {
                     // }
                   },
                   builder: (context, state) {
-                    if (state is TripRequested) {
+                    if (state is TripActive) {
                       return Padding(
                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height - 500.0),
                         child: Center(
@@ -220,18 +222,18 @@ class TripDetailsSheet {
                     else if (state is TripStarted) {
                       final trip = state.trip;
                       return Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Trip Started", style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold
-                            ),),
-                            const SizedBox(height: 20,),
-                            PassengerTripCard(trip: trip,),
-                          ],
-                        )
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Trip Started", style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
+                              ),),
+                              const SizedBox(height: 20,),
+                              PassengerTripCard(trip: trip,),
+                            ],
+                          )
                       );
                     }
 
@@ -255,38 +257,41 @@ class TripDetailsSheet {
                           )
                       );
                     }
-                    // else if (state is TripExpired) {
-                    //   return Padding(
-                    //     padding: EdgeInsets.only(top: MediaQuery.of(context).size.height - 500.0),
-                    //     child: Center(
-                    //       child: Column(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: [
-                    //           Image.asset(
-                    //             "assets/images/Hourglass_icon.png",
-                    //             height: 90,
-                    //             width: 90,
-                    //           ),
-                    //           const Row(
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               Text(
-                    //                 "Trip Expired",
-                    //                 style: TextStyle(
-                    //                   color: kDarkBlueColor,
-                    //                   fontSize: 20,
-                    //                   fontWeight: FontWeight.bold,
-                    //                 ),
-                    //               ),
-                    //               SizedBox(width: 15),
-                    //             ],
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   );
-                    //
-                    // }
+                    else if (state is TripExpired) {
+                      return Padding(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height - 500.0),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/Hourglass_icon.png",
+                                height: 90,
+                                width: 90,
+                              ),
+
+                              const SizedBox(width: 15),
+
+                              const Text(
+                                "Trip Expired",
+                                style: TextStyle(
+                                  color: kDarkBlueColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+
+                    }
                     else {
                       return SingleChildScrollView(
                         controller: scrollController,
@@ -415,6 +420,7 @@ class TripDetailsSheet {
                                         String formattedDate = await formatter.formatToReadable(DateTime.now().toIso8601String());
 
                                         trip = Trip(
+                                          id: const Uuid().v4(),
                                           date: formattedDate,
                                           time: TimeOfDay.now().format(context),
                                           FromLocation: pickUpController.text,
@@ -473,4 +479,3 @@ class TripDetailsSheet {
     );
   }
 }
-

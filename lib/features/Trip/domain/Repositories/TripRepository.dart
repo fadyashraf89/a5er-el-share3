@@ -4,9 +4,11 @@ import '../models/trip.dart';
 abstract class TripRepository{
   Future<void> addTrip(List<Trip> tripsList);
   Future<List<Trip>> fetchTripsForLoggedInUser();
-  Future<List<Trip>> fetchAcceptedTripsForUser(String userMail);
-  Future<List<Trip>> fetchRejectedTripsForUser(String userMail);
+  // Future<List<Trip>> fetchAcceptedTripsForUser(String userMail);
+  // Future<List<Trip>> fetchRejectedTripsForUser(String userMail);
   Future<List<Trip>> fetchTripsForUser(String userEmail);
-  Future<void> acceptTrip(String userEmail, Map<String, dynamic> tripData, Driver driver);
+  Future<void> acceptTrip(String tripId, String userEmail, Driver driver);
   Stream<List<Trip>> getActiveTripsStream();
+  Future<void> expireTrip(String tripId, String userEmail);
+  Future<Trip> fetchTripById(String tripId);
 }

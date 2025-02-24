@@ -202,6 +202,7 @@ class DriverTripCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // DismissButton(trip: trip, driver: driver),
                         AcceptButton(trip: trip),
                       ],
                     ),

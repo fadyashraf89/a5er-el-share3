@@ -2,6 +2,7 @@ import '../../../Driver/domain/models/driver.dart';
 import '../../../Passenger/domain/models/Passenger.dart';
 
 class TripEntity {
+  final String? id;
   final String? date;
   final String? time;
   final String? FromLocation;
@@ -15,6 +16,7 @@ class TripEntity {
   final String? paymentMethod;
 
   const TripEntity({
+    this.id,
     this.date,
     this.time,
     this.FromLocation,

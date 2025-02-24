@@ -14,12 +14,14 @@ class TripRequestSuccess extends TripState {
 
 class TripDataFetched extends TripState {
   final List<Trip> trips;
-  TripDataFetched(this.trips);
+  final Passenger? passenger;
+  TripDataFetched(this.trips, {this.passenger});
 }
 
 class TripHistoryFetched extends TripState {
   final List<Trip> trips;
-  TripHistoryFetched(this.trips);
+  final Passenger? passenger;
+  TripHistoryFetched(this.trips, {this.passenger});
 }
 
 class TripError extends TripState {
@@ -29,12 +31,15 @@ class TripError extends TripState {
 
 class TripActive extends TripState {
   final Trip trip;
-  TripActive(this.trip);
+  final Duration expiryDuration;
+  final Passenger? passenger;
+  TripActive(this.trip, this.expiryDuration, {this.passenger});
 }
 
 class TripExpired extends TripState {
   final Trip trip;
-  TripExpired(this.trip);
+  final Passenger? passenger;
+  TripExpired(this.trip, {this.passenger});
 }
 
 class TripRequestFailed extends TripState {
@@ -44,44 +49,56 @@ class TripRequestFailed extends TripState {
 
 class TripRequested extends TripState {
   final Trip trip;
-  final Duration expiryDuration;
-  TripRequested(this.trip, this.expiryDuration);
+  final Passenger? passenger;
+  TripRequested(this.trip, {this.passenger});
 }
 
 class TripAccepted extends TripState {
   final Trip trip;
-  TripAccepted(this.trip);
+  final Passenger? passenger;
+  TripAccepted(this.trip, {this.passenger});
 }
 
 class TripInProgress extends TripState {
   final Trip trip;
-  TripInProgress(this.trip);
+  final Passenger? passenger;
+  TripInProgress(this.trip, {this.passenger});
 }
 
 class TripCompleted extends TripState {
   final Trip trip;
-
-  TripCompleted(this.trip);
+  final Passenger? passenger;
+  TripCompleted(this.trip, {this.passenger});
 }
 
 class TripRejected extends TripState {
   final String? message;
   final Trip? trip;
-  TripRejected({this.message, this.trip});
+  final Passenger? passenger;
+  TripRejected({this.message, this.trip, this.passenger});
 }
 
 class DriverAssigned extends TripState {
   final Driver driver;
-  DriverAssigned(this.driver);
+  final Passenger? passenger;
+  DriverAssigned(this.driver, {this.passenger});
 }
-
 
 class TripStarted extends TripState {
   final Trip trip;
-  TripStarted(this.trip);
+  final Passenger? passenger;
+  TripStarted(this.trip, {this.passenger});
 }
 
 class TripFinished extends TripState {
   final Trip trip;
-  TripFinished(this.trip);
+  final Passenger? passenger;
+  TripFinished(this.trip, {this.passenger});
+}
+
+class TripDismissed extends TripState {
+  final Trip trip;
+  final Driver driver;
+  final Passenger? passenger;
+  TripDismissed(this.trip, this.driver, {this.passenger});
 }
