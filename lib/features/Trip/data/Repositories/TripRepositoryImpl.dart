@@ -41,16 +41,12 @@ class TripRepositoryImpl implements TripRepository{
   @override
   Future<void> acceptTrip(String tripId, String userEmail, Driver driver) async {
     return _firestore.runTransaction((transaction) async {
-      // ✅ 1️⃣ Reference the user's document inside the "trips" collection
       final userTripDoc = _firestore.collection('trips').doc(userEmail);
       final tripSnapshot = await transaction.get(userTripDoc);
 
       if (!tripSnapshot.exists) throw Exception("User's trip document not found.");
-
-      // ✅ 2️⃣ Get the trips array from the user document
       List<dynamic> trips = List.from(tripSnapshot.data()?["trips"] ?? []);
 
-      // ✅ 3️⃣ Find the trip in the array and update its status & driver
       final tripIndex = trips.indexWhere((trip) => trip["id"] == tripId);
       if (tripIndex != -1) {
         trips[tripIndex]["Status"] = "accepted";
@@ -59,13 +55,11 @@ class TripRepositoryImpl implements TripRepository{
         print("✅ Trip $tripId accepted and driver assigned in user trips.");
       }
 
-      // ✅ 4️⃣ Reference to the "Active Trips" collection
       final activeTripsQuery = await _firestore.collection("Active Trips").get();
 
       for (var doc in activeTripsQuery.docs) {
         List<dynamic> activeTrips = List.from(doc.data()["trips"] ?? []);
 
-        // ✅ 5️⃣ Find and update the trip inside "Active Trips"
         final activeTripIndex = activeTrips.indexWhere((trip) => trip["id"] == tripId);
         if (activeTripIndex != -1) {
           activeTrips[activeTripIndex]["Status"] = "accepted";
@@ -106,30 +100,21 @@ class TripRepositoryImpl implements TripRepository{
   @override
   Future<void> expireTrip(String tripId, String userEmail) async {
     return _firestore.runTransaction((transaction) async {
-      // ✅ 1️⃣ Reference the user document inside "trips" collection
       final userTripDoc = _firestore.collection('trips').doc(userEmail);
       final tripSnapshot = await transaction.get(userTripDoc);
 
       if (!tripSnapshot.exists) throw Exception("Trip not found in user trips.");
-
-      // ✅ 2️⃣ Get the trips array from the user document
       List<dynamic> trips = List.from(tripSnapshot.data()?["trips"] ?? []);
-
-      // ✅ 3️⃣ Find the trip in the array and update its status
       final tripIndex = trips.indexWhere((trip) => trip["id"] == tripId);
       if (tripIndex != -1) {
         trips[tripIndex]["Status"] = "expired"; // Update status in-place
         transaction.update(userTripDoc, {"trips": trips});
         print("✅ Trip $tripId marked as expired in user trips.");
       }
-
-      // ✅ 4️⃣ Reference to the "Active Trips" collection
       final activeTripsQuery = await _firestore.collection("Active Trips").get();
 
       for (var doc in activeTripsQuery.docs) {
         List<dynamic> activeTrips = List.from(doc.data()["trips"] ?? []);
-
-        // ✅ 5️⃣ Remove the trip from the "Active Trips" array
         final activeTripIndex = activeTrips.indexWhere((trip) => trip["id"] == tripId);
         if (activeTripIndex != -1) {
           activeTrips.removeAt(activeTripIndex);
@@ -166,7 +151,6 @@ class TripRepositoryImpl implements TripRepository{
             Trip trip = Trip.fromMap(tripData);
             activeTrips.add(trip);
 
-            // ✅ Debugging: Print fetched trip details
             print("Fetched Trip ID: ${trip.id}");
             print("From: ${trip.FromLocation} → To: ${trip.ToDestination}");
             print("Status: ${trip.Status}, Price: ${trip.price}");
@@ -174,7 +158,7 @@ class TripRepositoryImpl implements TripRepository{
         }
       }
 
-      return activeTrips; // ✅ Return list of active trips
+      return activeTrips;
     });
   }
 
