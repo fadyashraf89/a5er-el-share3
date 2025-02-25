@@ -3,11 +3,13 @@ import '../../../../core/utils/UseCases/FormatDate.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
 import 'AcceptButton.dart';
+import 'DismissTripButton.dart';
 
 class DriverTripCard extends StatelessWidget {
   final Trip trip;
   final Driver driver;
   final bool highlight; // Add highlight parameter
+
   const DriverTripCard({
     super.key,
     required this.trip,
@@ -15,10 +17,26 @@ class DriverTripCard extends StatelessWidget {
     this.highlight = false, // Default to false
   });
 
+  Widget _buildRow(IconData icon, String text, Color iconColor) {
+    return Row(
+      children: [
+        Icon(icon, color: iconColor),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 16),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
@@ -53,49 +71,23 @@ class DriverTripCard extends StatelessWidget {
                         const Icon(Icons.calendar_today, color: Colors.blue),
                         const SizedBox(width: 10),
                         FutureBuilder<String>(
-                          // Using the Future to format the date
-                          future:
-                              FormattedDate().formatToReadableDate(trip.date!),
-                          // Make sure trip.date is not null
+                          future: FormattedDate().formatToReadableDate(trip.date!),
                           builder: (context, snapshot) {
-                            // Handling loading state
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Text(
                                 "Loading...",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               );
                             }
-                            // Handling error state
                             if (snapshot.hasError) {
                               return const Text(
                                 "Invalid date",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
-                                ),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
                               );
                             }
-                            // Display formatted date when data is ready
-                            if (snapshot.hasData) {
-                              return Text(
-                                snapshot.data!,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            }
-                            return const Text(
-                              "No Date Available",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            return Text(
+                              snapshot.data ?? "No Date Available",
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             );
                           },
                         ),
@@ -104,105 +96,37 @@ class DriverTripCard extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     // Passenger Name
-                    Row(
-                      children: [
-                        const Icon(Icons.person, color: Colors.green),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Passenger: ${trip.passenger?.name ?? "N/A"}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+                    _buildRow(Icons.person, 'Passenger: ${trip.passenger?.name ?? "N/A"}', Colors.green),
                     const SizedBox(height: 10),
 
                     // Time
-                    Row(
-                      children: [
-                        const Icon(Icons.access_time, color: Colors.orange),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Time: ${trip.time}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+                    _buildRow(Icons.access_time, 'Time: ${trip.time}', Colors.orange),
                     const SizedBox(height: 10),
 
                     // From Location
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on, color: Colors.red),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            'From: ${trip.FromLocation}',
-                            style: const TextStyle(fontSize: 16),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildRow(Icons.location_on, 'From: ${trip.FromLocation}', Colors.red),
                     const SizedBox(height: 10),
 
                     // To Location
-                    Row(
-                      children: [
-                        const Icon(Icons.flag, color: Colors.purple),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            'To: ${trip.ToDestination}',
-                            style: const TextStyle(fontSize: 16),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const Icon(Icons.money, color: Colors.lightGreen),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            'Price: ${trip.price}',
-                            style: const TextStyle(fontSize: 16),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    // Distance
-                    Row(
-                      children: [
-                        const Icon(Icons.straighten, color: Colors.teal),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Distance: ${trip.distance?.toStringAsFixed(2)} km',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+                    _buildRow(Icons.flag, 'To: ${trip.ToDestination}', Colors.purple),
                     const SizedBox(height: 10),
 
-                    Row(
-                      children: [
-                        const Icon(Icons.watch_later, color: Colors.yellow),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Status: ${trip.Status} ',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+                    // Price
+                    _buildRow(Icons.money, 'Price: ${trip.price}', Colors.lightGreen),
+                    const SizedBox(height: 10),
+
+                    // Distance
+                    _buildRow(Icons.straighten, 'Distance: ${trip.distance?.toStringAsFixed(2)} km', Colors.teal),
+                    const SizedBox(height: 10),
+
+                    // Status
+                    _buildRow(Icons.watch_later, 'Status: ${trip.Status}', Colors.yellow),
                     const SizedBox(height: 10),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // DismissButton(trip: trip, driver: driver),
+                        const DismissButton(),
                         AcceptButton(trip: trip),
                       ],
                     ),

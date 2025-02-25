@@ -1,7 +1,6 @@
 import 'package:a5er_elshare3/features/Passenger/domain/UseCases/FetchPassengerDataUseCase.dart';
 import 'package:a5er_elshare3/features/Trip/domain/Repositories/TripRepository.dart';
 import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
-import 'package:a5er_elshare3/features/AuthService/Domain/UseCases/getCurrentUserEmailUseCase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../Driver/domain/models/driver.dart';
 import '../../domain/models/trip.dart';
@@ -50,9 +49,9 @@ class TripRepositoryImpl implements TripRepository{
       final tripIndex = trips.indexWhere((trip) => trip["id"] == tripId);
       if (tripIndex != -1) {
         trips[tripIndex]["Status"] = "accepted";
-        trips[tripIndex]["driver"] = driver.toMap(); // Assign driver
+        trips[tripIndex]["driver"] = driver.toMap();
         transaction.update(userTripDoc, {"trips": trips});
-        print("✅ Trip $tripId accepted and driver assigned in user trips.");
+        print("Trip $tripId accepted and driver assigned in user trips.");
       }
 
       final activeTripsQuery = await _firestore.collection("Active Trips").get();
@@ -63,32 +62,15 @@ class TripRepositoryImpl implements TripRepository{
         final activeTripIndex = activeTrips.indexWhere((trip) => trip["id"] == tripId);
         if (activeTripIndex != -1) {
           activeTrips[activeTripIndex]["Status"] = "accepted";
-          activeTrips[activeTripIndex]["driver"] = driver.toMap(); // Assign driver
+          activeTrips[activeTripIndex]["driver"] = driver.toMap();
           transaction.update(doc.reference, {"trips": activeTrips});
-          print("✅ Trip $tripId accepted in Active Trips collection.");
+          print("Trip $tripId accepted in Active Trips collection.");
           break;
         }
       }
     });
   }
 
-  @override
-  Future<List<Trip>> fetchTripsForLoggedInUser() async {
-    getCurrentUserEmailUseCase getemail = sl<getCurrentUserEmailUseCase>();
-    try {
-      String? currentEmail = await getemail.getCurrentUserEmail();
-
-      if (currentEmail == null) {
-        print("No user currently signed in.");
-        return [];
-      }
-
-      return await fetchTripsForUser(currentEmail);
-    } catch (e) {
-      print("Error fetching trips for logged-in user: $e");
-      return [];
-    }
-  }
   @override
   Future<List<Trip>> fetchTripsForUser(String userEmail, {String? status}) async {
     Query query = _firestore.collection('trips').where('passenger.email', isEqualTo: userEmail);
@@ -97,6 +79,7 @@ class TripRepositoryImpl implements TripRepository{
     final querySnapshot = await query.get();
     return querySnapshot.docs.map((doc) => Trip.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
+
   @override
   Future<void> expireTrip(String tripId, String userEmail) async {
     return _firestore.runTransaction((transaction) async {
@@ -109,7 +92,7 @@ class TripRepositoryImpl implements TripRepository{
       if (tripIndex != -1) {
         trips[tripIndex]["Status"] = "expired"; // Update status in-place
         transaction.update(userTripDoc, {"trips": trips});
-        print("✅ Trip $tripId marked as expired in user trips.");
+        print("Trip $tripId marked as expired in user trips.");
       }
       final activeTripsQuery = await _firestore.collection("Active Trips").get();
 
@@ -119,13 +102,12 @@ class TripRepositoryImpl implements TripRepository{
         if (activeTripIndex != -1) {
           activeTrips.removeAt(activeTripIndex);
           transaction.update(doc.reference, {"trips": activeTrips});
-          print("✅ Trip $tripId removed from Active Trips collection.");
+          print("Trip $tripId removed from Active Trips collection.");
           break;
         }
       }
     });
   }
-
 
   @override
   Future<Trip> fetchTripById(String tripId) async {

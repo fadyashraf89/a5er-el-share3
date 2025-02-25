@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:a5er_elshare3/core/utils/Injections/dependency_injection.dart';
 import 'package:a5er_elshare3/features/Trip/domain/UseCases/addTripUseCase.dart';
-import 'package:a5er_elshare3/features/Trip/domain/UseCases/fetchTripsForLoggedInUserUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
@@ -69,16 +68,6 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
-  Future<void> fetchTripsForLoggedInUser() async {
-    emit(TripLoading());
-    try {
-      final trips = await sl<fetchTripsForLoggedInUserUseCase>().fetchTripsForLoggedInUser();
-      emit(TripDataFetched(trips));
-    } catch (e) {
-      emit(TripError("Failed to fetch trips: ${e.toString()}"));
-    }
-  }
-
   Future<void> fetchTripsForUser(String userEmail) async {
     emit(TripLoading());
     try {
@@ -131,7 +120,7 @@ class TripCubit extends Cubit<TripState> {
           final updatedTrip = Trip.fromMap(selectedTrip);
           emit(TripAccepted(updatedTrip));
 
-          print("✅ Trip successfully accepted and moved to AcceptedTrips.");
+          print("Trip successfully accepted and moved to AcceptedTrips.");
           break;
         }
       }
@@ -144,10 +133,11 @@ class TripCubit extends Cubit<TripState> {
         throw Exception("Trip not found in Active Trips collection.");
       }
     } catch (e) {
-      print("❌ Error accepting trip: $e");
+      print("Error accepting trip: $e");
       emit(TripError("Failed to accept trip: $e"));
     }
   }
+
   Future<Trip> _fetchTripById(String tripId) async {
     try {
       return await sl<TripRepository>().fetchTripById(tripId);
@@ -208,29 +198,33 @@ class TripCubit extends Cubit<TripState> {
           throw Exception("Passenger document not found.");
         }
 
-        Map<String, dynamic> passengerData = passengerSnapshot.data() as Map<String, dynamic>;
-        int currentPoints = passengerData['points'] ?? 0;
-        String paymentMethod = trip.paymentMethod ?? '';
-
-        if (paymentMethod == 'Points') {
-          if (currentPoints < tripPoints) {
-            throw Exception("Not enough points to complete the trip payment.");
-          }
-          transaction.update(passengerDocRef, {'points': FieldValue.increment(-tripPoints)});
-          print("✅ Deducted $tripPoints points from passenger. ${trip.passenger!.name}");
-        } else {
-          transaction.update(passengerDocRef, {'points': FieldValue.increment(tripPoints)});
-          print("✅ Rewarded $tripPoints points to passenger.${trip.passenger!.name}");
-        }
+        _handlePoints(passengerSnapshot, trip, tripPoints, transaction, passengerDocRef);
       });
 
       await Future.delayed(const Duration(seconds: 10));
       emit(TripInitial());
 
-      print("✅ Trip successfully completed.");
+      print("Trip successfully completed.");
     } catch (e) {
-      print("❌ Error finishing the trip: $e");
+      print("Error finishing the trip: $e");
       emit(TripError("Error finishing the trip: $e"));
+    }
+  }
+
+  void _handlePoints(DocumentSnapshot<Object?> passengerSnapshot, Trip trip, int tripPoints, Transaction transaction, DocumentReference<Map<String, dynamic>> passengerDocRef) {
+    Map<String, dynamic> passengerData = passengerSnapshot.data() as Map<String, dynamic>;
+    int currentPoints = passengerData['points'] ?? 0;
+    String paymentMethod = trip.paymentMethod ?? '';
+
+    if (paymentMethod == 'Points') {
+      if (currentPoints < tripPoints) {
+        throw Exception("Not enough points to complete the trip payment.");
+      }
+      transaction.update(passengerDocRef, {'points': FieldValue.increment(-tripPoints)});
+      print("Deducted $tripPoints points from passenger. ${trip.passenger!.name}");
+    } else {
+      transaction.update(passengerDocRef, {'points': FieldValue.increment(tripPoints)});
+      print("Rewarded $tripPoints points to passenger.${trip.passenger!.name}");
     }
   }
 

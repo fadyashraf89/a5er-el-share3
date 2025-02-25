@@ -16,6 +16,7 @@ class UserAuthRepositoryImpl implements UserAuthRepository{
       return null;
     }
   }
+
   @override
   Future<String> forgotPassword(String emailAddress) async {
     try {
