@@ -72,12 +72,17 @@ class TripRepositoryImpl implements TripRepository{
   }
 
   @override
-  Future<List<Trip>> fetchTripsForUser(String userEmail, {String? status}) async {
-    Query query = _firestore.collection('trips').where('passenger.email', isEqualTo: userEmail);
-    if (status != null) query = query.where('status', isEqualTo: status);
+  Future<List<Trip>> fetchTripsForUser(String userEmail) async {
+    final docSnapshot = await _firestore.collection('trips').doc(userEmail).get();
 
-    final querySnapshot = await query.get();
-    return querySnapshot.docs.map((doc) => Trip.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    if (!docSnapshot.exists || docSnapshot.data() == null) {
+      return [];
+    }
+
+    final data = docSnapshot.data();
+    final tripsList = data?['trips'] as List<dynamic>? ?? [];
+
+    return tripsList.map((trip) => Trip.fromMap(trip as Map<String, dynamic>)).toList();
   }
 
   @override

@@ -70,216 +70,218 @@ class _PassengerProfileState extends State<PassengerProfile> {
               title: "Passenger Profile",
               height: 150,
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(Icons.stars, color: Colors.yellow),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'Points: ${passenger.points}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.stars, color: Colors.yellow),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'Points: ${passenger.points}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-
-                              _buildTextField(
-                                  controller: _emailController,
-                                  hintText: "Email",
-                                  isEnabled: _isEditing,
-                                  isReadOnly: true,
-                                  // Make email always readonly
-                                  icon: Icons.email),
-                              const SizedBox(height: 10),
-                              _buildTextField(
-                                  controller: _nameController,
-                                  hintText: "Name",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.person),
-                              const SizedBox(height: 10),
-                              _buildTextField(
-                                  controller: _mobileNumberController,
-                                  hintText: "Mobile Number",
-                                  isEnabled: _isEditing,
-                                  icon: Icons.call),
-                              const SizedBox(height: 20),
-
-                            ],
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+              
+                                _buildTextField(
+                                    controller: _emailController,
+                                    hintText: "Email",
+                                    isEnabled: _isEditing,
+                                    isReadOnly: true,
+                                    // Make email always readonly
+                                    icon: Icons.email),
+                                const SizedBox(height: 10),
+                                _buildTextField(
+                                    controller: _nameController,
+                                    hintText: "Name",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.person),
+                                const SizedBox(height: 10),
+                                _buildTextField(
+                                    controller: _mobileNumberController,
+                                    hintText: "Mobile Number",
+                                    isEnabled: _isEditing,
+                                    icon: Icons.call),
+                                const SizedBox(height: 20),
+              
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Align(
-                                child: _isEditing
-                                    ? TextButton(
-                                  onPressed: () {
-                                    if (!_formKey.currentState!
-                                        .validate()) return;
-
-                                    Passenger updatedPassenger =
-                                    Passenger(
-                                      uid: passenger.uid,
-                                      name: _nameController.text,
-                                      email: _emailController.text,
-                                      mobileNumber:
-                                      _mobileNumberController.text,
-                                      role: passenger.role,
-                                      points: passenger.points ?? 0
-                                    );
-                                    context
-                                        .read<PassengerCubit>()
-                                        .updatePassengerData(
-                                        updatedPassenger);
-
-                                    setState(() => _isEditing =
-                                    false); // Stop editing mode
-                                  },
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Align(
+                                  child: _isEditing
+                                      ? TextButton(
+                                    onPressed: () {
+                                      if (!_formKey.currentState!
+                                          .validate()) return;
+              
+                                      Passenger updatedPassenger =
+                                      Passenger(
+                                        uid: passenger.uid,
+                                        name: _nameController.text,
+                                        email: _emailController.text,
+                                        mobileNumber:
+                                        _mobileNumberController.text,
+                                        role: passenger.role,
+                                        points: passenger.points ?? 0
+                                      );
+                                      context
+                                          .read<PassengerCubit>()
+                                          .updatePassengerData(
+                                          updatedPassenger);
+              
+                                      setState(() => _isEditing =
+                                      false); // Stop editing mode
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: kDarkBlueColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 15),
+              
+                                    ),
+                                    child: const Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.save, color: Colors.white),
+                                        SizedBox(width: 8),
+                                        Text("Save Changes", style: TextStyle(
+                                          color: Colors.white,
+                                            fontWeight: FontWeight.bold
+              
+                                        ),),
+                                      ],
+                                    ),
+                                  )
+                                      : TextButton(
+                                    onPressed: () {
+                                      setState(() => _isEditing =
+                                      true); // Enable editing mode
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: kDarkBlueColor,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+              
+                                      )
+                                    ),
+                                    child: const Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.edit, color: Colors.white),
+                                        SizedBox(width: 8),
+                                        Text("Edit Profile", style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold
+              
+                                        ),),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: double.infinity,
+              
+                                child: TextButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: kDarkBlueColor,
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    padding: const EdgeInsets.symmetric(vertical: 15),
-
+                                    backgroundColor: kDarkBlueColor
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> PassengerTripList(userEmail: passenger.email,)));
+                                  },
+              
                                   child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.save, color: Colors.white),
+                                      Icon(Icons.history, color:Colors.white),
                                       SizedBox(width: 8),
-                                      Text("Save Changes", style: TextStyle(
-                                        color: Colors.white,
-                                          fontWeight: FontWeight.bold
-
+                                      Text("View Trip History", style: TextStyle(
+                                          color: Colors.white,
+                                        fontWeight: FontWeight.bold
+              
                                       ),),
                                     ],
                                   ),
-                                )
-                                    : TextButton(
-                                  onPressed: () {
-                                    setState(() => _isEditing =
-                                    true); // Enable editing mode
-                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: double.infinity,
+              
+                                child: TextButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: kDarkBlueColor,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15),
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
-
-                                    )
+                                    ),
+                                    backgroundColor: kDarkBlueColor
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
+                                  },
+              
                                   child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.edit, color: Colors.white),
+                                      Icon(Icons.password, color:Colors.white),
                                       SizedBox(width: 8),
-                                      Text("Edit Profile", style: TextStyle(
+                                      Text("Reset Password", style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold
-
+              
                                       ),),
                                     ],
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              width: double.infinity,
-
-                              child: TextButton(
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: kDarkBlueColor
-                                ),
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PassengerTripList(userEmail: passenger.email,)));
-                                },
-
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.history, color:Colors.white),
-                                    SizedBox(width: 8),
-                                    Text("View Trip History", style: TextStyle(
-                                        color: Colors.white,
-                                      fontWeight: FontWeight.bold
-
-                                    ),),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              width: double.infinity,
-
-                              child: TextButton(
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: kDarkBlueColor
-                                ),
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
-                                },
-
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.password, color:Colors.white),
-                                    SizedBox(width: 8),
-                                    Text("Reset Password", style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold
-
-                                    ),),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-
-                        ],
-                      ),
-                    ],
+              
+              
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         }
