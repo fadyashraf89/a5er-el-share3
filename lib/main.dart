@@ -10,14 +10,12 @@ import 'firebase_options.dart';
 
 void main() async {
   setupLocator();
-  WidgetsFlutterBinding
-      .ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const A5erElShare3());
 }
-
 
 class A5erElShare3 extends StatelessWidget {
   const A5erElShare3({super.key});
